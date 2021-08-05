@@ -11,7 +11,8 @@ module ClaimReviewExport
         "url": claim_review['author_link']
       },
       "inLanguage": claim_review['language'],
-      "claimReviewed": claim_review['claim_review_headline'],
+      "headline": claim_review['claim_review_headline'],
+      "claimReviewed": claim_review['claim_review_reviewed'],
       "text": claim_review['claim_review_body'],
       "image": claim_review['claim_review_image_url'],
       "reviewRating": {
@@ -19,7 +20,8 @@ module ClaimReviewExport
         "ratingValue": claim_review['claim_review_result_score'],
         "bestRating": 1,
         "alternateName": claim_review['claim_review_result']
-      }
+      },
+      "raw": claim_review
     }
   end
 end
