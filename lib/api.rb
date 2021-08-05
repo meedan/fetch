@@ -8,6 +8,7 @@ class API
   def self.claim_reviews(opts = {})
     opts[:per_page] ||= 20
     opts[:offset] ||= 0
+    return {error: "Offset is #{opts[:offset]}, and cannot be bigger than 10000. Query cannot execute"} if opts[:offset] > 10000
     ClaimReview.search(
       opts
     )
@@ -44,10 +45,5 @@ class API
   def self.remove_subscription(params)
     Subscription.remove_subscription(params[:service], params[:url])
     Subscription.get_subscriptions(params[:service])
-  end
-
-  def self.export_to_file(start_time, end_time, filename=nil)
-    filename ||= "claim_review_exports_#{Time.parse(start_time).strftime("%Y-%m-%d")}_#{Time.parse(end_time).strftime("%Y-%m-%d")}.json"
-    ClaimReview.export_to_file(start_time, end_time, filename)
   end
 end

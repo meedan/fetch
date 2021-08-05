@@ -33,9 +33,4 @@ class Site < Sinatra::Base
   delete '/subscribe' do
     return API.remove_subscription(QuietHashie[JSON.parse(request.body.read)]).to_json
   end
-
-  get '/export' do
-    filename = API.export_to_file(params[:start_time], params[:end_time])
-    send_file "./#{filename}", :filename => filename, :type => 'application/json'
-  end
 end

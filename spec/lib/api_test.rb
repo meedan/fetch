@@ -40,16 +40,8 @@ describe API do
       expect(described_class.remove_subscription(service: 'blah', url: 'http://blah.com/respond')).to(eq(['http://blah.com/respond']))
     end
 
-    it 'gets the export file' do
-      end_time = Time.parse(Time.now.strftime("%Y-%m-%d"))
-      time_clause = ElasticSearchQuery.start_end_date_range_query('created_at', (end_time-60*60*24).to_s, end_time.to_s)
-      end_time -= 60*60*24
-      time_clause2 = ElasticSearchQuery.start_end_date_range_query('created_at', (end_time-60*60*24).to_s, end_time.to_s)
-      ClaimReview.stub(:get_hits).with({size: 10000, body: {query: {bool: {filter: time_clause}}}}).and_return([{ '_source' => { 'claim_review_url' => 1 } }])
-      ClaimReview.stub(:get_hits).with({size: 10000, body: {query: {bool: {filter: time_clause2}}}}).and_return([])
-      filename = API.export_to_file((end_time).to_s, (end_time+60*60*24).to_s, "blah.json")
-      result = File.read(filename).split("\n").collect{|x| JSON.parse(x)}
-      expect(result).to(eq([{ '_source' => { 'claim_review_url' => 1 } }]))
+    it "fails a search with a too-large offset" do
+        expect(API.claim_reviews(offset: 10001)).to(eq({error: "Offset is 10001, and cannot be bigger than 10000. Query cannot execute"}))
     end
   end
 end
