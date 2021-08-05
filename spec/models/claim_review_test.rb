@@ -139,9 +139,10 @@ describe ClaimReview do
   end
 
   it 'runs a search' do
-    Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'id' => 123, 'created_at' => Time.now.to_s, 'claim_review_url' => 1 } }] } })
+    timestamp = Time.now.to_s
+    Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'id' => 123, 'created_at' => timestamp, 'claim_review_url' => 1 } }] } })
     query = {search_query: '', service: 'nil', start_time: Time.now.to_s, end_time: Time.now.to_s, per_page: 20, offset: 0}
-    expect(described_class.search(query)).to(eq([{ :@context => 'http://schema.org', :@type => 'ClaimReview', :datePublished => Time.now.strftime('%Y-%m-%d'), :identifier => 123, :url => 1, :author => { name: nil, url: nil }, :image => nil, :inLanguage => nil, :claimReviewed => nil, :text => nil, :reviewRating => { :@type => 'Rating', :ratingValue => nil, :bestRating => 1, :alternateName => nil } }]))
+    expect(described_class.search(query)).to(eq([{ :@context => 'http://schema.org', :@type => 'ClaimReview', :datePublished => Time.now.strftime('%Y-%m-%d'), :headline => nil, :identifier => 123, :url => 1, :author => { name: nil, url: nil }, :image => nil, :inLanguage => nil, raw: {"claim_review_url"=>1, "created_at"=>timestamp, "id"=>123}, :claimReviewed => nil, :text => nil, :reviewRating => { :@type => 'Rating', :ratingValue => nil, :bestRating => 1, :alternateName => nil } }]))
   end
 
   it 'runs an empty search' do
@@ -151,12 +152,13 @@ describe ClaimReview do
   end
 
   it 'converts a claim review' do
+    timestamp = Time.now.to_s
     expect(
       described_class.convert_to_claim_review(
-        QuietHashie[{ raw_claim_review: {}, claim_review_headline: 'wow', claim_review_url: 'http://example.com', created_at: Time.now.to_s, id: 123 }]
+        QuietHashie[{ raw_claim_review: {}, claim_review_headline: 'wow', claim_review_url: 'http://example.com', created_at: timestamp, id: 123 }]
       )
     ).to(eq(
-        { :@context => 'http://schema.org', :@type => 'ClaimReview', :datePublished => Time.now.strftime('%Y-%m-%d'), :identifier => 123, :url => 'http://example.com', :author => { name: nil, url: nil }, :image => nil, :inLanguage => nil, :claimReviewed => 'wow', :text => nil, :reviewRating => { :@type => 'Rating', :ratingValue => nil, :bestRating => 1, :alternateName => nil } }
+        { :@context => 'http://schema.org', :@type => 'ClaimReview', :datePublished => Time.now.strftime('%Y-%m-%d'), :headline => 'wow', :identifier => 123, :url => 'http://example.com', :author => { name: nil, url: nil }, :image => nil, :inLanguage => nil, :raw => {"claim_review_headline"=>"wow", "claim_review_url"=>"http://example.com", "created_at"=>timestamp, "id"=>123, "raw_claim_review"=>{}}, :claimReviewed => nil, :text => nil, :reviewRating => { :@type => 'Rating', :ratingValue => nil, :bestRating => 1, :alternateName => nil } }
       )
     )
   end

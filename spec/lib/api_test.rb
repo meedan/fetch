@@ -41,7 +41,7 @@ describe API do
     end
 
     it "fails a search with a too-large offset" do
-        expect(API.claim_reviews(offset: 10001)).to(eq({"error" => "Offset is 10001, and cannot be bigger than 10000. Query cannot execute"}))
+        expect(API.claim_reviews(offset: 10001)).to(eq({error: "Offset is 10001, and cannot be bigger than 10000. Query cannot execute"}))
     end
   end
 end
