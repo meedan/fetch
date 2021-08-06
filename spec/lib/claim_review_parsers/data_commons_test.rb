@@ -12,6 +12,7 @@ describe DataCommons do
     end
 
     it 'parses the in-repo dataset' do
+      AlegreClient.stub(:get_enrichment_for_url).with(anything).and_return({"text" => "blah", "links" => ["http://example.com"]})
       single_case = JSON.parse(File.read('spec/fixtures/data_commons_raw.json'))
       File.stub(:read).with(described_class.dataset_path).and_return({ 'dataFeedElement' => [single_case] }.to_json)
       File.stub(:read).with("config/cookies.json").and_return({}.to_json)

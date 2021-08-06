@@ -11,7 +11,7 @@ class ClaimReviewParser
     false
   end
 
-  def self.persistable_raw_claim_reviews
+  def self.persistable_raw_claim_review_services
     ClaimReviewParser.parsers.select{|k,v| v.persistable?}.keys.uniq
   end
 

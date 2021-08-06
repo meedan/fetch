@@ -30,7 +30,8 @@ class Settings
       'redis_database' => 1,
       'service_heartbeat_ttl' => 60*60*4,
       'env' => 'test',
-      'cookie_file' => 'config/cookies.json'
+      'cookie_file' => 'config/cookies.json',
+      'alegre_host_url' => 'http://alegre.local'
     }
   end
 

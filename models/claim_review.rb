@@ -20,7 +20,7 @@ class ClaimReview
     mandatory_fields.each do |field|
       return nil if parsed_claim_review[field].nil?
     end
-    if ClaimReviewParser.persistable_raw_claim_reviews.include?(parsed_claim_review['service'].to_s)
+    if ClaimReviewParser.persistable_raw_claim_review_services.include?(parsed_claim_review['service'].to_s)
       parsed_claim_review['raw_claim_review'] = parsed_claim_review['raw_claim_review'].to_json
     else
       parsed_claim_review.delete('raw_claim_review')
@@ -28,6 +28,13 @@ class ClaimReview
     parsed_claim_review['id'] = self.convert_id(parsed_claim_review['id'], parsed_claim_review['service'])
     parsed_claim_review['created_at'] = self.parse_created_at(parsed_claim_review)
     parsed_claim_review['language'] = Language.get_reliable_language(parsed_claim_review['claim_review_headline'])
+    self.enrich_claim_review_with_externally_parsed_data(parsed_claim_review)
+  end
+
+  def self.enrich_claim_review_with_externally_parsed_data(parsed_claim_review)
+    response = AlegreClient.get_enrichment_for_url(parsed_claim_review["claim_review_url"])
+    parsed_claim_review["links"] = response["links"]
+    parsed_claim_review["externally_sourced_text"] = response["text"]
     parsed_claim_review
   end
 
