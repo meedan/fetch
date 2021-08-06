@@ -143,9 +143,10 @@ describe ClaimReview do
   end
 
   it 'runs a search' do
-    Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'id' => 123, 'created_at' => Time.now.to_s, 'claim_review_url' => 1 } }] } })
+    timestamp = Time.now.to_s
+    Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'id' => 123, 'created_at' => timestamp, 'claim_review_url' => 1 } }] } })
     query = {search_query: '', service: 'nil', start_time: Time.now.to_s, end_time: Time.now.to_s, per_page: 20, offset: 0}
-    expect(described_class.search(query)).to(eq([{ :@context => 'http://schema.org', :@type => 'ClaimReview', :datePublished => Time.now.strftime('%Y-%m-%d'), :identifier => 123, :url => 1, :author => { name: nil, url: nil }, :image => nil, :inLanguage => nil, :claimReviewed => nil, :text => nil, :reviewRating => { :@type => 'Rating', :ratingValue => nil, :bestRating => 1, :alternateName => nil } }]))
+    expect(described_class.search(query)).to(eq([{ :@context => 'http://schema.org', :@type => 'ClaimReview', :datePublished => Time.now.strftime('%Y-%m-%d'), :headline => nil, :identifier => 123, :url => 1, :author => { name: nil, url: nil }, :image => nil, :inLanguage => nil, raw: {"claim_review_url"=>1, "created_at"=>timestamp, "id"=>123}, :claimReviewed => nil, :text => nil, :reviewRating => { :@type => 'Rating', :ratingValue => nil, :bestRating => 1, :alternateName => nil } }]))
   end
 
   it 'runs an empty search' do
@@ -155,26 +156,14 @@ describe ClaimReview do
   end
 
   it 'converts a claim review' do
+    timestamp = Time.now.to_s
     expect(
       described_class.convert_to_claim_review(
-        QuietHashie[{ raw_claim_review: {}, claim_review_headline: 'wow', claim_review_url: 'http://example.com', created_at: Time.now.to_s, id: 123 }]
+        QuietHashie[{ raw_claim_review: {}, claim_review_headline: 'wow', claim_review_url: 'http://example.com', created_at: timestamp, id: 123 }]
       )
     ).to(eq(
-        { :@context => 'http://schema.org', :@type => 'ClaimReview', :datePublished => Time.now.strftime('%Y-%m-%d'), :identifier => 123, :url => 'http://example.com', :author => { name: nil, url: nil }, :image => nil, :inLanguage => nil, :claimReviewed => 'wow', :text => nil, :reviewRating => { :@type => 'Rating', :ratingValue => nil, :bestRating => 1, :alternateName => nil } }
+        { :@context => 'http://schema.org', :@type => 'ClaimReview', :datePublished => Time.now.strftime('%Y-%m-%d'), :headline => 'wow', :identifier => 123, :url => 'http://example.com', :author => { name: nil, url: nil }, :image => nil, :inLanguage => nil, :raw => {"claim_review_headline"=>"wow", "claim_review_url"=>"http://example.com", "created_at"=>timestamp, "id"=>123, "raw_claim_review"=>{}}, :claimReviewed => nil, :text => nil, :reviewRating => { :@type => 'Rating', :ratingValue => nil, :bestRating => 1, :alternateName => nil } }
       )
     )
   end
-
-  it 'exports to a file' do
-    end_time = Time.parse(Time.now.strftime("%Y-%m-%d"))
-    time_clause = ElasticSearchQuery.start_end_date_range_query('created_at', (end_time-60*60*24).to_s, end_time.to_s)
-    end_time -= 60*60*24
-    time_clause2 = ElasticSearchQuery.start_end_date_range_query('created_at', (end_time-60*60*24).to_s, end_time.to_s)
-    ClaimReview.stub(:get_hits).with({size: 10000, body: {query: {bool: {filter: time_clause}}}}).and_return([{ '_source' => { 'claim_review_url' => 1 } }])
-    ClaimReview.stub(:get_hits).with({size: 10000, body: {query: {bool: {filter: time_clause2}}}}).and_return([])
-    filename = ClaimReview.export_to_file(end_time.to_s, (end_time+60*60*24).to_s, "blah.json")
-    result = File.read(filename).split("\n").collect{|x| JSON.parse(x)}
-    expect(result).to(eq([{ '_source' => { 'claim_review_url' => 1 } }]))
-  end
-  
 end
