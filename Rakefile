@@ -6,7 +6,7 @@ load('environment.rb')
 
 desc "Run all tasks"
 task :test do
-  ClaimReviewRepository.safe_init_index
+  ClaimReviewRepository.init_index
   Rake::Task['test:unit'].execute 
   Rake::Task['test:integration'].execute    
 end
