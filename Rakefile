@@ -6,6 +6,7 @@ load('environment.rb')
 
 desc "Run all tasks"
 task :test do
+  ClaimReviewRepository.safe_init_index
   Rake::Task['test:unit'].execute 
   Rake::Task['test:integration'].execute    
 end
@@ -61,4 +62,5 @@ task :requeue do
     RunClaimReviewParser.requeue(datasource)
   end
 end
+
 task(default: [:test])
