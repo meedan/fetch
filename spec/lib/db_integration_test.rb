@@ -54,7 +54,7 @@ describe 'integration test with ElasticSearch' do#, integration: true do
       # begin
       gg = JSON.parse(response.body)
       gz = @storage_results[subclass]
-        expect(gg[0]["url"]).to(eq(gz[0][:claim_review_url]))
+        expect(JSON.parse(response.body)[0]["url"]).to(eq(@storage_results[subclass][0][:claim_review_url]))
         puts gg.inspect
         puts gz.inspect
       # rescue
