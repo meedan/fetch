@@ -5,7 +5,7 @@ describe AlegreClient do
         headers: {
       	  'Accept'=>'*/*',
       	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-      	  'Host'=>'alegre.qa',
+      	  'Host'=>'alegre.local',
           "User-Agent": /.*/
         }).
       to_return(status: 200, body: '{"title":"AFP Covid-19 verification hub"}', headers: {})
