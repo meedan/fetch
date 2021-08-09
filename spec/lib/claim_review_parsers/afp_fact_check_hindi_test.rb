@@ -23,7 +23,7 @@ describe AFPFactCheckHindi do
     end
 
     it 'parses a raw_claim_review' do
-      raw = JSON.parse(File.read('spec/fixtures/afp_factcheckhindi_raw.json'))
+      raw = JSON.parse(File.read('spec/fixtures/afp_fact_check_hindi_raw.json'))
       raw['page'] = Nokogiri.parse(raw['page'])
       parsed_claim_review = described_class.new.parse_raw_claim_review(raw)
       expect(parsed_claim_review.class).to(eq(Hash))
