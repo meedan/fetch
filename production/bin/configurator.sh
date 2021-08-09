@@ -11,8 +11,8 @@ fi
 
 cp config/cookies.json.example config/cookies.json
 
-if [[ "$DEPLOY_ENV" != "qa" && "$DEPLOY_ENV" != "live" ]]; then
-	# Only use the test configuration if we're not deploying to QA or Live.
+if [[ "$DEPLOY_ENV" != "qa" && "$DEPLOY_ENV" != "live" && "$DEPLOY_ENV" != "travis" ]]; then
+	# Only use the test configuration if we're not deploying to QA or Live, or running CI.
 	echo "Copying test .env_file into place."
 	cp .env_file.test .env_file
 else
