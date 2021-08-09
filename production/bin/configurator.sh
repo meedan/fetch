@@ -11,8 +11,10 @@ cp config/cookies.json.example config/cookies.json
 
 if [[ "$DEPLOY_ENV" != "qa" && "$DEPLOY_ENV" != "live" ]]; then
 	# Only use the test configuration if we're not deploying to QA or Live.
+	echo "Copying test .env_file into place."
 	cp .env_file.test .env_file
 else
 	# The dumb-init process expects an .env_file. Use an empty one for QA and Live.
+	echo "Using SSM env vars instead of .env_file."
 	touch .env_file
 fi
