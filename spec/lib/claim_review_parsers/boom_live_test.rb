@@ -26,7 +26,6 @@ describe BoomLive do
     end
 
     it 'walks through store_claim_reviews_for_category_id_and_page' do
-      AlegreClient.stub(:get_enrichment_for_url).with(anything).and_return({"text" => "blah", "links" => ["http://example.com"]})
       ClaimReview.stub(:existing_ids).with(anything, anything).and_return([])
       described_class.any_instance.stub(:get_new_stories_by_category).and_return([JSON.parse(File.read('spec/fixtures/boom_live_raw.json'))])
       ClaimReviewRepository.any_instance.stub(:save).with(anything).and_return({})
