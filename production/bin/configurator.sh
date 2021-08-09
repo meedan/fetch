@@ -2,6 +2,8 @@
 
 set -e
 
+echo "Starting configuration..."
+
 if [[ -z ${GITHUB_TOKEN+x} || -z ${DEPLOY_ENV+x} || -z ${APP+x} ]]; then
 	echo "GITHUB_TOKEN, DEPLOY_ENV and APP must be in the environment.   Exiting."
 	exit 1
