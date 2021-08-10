@@ -1,11 +1,7 @@
 SHELL := /bin/bash
 
 configurator:
-ifeq (,$(wildcard .env_file))
 	production/bin/configurator.sh
-else
-	$(info Configuration exists.)
-endif
 
 start_server: configurator
 	set -o allexport && source .env_file && set +o allexport && bundle exec rake safe_init_index && bundle exec rackup -o 0.0.0.0
