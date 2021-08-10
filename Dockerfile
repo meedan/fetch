@@ -9,4 +9,4 @@ COPY Gemfile* ./
 RUN bundle install
 COPY . .
 
-ENTRYPOINT ["/usr/bin/dumb-init", "--", "make"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--", "make", "--jobs=1"]
