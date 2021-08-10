@@ -6,7 +6,8 @@ load('environment.rb')
 
 desc "Run all tasks"
 task :test do
-  Rake::Task['test:unit'].execute 
+  Rake::Task['test:unit'].execute
+  `echo "Waiting for Elasticsearch indexes..." && until curl --silent --fail -I "http://#{Settings.get("es_host")}/#{Settings.get("es_index_name")}"; do sleep 1; done`
   Rake::Task['test:integration'].execute    
 end
 
