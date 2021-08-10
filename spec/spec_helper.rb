@@ -18,7 +18,6 @@
 ENV['env'] = 'test'
 require('sidekiq/api')
 require('rack/test')
-require('rspec/autorun')
 require('webmock/rspec')
 require('simplecov')
 SimpleCov.start
@@ -31,11 +30,11 @@ redis_conn = proc {
 }
 
 Sidekiq.configure_client do |config|
-  config.redis = ConnectionPool.new(size: 5, &redis_conn)
+  config.redis = ConnectionPool.new(size: 1, &redis_conn)
 end
 
 Sidekiq.configure_server do |config|
-  config.redis = ConnectionPool.new(size: 25, &redis_conn)
+  config.redis = ConnectionPool.new(size: 1, &redis_conn)
 end
 
 RSpec.configure do |config|
@@ -92,7 +91,7 @@ RSpec.configure do |config|
   #
   #   # This setting enables warnings. It's recommended, but in some cases may
   #   # be too noisy due to issues in dependencies.
-  #   config.warnings = true
+  config.warnings = true
   #
   #   # Many RSpec users commonly either run the entire suite or an individual
   #   # file, and it's useful to allow more verbose output when running an
