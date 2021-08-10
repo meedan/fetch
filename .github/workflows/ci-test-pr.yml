@@ -70,11 +70,6 @@ jobs:
       run: |
         docker ps
 
-    - name: Compose Up
-      id: compose-up
-      run: |
-        ln .env_file.test .env_file && docker-compose up -d
-
     - name: Run PR Tests
       id: run-tests
       env:
