@@ -22,4 +22,5 @@ test_unit_fork:
 	bundle exec rake test:unit
 
 test_integration: configurator
+	production/bin/wait_for_elasticsearch.sh
 	set -o allexport && source .env_file && set +o allexport && bundle exec rake test:integration
