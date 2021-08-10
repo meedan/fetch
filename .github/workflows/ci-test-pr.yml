@@ -73,7 +73,7 @@ jobs:
     - name: Compose Up
       id: compose-up
       run: |
-        docker-compose up -d
+        ln .env_file.test .env_file && docker-compose up -d
 
     - name: Run PR Tests
       id: run-tests
