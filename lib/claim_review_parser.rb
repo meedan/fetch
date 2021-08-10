@@ -16,7 +16,11 @@ class ClaimReviewParser
   end
 
   def self.persistable?
-    @persistable != false
+    if defined? @persistable
+      false
+    else
+      @persistable != false
+    end
   end
 
   def service_key
