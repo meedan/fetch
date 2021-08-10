@@ -22,5 +22,8 @@ test_unit_fork:
 	bundle exec rake test:unit
 
 test_integration: configurator
+	echo "Waiting for ElasticSearch to be available..."
+        until curl --silent -XGET --fail http://elasticsearch:9200/; do printf '.'; sleep 1; done
+	echo "Wait finished. Starting integration tests..."
 	curl http://elasticsearch:9200/_aliases?pretty=true
 	bundle exec rake test:integration
