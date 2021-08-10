@@ -60,16 +60,6 @@ jobs:
           --file ./Dockerfile ./
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-    - name: Add Fixed Delay
-      id: perform-delay
-      run: |
-        sleep 30
-
-    - name: List Dockers
-      id: list-dockers
-      run: |
-        docker ps
-
     - name: Run PR Tests
       id: run-tests
       env:
