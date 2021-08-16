@@ -9,6 +9,7 @@ describe 'integration test with ElasticSearch' do#, integration: true do
   before do
     @storage_results ||= {}
     WebMock.allow_net_connect!
+    allow_any_instance_of(Mafindo).to receive(:get_authors).and_return([{"id" => 36, "nama"=>"blah", "website"=>"blah"}])
     Mafindo.any_instance.stub(:get_authors).and_return([{"id" => 36, "nama"=>"blah", "website"=>"blah"}])
     ClaimReviewParser.enabled_subclasses.reject{|x| x.service.to_s.include?("#")}.each do |subclass|
       raw = JSON.parse(File.read("spec/fixtures/#{subclass.service}_raw.json"))
