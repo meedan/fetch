@@ -3,7 +3,7 @@ describe 'integration test with ElasticSearch' do#, integration: true do
   include Rack::Test::Methods
 
   def app
-    Site
+    Site.new
   end
 
   before do
