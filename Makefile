@@ -26,4 +26,4 @@ test_unit_fork:
 	bundle exec rake test:unit
 
 test_integration: configurator
-	bundle exec rake test:integration
+	bundle exec rake init_index && bundle exec rake test:integration
