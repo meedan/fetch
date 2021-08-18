@@ -24,7 +24,7 @@ class Settings
   def self.defaults
     {
       'es_host' => 'http://elasticsearch:9200',
-      'es_index_name' => 'claim_reviews',
+      'es_index_name' => 'test_default',
       'redis_host' => 'redis',
       'redis_port' => 6379,
       'redis_database' => 1,
