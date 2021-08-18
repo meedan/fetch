@@ -1,7 +1,7 @@
 class Settings
   
   def self.get_es_index_name
-    Settings.get('es_index_name')
+    'test' # Settings.get('es_index_name')
   end
   
   def self.airbrake_specified?
