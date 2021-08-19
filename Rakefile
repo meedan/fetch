@@ -65,6 +65,8 @@ task(default: [:test])
 
 task :debug do
   puts "ElasticSearch host is #{Settings.get('es_host')} and index is #{Settings.get('es_index_name')}"
+  puts "Create index:"
+  puts %x[curl -X PUT #{Settings.get('es_host')}/#{Settings.get('es_index_name')}]
   puts "Trying to find index:"
   puts %x[curl #{Settings.get('es_host')}/#{Settings.get('es_index_name')}]
   puts "Now running a test..."
