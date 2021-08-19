@@ -62,3 +62,11 @@ task :requeue do
   end
 end
 task(default: [:test])
+
+task :debug do
+  puts "ElasticSearch host is #{Settings.get('es_host')} and index is #{Settings.get('es_index_name')}"
+  puts "Trying to find index:"
+  puts %x[curl #{Settings.get('es_host')}/#{Settings.get('es_index_name')}]
+  puts "Now running a test..."
+  puts %x[bundle exec rspec -e 'deletion of VishvasNews object' spec/lib/db_integration_test.rb]
+end
