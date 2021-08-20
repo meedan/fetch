@@ -20,7 +20,7 @@ namespace :test do
   task :init_index do
     puts "ElasticSearch host is #{Settings.get('es_host')} and index is #{Settings.get('es_index_name')}"
     puts "Creating index..."
-    puts %x[curl -X PUT #{Settings.get('es_host')}/#{Settings.get('es_index_name')}]
+    ClaimReviewRepository.new.create_index!(force: true)
     puts "Trying to find index..."
     puts %x[curl #{Settings.get('es_host')}/#{Settings.get('es_index_name')}]
   end
