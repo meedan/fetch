@@ -45,7 +45,8 @@ class ClaimReview
       NotifySubscriber.perform_async(service, self.convert_to_claim_review(validated_claim_review))
     end
   rescue StandardError => e
-    Error.log(e, {validated_claim_review: validated_claim_review})
+    raise(e) if Settings.get('env') == 'test'
+    Error.log(e, { validated_claim_review: validated_claim_review })
   end
   
   def self.service_heartbeat_key(service)
