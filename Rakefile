@@ -6,7 +6,7 @@ load('environment.rb')
 
 desc "Run all tasks"
 task :test do
-  Rake::Task['test:unit'].execute 
+  Rake::Task['test:unit'].execute
   Rake::Task['test:integration'].execute    
 end
 
