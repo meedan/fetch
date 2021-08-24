@@ -7,7 +7,7 @@ class AlegreClient
     JSON.parse(
       RestClient.post(
         self.host+"/article/",
-        {url: url},
+        {url: url}.to_json,
         {content_type: 'application/json'}
       )
     )
