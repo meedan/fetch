@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Parser for https://checamos.afp.com, subclass of AFP's parser
+# Parser for https://factcheckhindi.afp.com, subclass of AFP's parser
 require_relative('afp')
 class AFPFactCheckHindi < AFP
   include PaginatedReviewClaims
