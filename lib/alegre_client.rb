@@ -11,5 +11,8 @@ class AlegreClient
         {content_type: 'application/json'}
       )
     )
+  rescue => e
+    Error.log(e)
+    return {}
   end
 end
