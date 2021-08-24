@@ -1,7 +1,8 @@
 describe AlegreClient do
   before do
-    stub_request(:get, "http://alegre.local/article/?url=http://example.com/link").
+    stub_request(:post, "http://alegre.local/article/").
       with(
+        body: {"url"=>"http://example.com/link"},
         headers: {
       	  'Accept'=>'*/*',
       	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
