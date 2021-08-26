@@ -42,7 +42,7 @@ class ClaimReview
 
   def self.enrich_claim_review_with_externally_parsed_data(parsed_claim_review)
     response = AlegreClient.get_enrichment_for_url(parsed_claim_review["claim_review_url"])
-    parsed_claim_review["links"] = response["links"]
+    parsed_claim_review["links"] = response["links"].to_a
     parsed_claim_review["externally_sourced_text"] = response["text"]
     parsed_claim_review
   end
@@ -61,6 +61,7 @@ class ClaimReview
       NotifySubscriber.perform_async(service, self.convert_to_claim_review(validated_claim_review))
     end
   rescue StandardError => e
+    binding.pry
     Error.log(e, { validated_claim_review: validated_claim_review })
   end
   
