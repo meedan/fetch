@@ -50,5 +50,13 @@ describe ElasticSearchQuery do
     it 'expects claim_review_search_query hash with a language specified' do
       expect(described_class.claim_review_search_query({service: 'google', language: "en"})).to(eq({ size: 20, from: 0, sort: [{created_at:{order: 'desc'}}], query: { bool: { must: [{ match_all: {} }], filter: [{ match_phrase: { 'service' => 'google' } }, { match_phrase: { "language" => "en" } }] , should: [], must_not: [] } } }))
     end
+    
+    it 'expects match_by_claim_review_ids to read correctly' do
+      expect(described_class.match_by_claim_review_ids(["1","2","3"])).to(eq({:size=>3,
+        :from=>0,
+        :sort=>[{:claim_review_created_at=>{:order=>"desc"}}],
+        :query=>{:bool=>{:must=>[{:match_all=>{}}], :filter=>[{:bool=>{:should=>[{:match_phrase=>{"claim_review_id"=>"1"}}, {:match_phrase=>{"claim_review_id"=>"2"}}, {:match_phrase=>{"claim_review_id"=>"3"}}], :minimum_should_match=>1}}], :should=>[], :must_not=>[]}}})
+      )
+    end
   end
 end

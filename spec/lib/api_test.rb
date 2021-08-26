@@ -43,5 +43,11 @@ describe API do
     it "fails a search with a too-large offset" do
         expect(API.claim_reviews(offset: 10001)).to(eq({error: "Offset is 10001, and cannot be bigger than 10000. Query cannot execute"}))
     end
+
+    it "includes link data when specified in search query" do
+      ClaimReview.stub(:search).with({:offset=>0, :per_page=>20, :include_link_data => true}).and_return([{ bloop: 1 }])
+      ClaimReview.stub(:enrich_claim_reviews_with_links).with([{ bloop: 1 }]).and_return([{ bloop: 1 }])
+      expect(described_class.claim_reviews({include_link_data: true})).to(eq([{ bloop: 1 }]))
+    end
   end
 end
