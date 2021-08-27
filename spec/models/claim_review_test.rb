@@ -8,12 +8,12 @@ describe ClaimReview do
   end
   describe 'class' do
     it 'returns get_count_for_service with Hash version in ES 7' do
-      described_class.stub(:get_hits).with(ClaimReview.service_query("blah"), "total").and_return({"value" => 10})
+      ElasticSearchQuery.stub(:get_hits).with(ClaimReview, ClaimReview.service_query("blah"), "total").and_return({"value" => 10})
       expect(ClaimReview.get_count_for_service("blah")).to(eq(10))
     end
 
     it 'returns get_count_for_service with Hash version in ES 6' do
-      described_class.stub(:get_hits).with(ClaimReview.service_query("blah"), "total").and_return(10)
+      ElasticSearchQuery.stub(:get_hits).with(ClaimReview, ClaimReview.service_query("blah"), "total").and_return(10)
       expect(ClaimReview.get_count_for_service("blah")).to(eq(10))
     end
     it 'has mandatory fields' do
@@ -25,12 +25,16 @@ describe ClaimReview do
     end
 
     it 'validates MVP claim' do
+      ClaimReviewSocialDataRepository.any_instance.stub(:save).with(anything).and_return({ _index: Settings.get('es_index_name_cr_social_data'), _type: Settings.get('es_index_name_cr_social_data'), _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
+      PenderClient.stub(:get_enrichment_for_url).with(anything).and_return(JSON.parse(File.read("spec/fixtures/pender_response.json")))
       AlegreClient.stub(:get_enrichment_for_url).with(anything).and_return({"text" => "blah", "links" => ["http://example.com"]})
       validated = described_class.validate_claim_review(QuietHashie[{ raw_claim_review: {}, claim_review_headline: 'wow', claim_review_url: 'http://example.com', created_at: Time.parse('2020-01-01'), id: 123 }])
       expect(validated).to(eq({"claim_review_headline"=>"wow", "claim_review_url"=>"http://example.com", "created_at"=>"2020-01-01T00:00:00Z", "externally_sourced_text" => "blah", "id"=>"a4d3900c63395cbfef47eb3650427af8", "language" => nil, "links" => ["http://example.com"]}))
     end
 
     it 'logs errors on storage failure' do
+      ClaimReviewSocialDataRepository.any_instance.stub(:save).with(anything).and_return({ _index: Settings.get('es_index_name_cr_social_data'), _type: Settings.get('es_index_name_cr_social_data'), _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
+      PenderClient.stub(:get_enrichment_for_url).with(anything).and_return(JSON.parse(File.read("spec/fixtures/pender_response.json")))
       AlegreClient.stub(:get_enrichment_for_url).with(anything).and_return({"text" => "blah", "links" => ["http://example.com"]})
       claim = QuietHashie[{ service: 'google', raw_claim_review: {}, claim_review_headline: 'wow', claim_review_url: 'http://example.com', created_at: Time.parse('2020-01-01'), id: 123 }]
       validated = described_class.validate_claim_review(QuietHashie[{ service: 'google', raw_claim_review: {}, claim_review_headline: 'wow', claim_review_url: 'http://example.com', created_at: Time.parse('2020-01-01'), id: 123 }])
@@ -41,6 +45,8 @@ describe ClaimReview do
     end
 
     it 'saves MVP claim' do
+      ClaimReviewSocialDataRepository.any_instance.stub(:save).with(anything).and_return({ _index: Settings.get('es_index_name_cr_social_data'), _type: Settings.get('es_index_name_cr_social_data'), _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
+      PenderClient.stub(:get_enrichment_for_url).with(anything).and_return(JSON.parse(File.read("spec/fixtures/pender_response.json")))
       AlegreClient.stub(:get_enrichment_for_url).with(anything).and_return({"text" => "blah", "links" => ["http://example.com"]})
       claim = QuietHashie[{ claim_review_headline: 'wow', claim_review_url: 'http://example.com', created_at: Time.parse('2020-01-01').strftime('%Y-%m-%dT%H:%M:%SZ'), id: 123 }]
       ClaimReviewRepository.any_instance.stub(:save).with(anything).and_return({ _index: 'claim_reviews', _type: 'claim_review', _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
@@ -60,12 +66,12 @@ describe ClaimReview do
 
     it 'expects non-empty get hits' do
       Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'claim_review_url' => 1 } }] } })
-      expect(described_class.get_hits({})).to(eq([{ 'claim_review_url' => 1 }]))
+      expect(ElasticSearchQuery.get_hits(ClaimReview, {})).to(eq([{ 'claim_review_url' => 1 }]))
     end
 
     it 'expects empty get hits' do
       Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
-      expect(described_class.get_hits({})).to(eq([]))
+      expect(ElasticSearchQuery.get_hits(ClaimReview, {})).to(eq([]))
     end
 
     it 'expects empty get hits' do
@@ -133,6 +139,8 @@ describe ClaimReview do
   end
 
   it 'stores MVP claim' do
+    ClaimReviewSocialDataRepository.any_instance.stub(:save).with(anything).and_return({ _index: Settings.get('es_index_name_cr_social_data'), _type: Settings.get('es_index_name_cr_social_data'), _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
+    PenderClient.stub(:get_enrichment_for_url).with(anything).and_return(JSON.parse(File.read("spec/fixtures/pender_response.json")))
     AlegreClient.stub(:get_enrichment_for_url).with(anything).and_return({"text" => "blah", "links" => ["http://example.com"]})
     claim_review = QuietHashie[{ raw_claim_review: {}, claim_review_headline: 'wow', claim_review_url: 'http://example.com', created_at: Time.parse('2020-01-01'), id: 123 }]
     Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
@@ -165,5 +173,20 @@ describe ClaimReview do
         { :@context => 'http://schema.org', :@type => 'ClaimReview', :datePublished => Time.now.strftime('%Y-%m-%d'), :headline => 'wow', :identifier => 123, :url => 'http://example.com', :author => { name: nil, url: nil }, :image => nil, :inLanguage => nil, :raw => {"claim_review_headline"=>"wow", "claim_review_url"=>"http://example.com", "created_at"=>timestamp, "id"=>123, "raw_claim_review"=>{}}, :claimReviewed => nil, :text => nil, :reviewRating => { :@type => 'Rating', :ratingValue => nil, :bestRating => 1, :alternateName => nil } }
       )
     )
+  end
+
+  it "can enrich_claim_reviews_with_links" do
+    timestamp = Time.now.to_s
+    results = [{ :@context => 'http://schema.org', :@type => 'ClaimReview', :datePublished => Time.now.strftime('%Y-%m-%d'), :headline => 'wow', :identifier => 123, :url => 'http://example.com', :author => { name: nil, url: nil }, :image => nil, :inLanguage => nil, :raw => {"claim_review_headline"=>"wow", "claim_review_url"=>"http://example.com", "created_at"=>timestamp, "id"=>123, "raw_claim_review"=>{}, "links" => ["http://example.com"], "service" => "blah"}, :claimReviewed => nil, :text => nil, :reviewRating => { :@type => 'Rating', :ratingValue => nil, :bestRating => 1, :alternateName => nil } }]
+    claim_review_social_data = {
+      "id" => "abc",
+      "link" => "http://example.com",
+      "claim_review_id" => 123,
+      "content" => JSON.parse(File.read("spec/fixtures/pender_response.json")),
+      "service" => "blah",
+      "claim_review_created_at" => timestamp
+    }
+    Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything()).and_return({"took"=>21, "timed_out"=>false, "_shards"=>{"total"=>1, "successful"=>1, "skipped"=>0, "failed"=>0}, "hits"=>{"total"=>14055, "max_score"=>2.1063054, "hits"=>[{"_source" => claim_review_social_data}]}})
+    described_class.enrich_claim_reviews_with_links(results)
   end
 end

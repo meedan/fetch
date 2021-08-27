@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-describe ClaimReviewRepository do
+describe ClaimReviewSocialDataRepository do
   describe 'class' do
     it 'expects setting number of shards' do
       expect(described_class.settings.settings).to(eq({ number_of_shards: 1 }))
     end
 
     it 'expects index_name' do
-      expect(described_class.index_name).to(eq(Settings.get_claim_review_es_index_name))
+      expect(described_class.index_name).to(eq(Settings.get_claim_review_social_data_es_index_name))
     end
 
     it 'expects klass' do
-      expect(described_class.klass).to(eq(ClaimReview))
+      expect(described_class.klass).to(eq(ClaimReviewSocialData))
     end
 
     it 'expects perfunctory walkthrough of index creator' do

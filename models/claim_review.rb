@@ -8,6 +8,14 @@ class ClaimReview
   extend ClaimReviewExport
   include ElasticSearchAccessors
   extend ElasticSearchMethods
+  def self.repository
+    ClaimReviewRepository.new(client: client)
+  end
+
+  def self.es_index_name
+    Settings.get_claim_review_es_index_name
+  end
+
   def self.mandatory_fields
     %w[claim_review_headline claim_review_url created_at id]
   end
@@ -29,12 +37,20 @@ class ClaimReview
     parsed_claim_review['created_at'] = self.parse_created_at(parsed_claim_review)
     parsed_claim_review['language'] = Language.get_reliable_language(parsed_claim_review['claim_review_headline'])
     self.enrich_claim_review_with_externally_parsed_data(parsed_claim_review)
+    self.store_social_data_for_parsed_claim_review(parsed_claim_review)
   end
 
   def self.enrich_claim_review_with_externally_parsed_data(parsed_claim_review)
     response = AlegreClient.get_enrichment_for_url(parsed_claim_review["claim_review_url"])
-    parsed_claim_review["links"] = response["links"]
+    parsed_claim_review["links"] = response["links"].to_a
     parsed_claim_review["externally_sourced_text"] = response["text"]
+    parsed_claim_review
+  end
+
+  def self.store_social_data_for_parsed_claim_review(parsed_claim_review)
+    parsed_claim_review["links"].each do |link|
+      ClaimReviewSocialData.store_link_for_parsed_claim_review(parsed_claim_review, link)
+    end
     parsed_claim_review
   end
 
@@ -45,15 +61,12 @@ class ClaimReview
       NotifySubscriber.perform_async(service, self.convert_to_claim_review(validated_claim_review))
     end
   rescue StandardError => e
+    binding.pry
     Error.log(e, { validated_claim_review: validated_claim_review })
   end
   
   def self.service_heartbeat_key(service)
     "#{service}_heartbeat"
-  end
-
-  def self.es_index_key
-    'es_index_name'
   end
 
   def self.service_query(service)
@@ -65,7 +78,7 @@ class ClaimReview
   end
 
   def self.get_count_for_service(service)
-    count = self.get_hits(self.service_query(service), "total")
+    count = ElasticSearchQuery.get_hits(ClaimReview, self.service_query(service), "total")
     if count.class == Hash
       return count["value"]
     else
@@ -73,21 +86,11 @@ class ClaimReview
     end
   end
 
-  def self.get_hits(search_params, return_type="hits")
-    response = ClaimReview.client.search(
-      { index: self.es_index_name }.merge(search_params)
-    )['hits']
-    if return_type == "hits"
-      response['hits'].map { |x| x['_source'] }
-    elsif return_type == "total"
-      response['total']
-    end
-  end
-
   def self.extract_matches(matches, match_type, service, sort=ElasticSearchQuery.created_at_desc)
     matched_set = []
     matches.each_slice(100) do |match_set|
-      matched_set << ClaimReview.get_hits(
+      matched_set << ElasticSearchQuery.get_hits(
+        ClaimReview,
         body: ElasticSearchQuery.multi_match_against_service(match_set, match_type, service, sort)
       ).map { |x| x[match_type] }
     end
@@ -115,9 +118,29 @@ class ClaimReview
   end
 
   def self.search(opts, sort=ElasticSearchQuery.created_at_desc)
-    ClaimReview.get_hits(
+    ElasticSearchQuery.get_hits(
+      ClaimReview,
       body: ElasticSearchQuery.claim_review_search_query(opts, sort)
     ).map { |r| ClaimReview.convert_to_claim_review(r) }
+  end
+
+  def self.get_claim_review_social_data_by_ids(ids)
+    ElasticSearchQuery.get_hits(
+      ClaimReviewSocialData,
+      body: ElasticSearchQuery.match_by_claim_review_ids(ids)
+    )
+  end
+
+  def self.enrich_claim_reviews_with_links(results)
+    mapped_results = Hash[results.collect{|x| [x[:identifier], x]}]
+    ids = results.collect{|pcr| pcr[:raw]["links"].collect{|l| ClaimReviewSocialData.id_for_record(pcr[:raw], l)}}.flatten
+    ids.each_slice(5000) do |id_set|
+      ClaimReview.get_claim_review_social_data_by_ids(id_set).each do |claim_review_social_data|
+        mapped_results[claim_review_social_data["claim_review_id"]][:raw]["link_data"] ||= []
+        mapped_results[claim_review_social_data["claim_review_id"]][:raw]["link_data"] << claim_review_social_data
+      end
+    end
+    mapped_results.values
   end
 
   def self.get_first_date_for_service_by_sort(service, sort)
