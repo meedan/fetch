@@ -6,7 +6,7 @@ load('environment.rb')
 
 desc "Run all tasks"
 task :test do
-  Rake::Task['test:unit'].execute 
+  Rake::Task['test:unit'].execute
   Rake::Task['test:integration'].execute    
 end
 
@@ -16,6 +16,13 @@ namespace :test do
   end
   RSpec::Core::RakeTask.new(:integration) do |t|
     t.pattern = Dir.glob('spec/**/*_test.rb').select{|t| t.include?("_integration_test.rb")}
+  end
+  task :init_index do
+    puts "ElasticSearch host is #{Settings.get('es_host')} and index is #{Settings.get('es_index_name')}"
+    puts "Creating index..."
+    ClaimReviewRepository.new.create_index!(force: true)
+    puts "Trying to find index..."
+    puts %x[curl #{Settings.get('es_host')}/#{Settings.get('es_index_name')}]
   end
 end
 

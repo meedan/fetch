@@ -10,12 +10,14 @@ describe 'integration test with ElasticSearch' do#, integration: true do
     @storage_results ||= {}
     WebMock.allow_net_connect!
     allow_any_instance_of(Mafindo).to receive(:get_authors).and_return([{"id" => 36, "nama"=>"blah", "website"=>"blah"}])
+    AlegreClient.stub(:get_enrichment_for_url).with(anything).and_return({"text" => "blah", "links" => ["http://example.com"]})
     ClaimReviewParser.enabled_subclasses.reject{|x| x.service.to_s.include?("#")}.each do |subclass|
       raw = JSON.parse(File.read("spec/fixtures/#{subclass.service}_raw.json"))
       raw['page'] = Nokogiri.parse(raw['page']) if raw['page']
       parsed_claim_review = subclass.new.parse_raw_claim_review(raw)
       @storage_results[subclass] = subclass.new("2000-01-01", true).process_claim_reviews([parsed_claim_review])
     end
+    AlegreClient.unstub(:get_enrichment_for_url)
   end
 
   after do

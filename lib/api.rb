@@ -9,9 +9,13 @@ class API
     opts[:per_page] ||= 20
     opts[:offset] ||= 0
     return {error: "Offset is #{opts[:offset]}, and cannot be bigger than 10000. Query cannot execute"} if opts[:offset] > 10000
-    ClaimReview.search(
+    results = ClaimReview.search(
       opts
     )
+    if opts[:include_link_data]
+      results = ClaimReview.enrich_claim_reviews_with_links(results)
+    end
+    return results
   end
 
   def self.about

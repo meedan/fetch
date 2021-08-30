@@ -11,6 +11,10 @@ class ElasticSearchQuery
     }
   end
 
+  def self.claim_review_created_at_with_sort_order(sort_order)
+    [{"claim_review_created_at": {"order": sort_order}}]
+  end
+
   def self.created_at_with_sort_order(sort_order)
     [{"created_at": {"order": sort_order}}]
   end
@@ -112,5 +116,22 @@ class ElasticSearchQuery
     time_clause = ElasticSearchQuery.start_end_date_range_query('created_at', opts[:start_time], opts[:end_time])
     query[:query][:bool][:filter] << time_clause unless time_clause.empty?
     query
+  end
+
+  def self.match_by_claim_review_ids(ids)
+    query = ElasticSearchQuery.base_query(ids.length, 0, self.claim_review_created_at_with_sort_order("desc"))
+    query[:query][:bool][:filter] << ElasticSearchQuery.multi_match_query("claim_review_id", ids)
+    query
+  end
+
+  def self.get_hits(model, search_params, return_type="hits")
+    response = model.client.search(
+      { index: model.es_index_name }.merge(search_params)
+    )['hits']
+    if return_type == "hits"
+      response['hits'].map { |x| x['_source'] }
+    elsif return_type == "total"
+      response['total']
+    end
   end
 end

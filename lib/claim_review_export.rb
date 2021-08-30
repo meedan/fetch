@@ -21,7 +21,7 @@ module ClaimReviewExport
         "bestRating": 1,
         "alternateName": claim_review['claim_review_result']
       },
-      "raw": claim_review
+      "raw": claim_review,
     }
   end
 end

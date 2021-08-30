@@ -10,7 +10,7 @@ describe Settings do
     end
 
     it 'has allows get for default value' do
-      expect(['claim_reviews', 'claim_reviews_test'].include?(Settings.get_es_index_name)).to(eq(true))
+      expect(['claim_reviews', 'claim_reviews_test'].include?(Settings.get_claim_review_es_index_name)).to(eq(true))
     end
 
     it 'has defaults' do
