@@ -52,11 +52,7 @@ describe ElasticSearchQuery do
     end
     
     it 'expects match_by_claim_review_ids to read correctly' do
-      expect(described_class.match_by_claim_review_ids(["1","2","3"])).to(eq({:size=>3,
-        :from=>0,
-        :sort=>[{:claim_review_created_at=>{:order=>"desc"}}],
-        :query=>{:bool=>{:must=>[{:match_all=>{}}], :filter=>[{:bool=>{:should=>[{:match_phrase=>{"claim_review_id"=>"1"}}, {:match_phrase=>{"claim_review_id"=>"2"}}, {:match_phrase=>{"claim_review_id"=>"3"}}], :minimum_should_match=>1}}], :should=>[], :must_not=>[]}}})
-      )
+      expect(described_class.match_by_claim_review_ids(["1","2","3"])).to(eq({:query => {:ids=>{:values=>["1", "2", "3"]}}}))
     end
   end
 end
