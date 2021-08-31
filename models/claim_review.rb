@@ -61,7 +61,6 @@ class ClaimReview
       NotifySubscriber.perform_async(service, self.convert_to_claim_review(validated_claim_review))
     end
   rescue StandardError => e
-    binding.pry
     Error.log(e, { validated_claim_review: validated_claim_review })
   end
   
