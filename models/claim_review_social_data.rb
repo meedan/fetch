@@ -21,8 +21,10 @@ class ClaimReviewSocialData
 
   def self.store_link_for_parsed_claim_review(parsed_claim_review, link)
     pender_response = PenderClient.get_enrichment_for_url(link)
-    pender_response["data"].delete("raw")
-    pender_response["data"].delete("schema")
+    if !pender_response["data"].nil?
+      pender_response["data"].delete("raw")
+      pender_response["data"].delete("schema")
+    end
     repository.save(
       id: self.id_for_record(parsed_claim_review, link),
       link: link,
