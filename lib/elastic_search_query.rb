@@ -119,9 +119,7 @@ class ElasticSearchQuery
   end
 
   def self.match_by_claim_review_ids(ids)
-    query = ElasticSearchQuery.base_query(ids.length, 0, self.claim_review_created_at_with_sort_order("desc"))
-    query[:query][:bool][:filter] << ElasticSearchQuery.multi_match_query("claim_review_id", ids)
-    query
+    {query: {ids: {values: ids}}}
   end
 
   def self.get_hits(model, search_params, return_type="hits")
