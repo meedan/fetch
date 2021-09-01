@@ -14,7 +14,7 @@ class PenderClient
       )
     )
   rescue => e
-    Error.log(e)
+    Error.log(e, {url: url})
     return {}
   end
 end
