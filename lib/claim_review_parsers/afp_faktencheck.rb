@@ -10,7 +10,7 @@ class AFPFaktencheck < AFP
 
   def parse_raw_claim_review(raw_claim_review)
     parsed = super(raw_claim_review)
-    parsed[:claim_review_headline] = (claim_review["@graph"][0]["claimReviewed"] || claim_review_headline_from_raw_claim_review_and_claim_review(raw_claim_review, claim_review))
+    parsed[:claim_review_headline] = (claim_review["@graph"][0]["claimReviewed"] || parsed[:claim_review_headline])
     parsed
   end
 end
