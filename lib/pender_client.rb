@@ -6,7 +6,7 @@ class PenderClient
   def self.get_enrichment_for_url(url)
     JSON.parse(
       RestClient.get(
-        self.host+"/api/medias.json?url=#{CGI.escape(url)}",
+        self.host+"api/medias.json?url=#{CGI.escape(url)}",
         {
           content_type: 'application/json',
           'X-Pender-Token' => Settings.get("pender_api_key")
@@ -14,7 +14,7 @@ class PenderClient
       )
     )
   rescue => e
-    Error.log(e, {url: url})
+    Error.log(e, {url: url}) if e.class.ancestors.include?(RestClient::Exception) && e.http_code >= 500
     return {}
   end
 end
