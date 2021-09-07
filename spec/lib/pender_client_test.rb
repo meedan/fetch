@@ -30,7 +30,8 @@ describe PenderClient do
     end
     
     it 'degrades gracefully when Alegre errors out' do
-      RestClient.stub(:get).and_raise(RestClient::ServiceUnavailable)
+      RestClient::ServiceUnavailable.any_instance.stub(:http_code).and_return(500)
+      RestClient.stub(:get).and_raise(RestClient::ServiceUnavailable.new)
       expect(PenderClient.get_enrichment_for_url("http://example.com/link")).to(eq({}))
     end
   end
