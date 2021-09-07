@@ -6,7 +6,7 @@ class AlegreClient
   def self.get_enrichment_for_url(url)
     JSON.parse(
       RestClient.post(
-        self.host+"/article/",
+        self.host+"article/",
         {url: url}.to_json,
         {content_type: 'application/json'}
       )
