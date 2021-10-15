@@ -13,6 +13,15 @@
 #
 describe PenderClient do
   before do
+    stub_request(:get, "http://pender.local/api/medias.json?url=https://twitter.com/meedan/status/773947372527288320/").
+      with(
+        headers: {
+      	  'Accept'=>'*/*',
+      	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+      	  'Host'=>'pender.local',
+          "User-Agent": /.*/
+        }).
+      to_return(status: 200, body: File.read("spec/fixtures/pender_response.json"), headers: {})
     stub_request(:get, "http://pender.local/api/medias.json?url=http://example.com/link").
       with(
         headers: {
@@ -25,14 +34,18 @@ describe PenderClient do
   end
 
   describe 'class' do
-    it 'expects an alegre response' do
-      expect(PenderClient.get_enrichment_for_url("http://example.com/link")).to(eq(JSON.parse(File.read("spec/fixtures/pender_response.json"))))
+    it 'expects no pender response' do
+      expect(PenderClient.get_enrichment_for_url("http://example.com/link")).to(eq({}))
+    end
+    
+    it 'expects a pender response' do
+      expect(PenderClient.get_enrichment_for_url("https://twitter.com/meedan/status/773947372527288320/")).to(eq(JSON.parse(File.read("spec/fixtures/pender_response.json"))))
     end
     
     it 'degrades gracefully when Alegre errors out' do
       RestClient::ServiceUnavailable.any_instance.stub(:http_code).and_return(500)
       RestClient.stub(:get).and_raise(RestClient::ServiceUnavailable.new)
-      expect(PenderClient.get_enrichment_for_url("http://example.com/link")).to(eq({}))
+      expect(PenderClient.get_enrichment_for_url("https://twitter.com/meedan/status/773947372527288320/")).to(eq({}))
     end
   end
 end
