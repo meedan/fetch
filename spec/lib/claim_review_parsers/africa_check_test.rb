@@ -26,7 +26,7 @@ describe AfricaCheck do
       expect(described_class.new.rating_map.class).to(eq(Hash))
     end
 
-    it 'stubs the resposne for a nil get_claim_review_from_raw_claim_review' do
+    it 'stubs the response for a nil get_claim_review_from_raw_claim_review' do
       expect(described_class.new.parse_raw_claim_review({"url" => "blah"})).to(eq({id: "blah"}))
     end
 
