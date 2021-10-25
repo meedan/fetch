@@ -18,7 +18,7 @@ describe IndiaToday do
       expect(described_class.new.url_extractor(Nokogiri.parse("<a href='/blah'>wow</a>").search('a')[0])).to(eq('https://www.indiatoday.in/blah'))
     end
 
-    it 'stubs the resposne for a nil get_claim_review_from_raw_claim_review' do
+    it 'stubs the response for a nil get_claim_review_from_raw_claim_review' do
       expect(described_class.new.claim_review_from_raw_claim_review({"page" => Nokogiri.parse("<a href='/blah'>wow</a>")})).to(eq({}))
     end
 

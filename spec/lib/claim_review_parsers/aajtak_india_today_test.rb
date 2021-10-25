@@ -18,7 +18,7 @@ describe AajtakIndiaToday do
       expect(described_class.new.url_extractor(Nokogiri.parse("<html><div class='content-article'><a href='/blah'>wow</a></div><//html>"))).to(eq('https://aajtak.intoday.in/blah'))
     end
 
-    it 'stubs the resposne for a nil get_claim_review_from_raw_claim_review' do
+    it 'stubs the response for a nil get_claim_review_from_raw_claim_review' do
       expect(described_class.new.claim_review_from_raw_claim_review({"page" => Nokogiri.parse("<a href='/blah'>wow</a>")})).to(eq({}))
     end
 
