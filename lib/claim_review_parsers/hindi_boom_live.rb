@@ -34,7 +34,7 @@ class HindiBoomLive < ClaimReviewParser
       claim_review_result: article["reviewRating"]["alternateName"],
       claim_review_result_score: claim_result_score_from_raw_claim_review(article["reviewRating"]),
       claim_review_url: raw_claim_review['url'],
-      raw_claim_review: raw_claim_review
+      raw_claim_review: article
     }
   end
 end
