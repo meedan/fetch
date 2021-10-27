@@ -29,7 +29,6 @@ class BanglaBoomLive < ClaimReviewParser
 
   def parse_raw_claim_review(raw_claim_review)
     article = extract_ld_json_script_block(raw_claim_review["page"], 0)
-    binding.pry
     {
       id: raw_claim_review["url"],
       created_at: Time.parse(article['datePublished']||BanglaBoomLive.og_date_from_raw_claim_review(raw_claim_review)),
