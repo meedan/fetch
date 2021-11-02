@@ -7,6 +7,7 @@
 #   --header 'Accept: application/json' \
 #   --data 'key=123456&id=891&limit=1&offset=1'
 class TempoCekfakta < ClaimReviewParser
+  include PaginatedReviewClaims
   def hostname
     'https://cekfakta.tempo.co'
   end
@@ -16,56 +17,72 @@ class TempoCekfakta < ClaimReviewParser
   end
 
   def request_fact_page(date)
-    RestClient.get(self.hostname+self.fact_list_path(date))
+    RestClient.get(self.hostname+self.fact_list_path(date), user_agent: "Meedan Data Crawler")
   end
 
-  def get_fact_page_response(date)
+  def parsed_fact_list_page(date)
     Nokogiri.parse(
       request_fact_page(date)
     )
   end
+  
 
-  def get_claim_reviews
-    time = DateTime.now
-    raw_claims = store_new_claim_reviews_for_page(time)
+  def get_claim_reviews(time=DateTime.now)
+    raw_claims = store_claim_reviews_for_page(time)
     until finished_iterating?(raw_claims)
       time = time.prev_month
-      raw_claims = store_new_claim_reviews_for_page(time)
+      raw_claims = store_claim_reviews_for_page(time)
     end
   end
 
-  def extract_urls(response)
-    response.search("section#article div.card a").collect{|a| a.attributes["href"].value}.uniq
+  def url_extraction_search
+    "section#article div.card a"
   end
 
-  def store_new_claim_reviews_for_page(time=Time.now)
-    response = get_fact_page_response(time)
-    existing_urls = get_existing_urls(extract_urls(response))
+  def url_extractor(atag)
+    atag.attributes["href"].value
+  end
+
+  def store_claim_reviews_for_page(time=DateTime.now)
     process_claim_reviews(
-      parse_raw_claim_reviews(
-        response.reject{|d| existing_urls.include?(url_from_id(d["id"]))}
+      get_parsed_fact_pages_from_urls(
+        get_new_fact_page_urls(
+          time
+        ).uniq
       )
     )
   end
-  
-  def parse_raw_claim_review(raw_claim_review)
-    # binding.pry
-    article = extract_ld_json_script_block(raw_claim_review["page"], 0)
-    authors = @authors.select{|x| !([x["id"]]&[raw_claim_review['authors']].flatten).empty?}
+
+  def image_url_result_map
     {
-      id: raw_claim_review['id'],
-      created_at: Time.parse(raw_claim_review['tanggal']),
-      author: authors_from_authors(authors),
-      author_link: author_link_from_authors(authors),
-      claim_review_headline: raw_claim_review['title'],
-      claim_review_body: raw_claim_review['fact'],
-      claim_review_reviewed: raw_claim_review['source_link'],
-      claim_review_image_url: raw_claim_review['picture1'],
-      claim_review_result: raw_claim_review['classification'],
-      claim_review_result_score: rating_map[raw_claim_review['classification']],
-      claim_review_url: url_from_id(raw_claim_review['id']),
-      raw_claim_review: raw_claim_review
+      "https://www.tempo.co/images/cekfakta/keliru_teks.png" => ["False", 0.0],
+      "https://www.tempo.co/images/cekfakta/sesat_teks.png" => ["Misleading", 0.25],
+      "https://www.tempo.co/images/cekfakta/tidak_terbukti_teks.png" => ["Not Proven", 0.5],
+      "https://www.tempo.co/images/cekfakta/sebagian_benar_teks.png" => ["Partially True", 0.75],
+      "https://www.tempo.co/images/cekfakta/benar_teks.png" => ["True", 1.0],
+    }
+  end
+
+  def get_claim_review_results_from_raw_claim_review(raw_claim_review)
+    image_url = raw_claim_review['page'].search("section#article article img")[0].attributes["src"].value rescue nil
+    return image_url_result_map[image_url] if image_url
+  end
+
+  def parse_raw_claim_review(raw_claim_review)
+    claim_review_result, claim_review_result_score = get_claim_review_results_from_raw_claim_review(raw_claim_review)
+    {
+      id: raw_claim_review['url'],
+      created_at: Time.parse(og_date_from_raw_claim_review(raw_claim_review)),
+      author: "Tempo",
+      author_link: "https://cekfakta.tempo.co",
+      claim_review_headline: value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:title"])),
+      claim_review_body: raw_claim_review['page'].search("section#article article p").text,
+      claim_review_reviewed: value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:title"])),
+      claim_review_image_url: value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:image"])),
+      claim_review_result: claim_review_result,
+      claim_review_result_score: claim_review_result_score,
+      claim_review_url: raw_claim_review['url'],
+      raw_claim_review: nil
     }
   end
 end
-# Mafindo.new.get_claim_reviews

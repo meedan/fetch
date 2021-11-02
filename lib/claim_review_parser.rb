@@ -89,11 +89,13 @@ class ClaimReviewParser
 
   def request(method, url, payload=nil)
     make_request do
+      headers = @user_agent ? {user_agent: @user_agent} : {}
       RestClient::Request.execute(
         method: method,
         url: url,
         payload: payload,
-        cookies: @cookies
+        cookies: @cookies,
+        headers: headers
       )
     end
   end
@@ -149,6 +151,20 @@ class ClaimReviewParser
         return nil
       end
     end
+  end
+
+  def value_from_og_tag(og_tag)
+    og_tag.attributes["content"].value if og_tag
+  end
+
+  def search_for_og_tags(page, og_tags)
+    page.search("meta").select{|x| x.attributes["property"] && og_tags.include?(x.attributes["property"].value)}.compact.first
+  end
+
+  def og_date_from_raw_claim_review(raw_claim_review)
+    value_from_og_tag(
+      search_for_og_tags(raw_claim_review["page"], ["article:published_time", "article:modified_time", "article:updated_time"])
+    )
   end
 
   def self.test_parser_on_url(url)
