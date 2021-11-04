@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Parser for http://hindi.boomlive.in/ - does not follow standard Pagination scheme from PaginatedReviewClaims!
+# Parser for http://bangla.boomlive.in/ - does not follow standard Pagination scheme from PaginatedReviewClaims!
 class BanglaBoomLive < ClaimReviewParser
   include PaginatedReviewClaims
   def hostname
@@ -24,7 +24,7 @@ class BanglaBoomLive < ClaimReviewParser
     article = extract_ld_json_script_block(raw_claim_review["page"], 0)
     {
       id: raw_claim_review["url"],
-      created_at: Time.parse(article['datePublished']),
+      created_at: Time.parse(article['datePublished']||og_date_from_raw_claim_review(raw_claim_review)),
       author: article["author"]["name"],
       author_link: hostname+article["author"]["url"],
       claim_review_headline: article["claimReviewed"],
@@ -34,7 +34,7 @@ class BanglaBoomLive < ClaimReviewParser
       claim_review_result: article["reviewRating"]["alternateName"],
       claim_review_result_score: claim_result_score_from_raw_claim_review(article["reviewRating"]),
       claim_review_url: raw_claim_review['url'],
-      raw_claim_review: raw_claim_review
+      raw_claim_review: article
     }
   end
 end
