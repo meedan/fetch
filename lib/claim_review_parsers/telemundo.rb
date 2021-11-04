@@ -34,7 +34,7 @@ class Telemundo < ClaimReviewParser
 
   def parse_raw_claim_review(raw_claim_review)
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], 2)
-    latest_timestamp = [Time.parse(claim_review["datePublished"]), og_timestamps_from_raw_claim_review(raw_claim_review)].flatten.sort.last
+    latest_timestamp = [(Time.parse(claim_review["datePublished"]) rescue nil), og_timestamps_from_raw_claim_review(raw_claim_review)].compact.flatten.sort.last
     {
       id: raw_claim_review['url'],
       created_at: latest_timestamp,
