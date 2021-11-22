@@ -24,14 +24,14 @@ class HindiBoomLive < ClaimReviewParser
     article = extract_ld_json_script_block(raw_claim_review["page"], 0)
     {
       id: raw_claim_review["url"],
-      created_at: Time.parse(article['datePublished']||BanglaBoomLive.og_date_from_raw_claim_review(raw_claim_review)),
-      author: article["author"]["name"],
-      author_link: hostname+article["author"]["url"],
+      created_at: Time.parse(article['datePublished']||og_date_from_raw_claim_review(raw_claim_review)),
+      author: article && article["author"] && article["author"]["name"],
+      author_link: article && article["author"] && hostname+article["author"]["url"],
       claim_review_headline: article["claimReviewed"],
       claim_review_body: raw_claim_review["page"].search("div.short-factcheck-snippet").text,
-      claim_review_reviewed: article["itemReviewed"]["name"],
-      claim_review_image_url: article["image"]["contentUrl"],
-      claim_review_result: article["reviewRating"]["alternateName"],
+      claim_review_reviewed: article["itemReviewed"] && article["itemReviewed"]["name"],
+      claim_review_image_url: article["image"] && article["image"]["contentUrl"],
+      claim_review_result: article["reviewRating"] && article["reviewRating"]["alternateName"],
       claim_review_result_score: claim_result_score_from_raw_claim_review(article["reviewRating"]),
       claim_review_url: raw_claim_review['url'],
       raw_claim_review: article
