@@ -7,7 +7,7 @@ describe AajtakHindi do
     end
 
     it 'has a fact_list_path' do
-      expect(described_class.new.fact_list_path(1)).to(eq('/ajax/load-more-special-listing?id=1&type=story/photo_gallery/video/breaking_news&path=/fact-check'))
+      expect(described_class.new.fact_list_path(1)).to(eq('/ajax/load-more-special-listing?id=0&type=story/photo_gallery/video/breaking_news&path=/fact-check'))
     end
 
     it 'has a url_extraction_search' do
