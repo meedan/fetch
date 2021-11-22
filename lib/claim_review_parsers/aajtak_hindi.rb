@@ -13,7 +13,7 @@ class AajtakHindi < ClaimReviewParser
   end
 
   def fact_list_path(page = 1)
-    "/ajax/load-more-special-listing?id=#{page}&type=story/photo_gallery/video/breaking_news&path=/fact-check"
+    "/ajax/load-more-special-listing?id=#{page-1}&type=story/photo_gallery/video/breaking_news&path=/fact-check"
   end
 
   def url_extractor(response)
