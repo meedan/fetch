@@ -76,7 +76,7 @@ class TempoCekfakta < ClaimReviewParser
       author: "Tempo",
       author_link: "https://cekfakta.tempo.co",
       claim_review_headline: value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:title"])),
-      claim_review_body: raw_claim_review['page'].search("section#article article p").text,
+      claim_review_body: raw_claim_review['page'].search("section#article article p").collect(&:text).join(" "),
       claim_review_reviewed: value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:title"])),
       claim_review_image_url: value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:image"])),
       claim_review_result: claim_review_result,
