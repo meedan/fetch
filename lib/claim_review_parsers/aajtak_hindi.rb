@@ -22,6 +22,7 @@ class AajtakHindi < ClaimReviewParser
 
   def parse_raw_claim_review(raw_claim_review)
     article = extract_ld_json_script_block(raw_claim_review["page"], -3)
+    claim_review = extract_ld_json_script_block(raw_claim_review["page"], -4)
     {
       id: raw_claim_review['url'],
       created_at: Time.parse(article['datePublished']),
@@ -30,8 +31,8 @@ class AajtakHindi < ClaimReviewParser
       claim_review_headline: article["headline"],
       claim_review_body: article["articleBody"],
       claim_review_image_url: article["image"]["url"],
-      claim_review_result: nil,
-      claim_review_result_score: nil,
+      claim_review_result: claim_review["reviewRating"] && claim_review["reviewRating"]["alternateName"],
+      claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
       claim_review_url: raw_claim_review['url'],
       raw_claim_review: {article: article}
     }
