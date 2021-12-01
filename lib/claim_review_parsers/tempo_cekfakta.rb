@@ -8,6 +8,11 @@
 #   --data 'key=123456&id=891&limit=1&offset=1'
 class TempoCekfakta < ClaimReviewParser
   include PaginatedReviewClaims
+  def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false)
+    super(cursor_back_to_date, overwrite_existing_claims)
+    @user_agent = "Meedan Data Crawler"
+  end
+
   def hostname
     'https://cekfakta.tempo.co'
   end
@@ -17,7 +22,7 @@ class TempoCekfakta < ClaimReviewParser
   end
 
   def request_fact_page(date)
-    RestClient.get(self.hostname+self.fact_list_path(date), user_agent: "Meedan Data Crawler")
+    request(:get, self.hostname+self.fact_list_path(date))
   end
 
   def parsed_fact_list_page(date)
