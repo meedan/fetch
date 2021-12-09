@@ -20,12 +20,15 @@ class AajtakHindi < ClaimReviewParser
     Nokogiri.parse("<html><body>"+response['html_content']+"</html></body>").search("li a").collect{|x| x.attributes['href'].value}
   end
 
+  def get_created_at_from_article(article)
+    (Time.parse(article['datePublished'] || article["dateModified"]) rescue nil)
+  end
   def parse_raw_claim_review(raw_claim_review)
     article = extract_ld_json_script_block(raw_claim_review["page"], -3)
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], -4)
     {
       id: raw_claim_review['url'],
-      created_at: Time.parse(article['datePublished']),
+      created_at: get_created_at_from_article(article),
       author: article["author"][0]["name"],
       author_link: article["author"][0]["url"],
       claim_review_headline: article["headline"],
