@@ -61,7 +61,6 @@ describe Subscription do
     end
     
     it 'indicates no sending for mismatched languages' do
-      described_class.store_params_for_url("http://blah.com/respond", {language: ["en"]})
       expect(described_class.claim_review_can_be_sent("http://blah.com/respond", {'language' => ["en"]}, {inLanguage: "es"})).to(eq(false))
     end
 
@@ -69,23 +68,9 @@ describe Subscription do
       expect(described_class.claim_review_can_be_sent("http://blah.com/respond", {'language' => []}, {inLanguage: "es"})).to(eq(true))
     end
 
-    it 'stores params for url' do
-      described_class.store_params_for_url("http://blah.com/respond", {language: ["en"]})
-    end
-
-    it 'drops params for url' do
-      described_class.store_params_for_url("http://blah.com/respond", {language: ["en"]})
-      described_class.delete_params_for_url("http://blah.com/respond")
-      expect(described_class.get_existing_params_for_url("http://blah.com/respond")).to(eq({}))
-    end
-
-    it 'has a reliable url params key' do
-      described_class.url_params_key("http://blah.com/respond") == "49f32b8fff891a8195bef0d4f464018f_params"
-    end
-
     it 'adds subscription with languages passed' do
       described_class.add_subscription("blah", "http://blah.com/respond", "en")
-      expect(described_class.get_existing_params_for_url("http://blah.com/respond")).to(eq({"language"=>["en"]}))
+      expect(described_class.get_existing_params_for_url("blah", "http://blah.com/respond")).to(eq({"language"=>["en"]}))
     end
 
     it 'removes subscription with languages passed' do
