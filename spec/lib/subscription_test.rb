@@ -31,18 +31,26 @@ describe Subscription do
     end
 
     it 'responds to add_subscription' do
-      expect(described_class.add_subscription('blah', 'http://blah.com/respond')).to(eq(["OK"]))
+      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => {"id"=>"4471b889d47383cb6c4cff244e31739e", "service"=>"tempo_cekfakta", "subscription_url"=>"http://blah.com/respond", "params"=>{"language"=>[]}} }] } })
+      StoredSubscriptionRepository.any_instance.stub(:save).with(anything).and_return({ _index: Settings.get('es_index_name_stored_subscription'), _type: Settings.get('es_index_name_stored_subscription'), _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
+      expect(described_class.add_subscription('blah', 'http://blah.com/respond')).to(eq([{ _index: Settings.get('es_index_name_stored_subscription'), _type: Settings.get('es_index_name_stored_subscription'), _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 }]))
     end
 
     it 'responds to remove_subscription' do
-      expect(described_class.remove_subscription('blah', 'http://blah.com/respond')).to(eq([1]))
+      StoredSubscriptionRepository.any_instance.stub(:delete).with(anything).and_return({"_index"=>Settings.get('es_index_name_stored_subscription'), "_type"=>"_doc", "_id"=>"4471b889d47383cb6c4cff244e31739e", "_version"=>2, "result"=>"deleted", "_shards"=>{"total"=>2, "successful"=>1, "failed"=>0}, "_seq_no"=>1, "_primary_term"=>1})
+      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => {"id"=>"4471b889d47383cb6c4cff244e31739e", "service"=>"tempo_cekfakta", "subscription_url"=>"http://blah.com/respond", "params"=>{"language"=>[]}} }] } })
+      expect(described_class.remove_subscription('blah', 'http://blah.com/respond')).to(eq([{"_index"=>Settings.get('es_index_name_stored_subscription'), "_type"=>"_doc", "_id"=>"4471b889d47383cb6c4cff244e31739e", "_version"=>2, "result"=>"deleted", "_shards"=>{"total"=>2, "successful"=>1, "failed"=>0}, "_seq_no"=>1, "_primary_term"=>1}]))
     end
 
     it 'responds to get_subscriptions' do
+      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => {"id"=>"4471b889d47383cb6c4cff244e31739e", "service"=>"tempo_cekfakta", "subscription_url"=>"http://blah.com/respond", "params"=>{"language"=>[]}} }] } })
       expect(described_class.get_subscriptions('blah').class).to(eq(Hash))
     end
 
     it 'responds to notify_subscribers' do
+      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => {"id"=>"4471b889d47383cb6c4cff244e31739e", "service"=>"tempo_cekfakta", "subscription_url"=>"http://blah.com/respond", "params"=>{"language"=>[]}} }] } })
+      StoredSubscriptionRepository.any_instance.stub(:save).with(anything).and_return({ _index: Settings.get('es_index_name_stored_subscription'), _type: Settings.get('es_index_name_stored_subscription'), _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
+      StoredSubscriptionRepository.any_instance.stub(:delete).with(anything).and_return({"_index"=>Settings.get('es_index_name_stored_subscription'), "_type"=>"_doc", "_id"=>"4471b889d47383cb6c4cff244e31739e", "_version"=>2, "result"=>"deleted", "_shards"=>{"total"=>2, "successful"=>1, "failed"=>0}, "_seq_no"=>1, "_primary_term"=>1})
       described_class.add_subscription("blah", "http://blah.com/respond", "en")
       described_class.add_subscription("blah", "http://blah.com/respond2")
       response = described_class.notify_subscribers('blah', {inLanguage: "en"})
@@ -52,6 +60,9 @@ describe Subscription do
     end
 
     it 'responds to notify_subscribers' do
+      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => {"id"=>"4471b889d47383cb6c4cff244e31739e", "service"=>"tempo_cekfakta", "subscription_url"=>"http://blah.com/respond", "params"=>{"language"=>[]}} }] } })
+      StoredSubscriptionRepository.any_instance.stub(:save).with(anything).and_return({ _index: Settings.get('es_index_name_stored_subscription'), _type: Settings.get('es_index_name_stored_subscription'), _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
+      StoredSubscriptionRepository.any_instance.stub(:delete).with(anything).and_return({"_index"=>Settings.get('es_index_name_stored_subscription'), "_type"=>"_doc", "_id"=>"4471b889d47383cb6c4cff244e31739e", "_version"=>2, "result"=>"deleted", "_shards"=>{"total"=>2, "successful"=>1, "failed"=>0}, "_seq_no"=>1, "_primary_term"=>1})
       described_class.add_subscription("blah", "http://blah.com/respond", "en")
       described_class.add_subscription("blah", "http://blah.com/respond2")
       described_class.stub(:send_webhook_notification).with(anything(), anything(), anything()).and_raise(RestClient::ServiceUnavailable)
@@ -61,7 +72,6 @@ describe Subscription do
     end
     
     it 'indicates no sending for mismatched languages' do
-      described_class.store_params_for_url("http://blah.com/respond", {language: ["en"]})
       expect(described_class.claim_review_can_be_sent("http://blah.com/respond", {'language' => ["en"]}, {inLanguage: "es"})).to(eq(false))
     end
 
@@ -69,26 +79,17 @@ describe Subscription do
       expect(described_class.claim_review_can_be_sent("http://blah.com/respond", {'language' => []}, {inLanguage: "es"})).to(eq(true))
     end
 
-    it 'stores params for url' do
-      described_class.store_params_for_url("http://blah.com/respond", {language: ["en"]})
-    end
-
-    it 'drops params for url' do
-      described_class.store_params_for_url("http://blah.com/respond", {language: ["en"]})
-      described_class.delete_params_for_url("http://blah.com/respond")
-      expect(described_class.get_existing_params_for_url("http://blah.com/respond")).to(eq({}))
-    end
-
-    it 'has a reliable url params key' do
-      described_class.url_params_key("http://blah.com/respond") == "49f32b8fff891a8195bef0d4f464018f_params"
-    end
-
     it 'adds subscription with languages passed' do
+      StoredSubscriptionRepository.any_instance.stub(:save).with(anything).and_return({ _index: Settings.get('es_index_name_stored_subscription'), _type: Settings.get('es_index_name_stored_subscription'), _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
+      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => {"id"=>"4471b889d47383cb6c4cff244e31739e", "service"=>"tempo_cekfakta", "subscription_url"=>"http://blah.com/respond", "params"=>{"language"=>[]}} }] } })
       described_class.add_subscription("blah", "http://blah.com/respond", "en")
-      expect(described_class.get_existing_params_for_url("http://blah.com/respond")).to(eq({"language"=>["en"]}))
+      expect(described_class.get_existing_params_for_url("blah", "http://blah.com/respond")).to(eq({"language"=>["en"]}))
     end
 
     it 'removes subscription with languages passed' do
+      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
+      StoredSubscriptionRepository.any_instance.stub(:save).with(anything).and_return({ _index: Settings.get('es_index_name_stored_subscription'), _type: Settings.get('es_index_name_stored_subscription'), _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
+      StoredSubscriptionRepository.any_instance.stub(:delete).with(anything).and_return({"_index"=>Settings.get('es_index_name_stored_subscription'), "_type"=>"_doc", "_id"=>"4471b889d47383cb6c4cff244e31739e", "_version"=>2, "result"=>"deleted", "_shards"=>{"total"=>2, "successful"=>1, "failed"=>0}, "_seq_no"=>1, "_primary_term"=>1})
       described_class.add_subscription("blah", "http://blah.com/respond", "en")
       described_class.remove_subscription("blah", "http://blah.com/respond")
       expect(described_class.get_subscriptions('blah')).to(eq({"blah"=>{}}))
