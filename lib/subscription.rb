@@ -3,12 +3,8 @@ class Subscription
     "claim_review_webhooks_#{service}"
   end
 
-  def self.url_params_key(url)
-    Digest::MD5.hexdigest(url)+"_params"
-  end
-
   def self.get_existing_params_for_url(service, url)
-    StoredSubscription.get_subscription_for_url(service, url)['params']
+    StoredSubscription.get_subscription_for_url(service, url)['params'] || {}
   end
 
   def self.add_subscription(services, urls, languages=nil)
@@ -18,7 +14,7 @@ class Subscription
         existing_params = self.get_existing_params_for_url(service, url)
         existing_params["language"] ||= []
         languages.each do |language|
-          existing_params["language"] << language
+          existing_params["language"] << language if !existing_params["language"].include?(language)
         end
         StoredSubscription.store_subscription(service, url, existing_params)
       end
@@ -36,7 +32,7 @@ class Subscription
   def self.get_subscriptions(services)
     Hash[[services].flatten.collect do |service|
       webhooks = StoredSubscription.get_subscriptions_for_service(service)
-      [service, Hash[webhooks.collect{|url| [url, self.get_existing_params_for_url(service, url)]}]]
+      [service, Hash[webhooks.collect{|wh| [wh["subscription_url"], wh["params"]]}]]
     end]
   end
 
@@ -62,7 +58,7 @@ class Subscription
   end
 
   def self.notify_subscribers(services, claim_review)
-    self.get_subscriptions(services).values.each do |subscription|
+    Subscription.get_subscriptions(services).values.each do |subscription|
       subscription.each do |webhook_url, webhook_params|
         self.safe_send_webhook_notification(webhook_url, webhook_params, claim_review)
       end

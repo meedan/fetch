@@ -42,7 +42,7 @@ class StoredSubscription
   def self.get_subscription_for_url(service, url)
     ElasticSearchQuery.get_hits(
       StoredSubscription,
-      body: ElasticSearchQuery.multi_match_query([["service", service], ["subscription_url", url]])
-    )[0] rescue {}
+      body: ElasticSearchQuery.match_multiple_params([["service", service], ["subscription_url", url]])
+    )[0] || {"params" => {}}
   end
 end

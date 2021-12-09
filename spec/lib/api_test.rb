@@ -32,11 +32,14 @@ describe API do
 
     it 'adds subscriptions for a service' do
       Subscription.stub(:get_subscriptions).with('blah').and_return(['http://blah.com/respond'])
+      StoredSubscription.stub(:get_subscription_for_url).with("blah", 'http://blah.com/respond').and_return({ _index: Settings.get('es_index_name_stored_subscription'), _type: Settings.get('es_index_name_stored_subscription'), _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
+      StoredSubscription.stub(:store_subscription).with("blah", 'http://blah.com/respond', {"language" => []}).and_return({ _index: Settings.get('es_index_name_stored_subscription'), _type: Settings.get('es_index_name_stored_subscription'), _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
       expect(described_class.add_subscription(service: 'blah', url: 'http://blah.com/respond')).to(eq(['http://blah.com/respond']))
     end
 
     it 'removes subscriptions for a service' do
       Subscription.stub(:get_subscriptions).with('blah').and_return(['http://blah.com/respond'])
+      StoredSubscription.stub(:delete_subscription).with("blah", 'http://blah.com/respond').and_return({"_index"=>Settings.get('es_index_name_stored_subscription'), "_type"=>"_doc", "_id"=>"4471b889d47383cb6c4cff244e31739e", "_version"=>2, "result"=>"deleted", "_shards"=>{"total"=>2, "successful"=>1, "failed"=>0}, "_seq_no"=>1, "_primary_term"=>1})
       expect(described_class.remove_subscription(service: 'blah', url: 'http://blah.com/respond')).to(eq(['http://blah.com/respond']))
     end
 

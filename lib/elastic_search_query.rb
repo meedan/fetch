@@ -11,16 +11,6 @@ class ElasticSearchQuery
     }
   end
 
-  def self.service_query_with_additional_exact_match(service, exact_match)
-    {
-      "query": {
-        "match": {
-          "service": service
-        }
-      }
-    }
-  end
-
   def self.claim_review_created_at_with_sort_order(sort_order)
     [{"claim_review_created_at": {"order": sort_order}}]
   end
@@ -74,7 +64,7 @@ class ElasticSearchQuery
     }
   end
 
-  def self.multi_match_query(match_pairs)
+  def self.match_multiple_params(match_pairs)
     {
       "query": {
         "bool": {
