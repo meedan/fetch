@@ -45,7 +45,8 @@ class TempoCekfakta < ClaimReviewParser
   end
 
   def url_extractor(atag)
-    atag.attributes["href"].value
+    url = atag.attributes["href"].value
+    url.include?("cekfakta.tempo.co") ? url : nil
   end
 
   def store_claim_reviews_for_page(time=DateTime.now)
