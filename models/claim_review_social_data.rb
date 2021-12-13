@@ -30,7 +30,7 @@ class ClaimReviewSocialData
       claim_review_created_at: parsed_claim_review["created_at"]
     )
   end
-  
+
   def self.json_encode_pender_response(pender_response)
     Hash[pender_response.collect{|k,v| [k, v.to_json]}]
   end
