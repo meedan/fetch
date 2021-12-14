@@ -65,75 +65,75 @@ describe ClaimReview do
     end
 
     it 'expects non-empty get hits' do
-      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'claim_review_url' => 1 } }] } })
+      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'claim_review_url' => 1 } }] } })
       expect(ElasticSearchQuery.get_hits(ClaimReview, {})).to(eq([{ 'claim_review_url' => 1 }]))
     end
 
     it 'expects empty get hits' do
-      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
+      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
       expect(ElasticSearchQuery.get_hits(ClaimReview, {})).to(eq([]))
     end
 
     it 'expects empty get hits' do
-      Elasticsearch::Transport::Client.any_instance.stub(:delete_by_query).with(anything).and_return({"took"=>5, "timed_out"=>false, "total"=>0, "deleted"=>0, "batches"=>0, "version_conflicts"=>0, "noops"=>0, "retries"=>{"bulk"=>0, "search"=>0}, "throttled_millis"=>0, "requests_per_second"=>-1.0, "throttled_until_millis"=>0, "failures"=>[]})
+      Elasticsearch::Client.any_instance.stub(:delete_by_query).with(anything).and_return({"took"=>5, "timed_out"=>false, "total"=>0, "deleted"=>0, "batches"=>0, "version_conflicts"=>0, "noops"=>0, "retries"=>{"bulk"=>0, "search"=>0}, "throttled_millis"=>0, "requests_per_second"=>-1.0, "throttled_until_millis"=>0, "failures"=>[]})
       expect(described_class.delete_by_service("foo").class).to(eq(Hash))
     end
 
 
     it 'expects non-empty extract_matches' do
-      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'service' => 'google', 'claim_review_url' => 1 } }] } })
+      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'service' => 'google', 'claim_review_url' => 1 } }] } })
       expect(described_class.extract_matches([1], 'claim_review_url', 'google')).to(eq([1]))
     end
 
     it 'expects empty get extract_matches' do
-      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
+      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
       expect(described_class.extract_matches([1], 'claim_review_url', 'google')).to(eq([]))
     end
 
     it 'expects non-empty existing_ids' do
-      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'service' => 'google', 'id' => 1 } }] } })
+      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'service' => 'google', 'id' => 1 } }] } })
       expect(described_class.existing_ids([1], 'google')).to(eq([1]))
     end
 
     it 'expects empty get existing_ids' do
-      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
+      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
       expect(described_class.existing_ids([1], 'google')).to(eq([]))
     end
 
     it 'expects false response for params to should_save_claim_review' do
-      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
+      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
       expect(described_class.should_save_claim_review([1], 'google', false)).to(eq(true))
     end
 
     it 'expects true response for params to should_save_claim_review' do
-      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
+      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
       expect(described_class.should_save_claim_review([1], 'google', true)).to(eq(true))
     end
 
     it 'expects false response for params to should_save_claim_review' do
-      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{"_source" => {"id" => 1}}] } })
+      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{"_source" => {"id" => 1}}] } })
       expect(described_class.should_save_claim_review([1], 'google', false)).to(eq(false))
     end
 
     it 'expects true response for params to should_save_claim_review' do
-      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{"_source" => {"id" => 1}}] } })
+      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{"_source" => {"id" => 1}}] } })
       expect(described_class.should_save_claim_review([1], 'google', true)).to(eq(true))
     end
 
     it 'expects non-empty existing_urls' do
-      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'service' => 'google', 'claim_review_url' => 1 } }] } })
+      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'service' => 'google', 'claim_review_url' => 1 } }] } })
       expect(described_class.existing_urls([1], 'google')).to(eq([1]))
     end
 
     it 'expects empty get existing_urls' do
-      Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
+      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
       expect(described_class.existing_urls([1], 'google')).to(eq([]))
     end
   end
 
   it 'fails to store MVP claim' do
     claim_review = QuietHashie[{ raw_claim_review: {}, claim_review_headline: 'wow', claim_review_url: 'http://example.com', created_at: Time.parse('2020-01-01'), id: 123 }]
-    Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'service' => 'google', 'id' => 123 } }] } })
+    Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'service' => 'google', 'id' => 123 } }] } })
     ClaimReviewRepository.any_instance.stub(:save).with(claim_review.merge(service: 'google')).and_return({ _index: 'claim_reviews', _type: 'claim_review', _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
     expect(described_class.store_claim_review(claim_review, 'google', false)).to(eq(nil))
   end
@@ -143,7 +143,7 @@ describe ClaimReview do
     PenderClient.stub(:get_enrichment_for_url).with(anything).and_return(JSON.parse(File.read("spec/fixtures/pender_response.json")))
     AlegreClient.stub(:get_enrichment_for_url).with(anything).and_return({"text" => "blah", "links" => ["http://example.com"]})
     claim_review = QuietHashie[{ raw_claim_review: {}, claim_review_headline: 'wow', claim_review_url: 'http://example.com', created_at: Time.parse('2020-01-01'), id: 123 }]
-    Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
+    Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
     ClaimReviewRepository.any_instance.stub(:save).with(anything).and_return({ _index: 'claim_reviews', _type: 'claim_review', _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
     response = described_class.store_claim_review(claim_review, 'google', false)
     expect(response.length).to(eq(24))
@@ -152,13 +152,13 @@ describe ClaimReview do
 
   it 'runs a search' do
     timestamp = Time.now.to_s
-    Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'id' => 123, 'created_at' => timestamp, 'claim_review_url' => 1 } }] } })
+    Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'id' => 123, 'created_at' => timestamp, 'claim_review_url' => 1 } }] } })
     query = {search_query: '', service: 'nil', start_time: Time.now.to_s, end_time: Time.now.to_s, per_page: 20, offset: 0}
     expect(described_class.search(query)).to(eq([{ :@context => 'http://schema.org', :@type => 'ClaimReview', :datePublished => Time.now.strftime('%Y-%m-%d'), :headline => nil, :identifier => 123, :url => 1, :author => { name: nil, url: nil }, :image => nil, :inLanguage => nil, raw: {"claim_review_url"=>1, "created_at"=>timestamp, "id"=>123}, :claimReviewed => nil, :text => nil, :reviewRating => { :@type => 'Rating', :ratingValue => nil, :bestRating => 1, :alternateName => nil } }]))
   end
 
   it 'runs an empty search' do
-    Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
+    Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
     query = {search_query: '', service: 'nil', start_time: Time.now.to_s, end_time: Time.now.to_s, per_page: 20, offset: 0}
     expect(described_class.search(query)).to(eq([]))
   end
@@ -186,7 +186,7 @@ describe ClaimReview do
       "service" => "blah",
       "claim_review_created_at" => timestamp
     }
-    Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything()).and_return({"took"=>21, "timed_out"=>false, "_shards"=>{"total"=>1, "successful"=>1, "skipped"=>0, "failed"=>0}, "hits"=>{"total"=>14055, "max_score"=>2.1063054, "hits"=>[{"_source" => claim_review_social_data}]}})
+    Elasticsearch::Client.any_instance.stub(:search).with(anything()).and_return({"took"=>21, "timed_out"=>false, "_shards"=>{"total"=>1, "successful"=>1, "skipped"=>0, "failed"=>0}, "hits"=>{"total"=>14055, "max_score"=>2.1063054, "hits"=>[{"_source" => claim_review_social_data}]}})
     described_class.enrich_claim_reviews_with_links(results)
   end
 end
