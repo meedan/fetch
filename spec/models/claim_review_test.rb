@@ -61,7 +61,7 @@ describe ClaimReview do
     end
 
     it 'expects client instance' do
-      expect(described_class.client.class).to(eq(Elasticsearch::Transport::Client))
+      expect(described_class.client.class).to(eq(Elasticsearch::Client))
     end
 
     it 'expects non-empty get hits' do
