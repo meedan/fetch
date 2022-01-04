@@ -41,6 +41,8 @@ describe 'integration test with ElasticSearch' do#, integration: true do
     
   ClaimReviewParser.enabled_subclasses.each do |subclass|
     it "gets subscriptons" do
+      url = "http://test.com/link"
+      params = {"foo" => "bar"}
       expect(@subscription_storage_results[subclass][:get]).to(eq({subclass.service=>{url=>params}}))
     end
 
@@ -50,7 +52,7 @@ describe 'integration test with ElasticSearch' do#, integration: true do
     end
 
     it "deletes a subscription" do
-      expect(@subscription_storage_results[subclass][:delete]).to(eq(Hash))
+      expect(@subscription_storage_results[subclass][:delete].class).to(eq(Hash))
       expect(@subscription_storage_results[subclass][:delete].keys.sort).to(eq(["_id", "_index", "_primary_term", "_seq_no", "_shards", "_type", "_version", "result"]))
     end
 
