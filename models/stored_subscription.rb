@@ -23,7 +23,7 @@ class StoredSubscription
       id: self.id_for_record(service, subscription_url),
       service: service,
       subscription_url: subscription_url,
-      params: params
+      params: params.to_json
     )
   end
 
