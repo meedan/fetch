@@ -43,6 +43,6 @@ class StoredSubscription
     ElasticSearchQuery.get_hits(
       StoredSubscription,
       body: ElasticSearchQuery.match_multiple_params([["service", service], ["subscription_url", url]])
-    )[0] || {"params" => {}}
+    )[0] || {"params" => "{}"}
   end
 end

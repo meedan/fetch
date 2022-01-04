@@ -4,8 +4,7 @@ class Subscription
   end
 
   def self.get_existing_params_for_url(service, url)
-    existing_params = StoredSubscription.get_subscription_for_url(service, url)['params']
-    existing_params && JSON.parse(existing_params) || {}
+    JSON.parse(StoredSubscription.get_subscription_for_url(service, url)['params']) || {}
   end
 
   def self.add_subscription(services, urls, languages=nil)
