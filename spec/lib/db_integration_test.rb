@@ -17,8 +17,11 @@ describe 'integration test with ElasticSearch' do#, integration: true do
     params = {"foo" => "bar"}
     ClaimReviewParser.enabled_subclasses.reject{|x| x.service.to_s.include?("#")}.each do |subclass|
       store_response = StoredSubscription.store_subscription(subclass.service, url, params)
+      StoredSubscription.repository.refresh_index!
       get_response = Subscription.get_subscriptions(subclass.service)
+      StoredSubscription.repository.refresh_index!
       delete_response = StoredSubscription.delete_subscription(subclass.service, url)
+      StoredSubscription.repository.refresh_index!
       @subscription_storage_results[subclass] = {}
       @subscription_storage_results[subclass][:store] = store_response
       @subscription_storage_results[subclass][:get] = get_response
