@@ -8,11 +8,20 @@ describe 'integration test with ElasticSearch' do#, integration: true do
 
   before do
     @storage_results ||= {}
+    @subscription_storage_results ||= {}
     WebMock.allow_net_connect!
     Mafindo.any_instance.stub(:get_authors).and_return([{"id" => 36, "nama"=>"blah", "website"=>"blah"}])
     AlegreClient.stub(:get_enrichment_for_url).with(anything).and_return({"text" => "blah", "links" => ["http://example.com"]})
     PenderClient.stub(:get_enrichment_for_url).with(anything).and_return(JSON.parse(File.read("spec/fixtures/pender_response.json")))
+    url = "http://test.com/link"
+    params = {"foo" => "bar"}
     ClaimReviewParser.enabled_subclasses.reject{|x| x.service.to_s.include?("#")}.each do |subclass|
+      store_response = StoredSubscription.store_subscription(subclass.service, url, params)
+      get_response = Subscription.get_subscriptions(subclass.service)
+      response = StoredSubscription.delete_subscription(subclass.service, url)
+      @subscription_storage_results[subclass][:store] = store_response
+      @subscription_storage_results[subclass][:get] = get_response
+      @subscription_storage_results[subclass][:delete] = delete_response
       raw = JSON.parse(File.read("spec/fixtures/#{subclass.service}_raw.json"))
       raw['page'] = Nokogiri.parse(raw['page']) if raw['page']
       parsed_claim_review = subclass.new.parse_raw_claim_review(raw)
@@ -28,30 +37,17 @@ describe 'integration test with ElasticSearch' do#, integration: true do
     
   ClaimReviewParser.enabled_subclasses.each do |subclass|
     it "gets subscriptons" do
-      url = "http://test.com/link"
-      params = {"foo" => "bar"}
-      StoredSubscription.store_subscription(subclass.service, url, params)
-      response = Subscription.get_subscriptions(subclass.service)
-      expect(response).to(eq({subclass.service=>{url=>params}}))
-      StoredSubscription.delete_subscription(subclass.service, url)
+      expect(@subscription_storage_results[subclass][:get]).to(eq({subclass.service=>{url=>params}}))
     end
 
     it "creates a subscripton" do
-      url = "http://test.com/link"
-      params = {"foo" => "bar"}
-      response = StoredSubscription.store_subscription(subclass.service, url, params)
-      StoredSubscription.delete_subscription(subclass.service, url)
-      expect(response.class).to(eq(Hash))
-      expect(response.keys.sort).to(eq(["_id", "_index", "_primary_term", "_seq_no", "_shards", "_type", "_version", "result"]))
+      expect(@subscription_storage_results[subclass][:delete].class).to(eq(Hash))
+      expect(@subscription_storage_results[subclass][:delete].keys.sort).to(eq(["_id", "_index", "_primary_term", "_seq_no", "_shards", "_type", "_version", "result"]))
     end
 
     it "deletes a subscription" do
-      url = "http://test.com/link"
-      params = {"foo" => "bar"}
-      StoredSubscription.store_subscription(subclass.service, url, params)
-      response = StoredSubscription.delete_subscription(subclass.service, url)
-      expect(response.class).to(eq(Hash))
-      expect(response.keys.sort).to(eq(["_id", "_index", "_primary_term", "_seq_no", "_shards", "_type", "_version", "result"]))
+      expect(@subscription_storage_results[subclass][:delete]).to(eq(Hash))
+      expect(@subscription_storage_results[subclass][:delete].keys.sort).to(eq(["_id", "_index", "_primary_term", "_seq_no", "_shards", "_type", "_version", "result"]))
     end
 
     it "ensures #{subclass}'s response looks as if it were saved" do
