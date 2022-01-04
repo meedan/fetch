@@ -8,11 +8,24 @@ describe 'integration test with ElasticSearch' do#, integration: true do
 
   before do
     @storage_results ||= {}
+    @subscription_storage_results ||= {}
     WebMock.allow_net_connect!
     Mafindo.any_instance.stub(:get_authors).and_return([{"id" => 36, "nama"=>"blah", "website"=>"blah"}])
     AlegreClient.stub(:get_enrichment_for_url).with(anything).and_return({"text" => "blah", "links" => ["http://example.com"]})
     PenderClient.stub(:get_enrichment_for_url).with(anything).and_return(JSON.parse(File.read("spec/fixtures/pender_response.json")))
+    url = "http://test.com/link"
+    params = {"foo" => "bar"}
     ClaimReviewParser.enabled_subclasses.reject{|x| x.service.to_s.include?("#")}.each do |subclass|
+      store_response = StoredSubscription.store_subscription(subclass.service, url, params)
+      StoredSubscription.repository.refresh_index!
+      get_response = Subscription.get_subscriptions(subclass.service)
+      StoredSubscription.repository.refresh_index!
+      delete_response = StoredSubscription.delete_subscription(subclass.service, url)
+      StoredSubscription.repository.refresh_index!
+      @subscription_storage_results[subclass] = {}
+      @subscription_storage_results[subclass][:store] = store_response
+      @subscription_storage_results[subclass][:get] = get_response
+      @subscription_storage_results[subclass][:delete] = delete_response
       raw = JSON.parse(File.read("spec/fixtures/#{subclass.service}_raw.json"))
       raw['page'] = Nokogiri.parse(raw['page']) if raw['page']
       parsed_claim_review = subclass.new.parse_raw_claim_review(raw)
@@ -27,6 +40,22 @@ describe 'integration test with ElasticSearch' do#, integration: true do
   end
     
   ClaimReviewParser.enabled_subclasses.each do |subclass|
+    it "gets subscriptons" do
+      url = "http://test.com/link"
+      params = {"foo" => "bar"}
+      expect(@subscription_storage_results[subclass][:get]).to(eq({subclass.service=>{url=>params}}))
+    end
+
+    it "creates a subscripton" do
+      expect(@subscription_storage_results[subclass][:delete].class).to(eq(Hash))
+      expect(@subscription_storage_results[subclass][:delete].keys.sort).to(eq(["_id", "_index", "_primary_term", "_seq_no", "_shards", "_type", "_version", "result"]))
+    end
+
+    it "deletes a subscription" do
+      expect(@subscription_storage_results[subclass][:delete].class).to(eq(Hash))
+      expect(@subscription_storage_results[subclass][:delete].keys.sort).to(eq(["_id", "_index", "_primary_term", "_seq_no", "_shards", "_type", "_version", "result"]))
+    end
+
     it "ensures #{subclass}'s response looks as if it were saved" do
       expect(@storage_results[subclass].class).to(eq(Array))
       expect(@storage_results[subclass][0].class).to(eq(Hash))

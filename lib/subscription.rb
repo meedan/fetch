@@ -4,7 +4,7 @@ class Subscription
   end
 
   def self.get_existing_params_for_url(service, url)
-    StoredSubscription.get_subscription_for_url(service, url)['params'] || {}
+    JSON.parse(StoredSubscription.get_subscription_for_url(service, url)['params']) || {}
   end
 
   def self.add_subscription(services, urls, languages=nil)
@@ -32,7 +32,7 @@ class Subscription
   def self.get_subscriptions(services)
     Hash[[services].flatten.collect do |service|
       webhooks = StoredSubscription.get_subscriptions_for_service(service)
-      [service, Hash[webhooks.collect{|wh| [wh["subscription_url"], wh["params"]]}]]
+      [service, Hash[webhooks.collect{|wh| [wh["subscription_url"], JSON.parse(wh["params"])]}]]
     end]
   end
 
