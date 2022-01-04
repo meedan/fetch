@@ -42,7 +42,7 @@ describe Site do
     end
 
     it 'gets subscriptions' do
-      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => {"id"=>"4471b889d47383cb6c4cff244e31739e", "service"=>"tempo_cekfakta", "subscription_url"=>"http://blah.com/respond", "params"=>{"language"=>[]}} }] } })
+      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => {"id"=>"4471b889d47383cb6c4cff244e31739e", "service"=>"tempo_cekfakta", "subscription_url"=>"http://blah.com/respond", "params"=>{"language"=>[]}.to_json} }] } })
       StoredSubscriptionRepository.any_instance.stub(:save).with(anything).and_return({ _index: Settings.get('es_index_name_stored_subscription'), _type: Settings.get('es_index_name_stored_subscription'), _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
       response = get "/subscribe", "service=blah"
       expect(response.status).to(eq(200))
@@ -50,7 +50,7 @@ describe Site do
     end
 
     it 'adds subscriptions' do
-      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => {"id"=>"4471b889d47383cb6c4cff244e31739e", "service"=>"tempo_cekfakta", "subscription_url"=>"http://blah.com/respond", "params"=>{"language"=>[]}} }] } })
+      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => {"id"=>"4471b889d47383cb6c4cff244e31739e", "service"=>"tempo_cekfakta", "subscription_url"=>"http://blah.com/respond", "params"=>{"language"=>[]}.to_json} }] } })
       StoredSubscriptionRepository.any_instance.stub(:save).with(anything).and_return({ _index: Settings.get('es_index_name_stored_subscription'), _type: Settings.get('es_index_name_stored_subscription'), _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
       response = post "/subscribe", {service: 'blah', url: 'http://blah.com/respond'}.to_json
       expect(response.status).to(eq(200))

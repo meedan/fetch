@@ -27,6 +27,33 @@ describe 'integration test with ElasticSearch' do#, integration: true do
   end
     
   ClaimReviewParser.enabled_subclasses.each do |subclass|
+    it "gets subscriptons" do
+      url = "http://test.com/link"
+      params = {"foo" => "bar"}
+      StoredSubscription.store_subscription(subclass.service, url, params)
+      response = Subscription.get_subscriptions(subclass.service)
+      expect(response).to(eq({subclass.service=>{url=>params.to_json}}))
+      StoredSubscription.delete_subscription(subclass.service, url)
+    end
+
+    it "creates a subscripton" do
+      url = "http://test.com/link"
+      params = {"foo" => "bar"}
+      response = StoredSubscription.store_subscription(subclass.service, url, params)
+      StoredSubscription.delete_subscription(subclass.service, url)
+      expect(response.class).to(eq(Hash))
+      expect(response["result"]).to(eq("created"))
+    end
+
+    it "deletes a subscription" do
+      url = "http://test.com/link"
+      params = {"foo" => "bar"}
+      StoredSubscription.store_subscription(subclass.service, url, params)
+      response = StoredSubscription.delete_subscription(subclass.service, url)
+      expect(response.class).to(eq(Hash))
+      expect(response["result"]).to(eq("deleted"))
+    end
+
     it "ensures #{subclass}'s response looks as if it were saved" do
       expect(@storage_results[subclass].class).to(eq(Array))
       expect(@storage_results[subclass][0].class).to(eq(Hash))
