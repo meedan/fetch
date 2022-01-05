@@ -113,7 +113,7 @@ describe ClaimReviewParser do
 
     it 'expects to be able to run' do
       AFP.any_instance.stub(:get_claim_reviews).and_return('stubbed')
-      expect(described_class.run('afp')).to(eq('OK'))
+      expect(described_class.run('afp')).to(eq('stubbed'))
     end
   
     it 'rescues broken json' do

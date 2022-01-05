@@ -58,7 +58,6 @@ class ClaimReviewParser
 
   def self.run(service, cursor_back_to_date = nil, overwrite_existing_claims = false)
     parsers[service].new(cursor_back_to_date, overwrite_existing_claims).get_claim_reviews
-    self.record_service_heartbeat(service)
   end
 
   def self.record_service_heartbeat(service)
