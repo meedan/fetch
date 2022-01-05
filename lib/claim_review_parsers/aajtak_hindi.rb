@@ -23,17 +23,22 @@ class AajtakHindi < ClaimReviewParser
   def get_created_at_from_article(article)
     (Time.parse(article['datePublished'] || article["dateModified"]) rescue nil)
   end
+
+  def get_author_attribute(article, attribute)
+    article && article["author"] && article["author"][0] && article["author"][0][attribute]
+  end
+
   def parse_raw_claim_review(raw_claim_review)
     article = extract_ld_json_script_block(raw_claim_review["page"], -3)
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], -4)
     {
       id: raw_claim_review['url'],
       created_at: get_created_at_from_article(article),
-      author: article["author"][0]["name"],
+      author: get_author_attribute(article, attribute),
       author_link: article["author"][0]["url"],
-      claim_review_headline: article["headline"],
+      claim_review_headline: get_author_attribute(article, attribute),
       claim_review_body: article["articleBody"],
-      claim_review_image_url: article["image"]["url"],
+      claim_review_image_url: article["image"] && article["image"]["url"],
       claim_review_result: claim_review["reviewRating"] && claim_review["reviewRating"]["alternateName"],
       claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
       claim_review_url: raw_claim_review['url'],
