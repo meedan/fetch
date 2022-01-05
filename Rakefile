@@ -64,8 +64,14 @@ end
 
 task :requeue do
   ClaimReviewParser.enabled_subclasses.map(&:service).each do |datasource|
-    puts "Updating #{datasource}..."
-    RunClaimReviewParser.requeue(datasource)
+    puts "Resetting crawls for #{datasource}..."
+    result = RunClaimReviewParser.requeue(datasource)
+    if result
+      puts "Update for #{datasource} is queued."
+    else
+      puts "Update for #{datasource} failed to queue, already queued."
+    end
+    ClaimReviewParser.record_service_heartbeat(datasource)
   end
 end
 task(default: [:test])
