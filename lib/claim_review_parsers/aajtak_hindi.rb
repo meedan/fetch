@@ -36,7 +36,7 @@ class AajtakHindi < ClaimReviewParser
       created_at: get_created_at_from_article(article),
       author: get_author_attribute(article, "name"),
       author_link: get_author_attribute(article, "url"),
-      claim_review_headline: get_author_attribute(article, attribute),
+      claim_review_headline: article["headline"],
       claim_review_body: article["articleBody"],
       claim_review_image_url: article["image"] && article["image"]["url"],
       claim_review_result: claim_review["reviewRating"] && claim_review["reviewRating"]["alternateName"],
