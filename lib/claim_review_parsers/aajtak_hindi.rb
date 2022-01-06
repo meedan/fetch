@@ -31,6 +31,7 @@ class AajtakHindi < ClaimReviewParser
   def parse_raw_claim_review(raw_claim_review)
     article = extract_ld_json_script_block(raw_claim_review["page"], -3)
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], -4)
+    return {} if article.nil?
     {
       id: raw_claim_review['url'],
       created_at: get_created_at_from_article(article),
