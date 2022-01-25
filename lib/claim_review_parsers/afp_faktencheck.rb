@@ -21,6 +21,5 @@ class AFPFaktencheck < AFP
     conclusion_index = get_index_for_conclusion_paragraph(raw_claim_review)
     parsed[:claim_review_body] = get_text_blocks(raw_claim_review)[conclusion_index..-1].join(" ")
     parsed
-    parsed
   end
 end
