@@ -45,7 +45,7 @@ class Telemundo < ClaimReviewParser
       author: get_claim_review_author_value(claim_review, "name"),
       author_link: get_claim_review_author_value(claim_review, "id"),
       claim_review_headline: claim_review["headline"],
-      claim_review_body: claim_review_body_from_raw_claim_review(raw_claim_review) || claim_review["description"],
+      claim_review_body: claim_review["description"] || claim_review_body_from_raw_claim_review(raw_claim_review),
       claim_review_image_url: claim_review_image_url_from_raw_claim_review(raw_claim_review),
       claim_review_url: raw_claim_review['url'],
       raw_claim_review: claim_review
