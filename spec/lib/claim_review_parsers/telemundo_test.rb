@@ -36,5 +36,18 @@ describe Telemundo do
         expect(QuietHashie[parsed_claim][field].nil?).to(eq(false))
       end
     end
+
+    it 'parses a raw_claim_review with backup description' do
+      raw = JSON.parse(File.read('spec/fixtures/telemundo_raw.json'))
+      raw['page'] = Nokogiri.parse(raw['page'])
+      claim_review = Telemundo.new.extract_ld_json_script_block(raw["page"], 2)
+      claim_review.delete("description")
+      Telemundo.any_instance.stub(:extract_ld_json_script_block).and_return(claim_review)
+      parsed_claim = described_class.new.parse_raw_claim_review(raw)
+      expect(parsed_claim.class).to(eq(Hash))
+      ClaimReview.mandatory_fields.each do |field|
+        expect(QuietHashie[parsed_claim][field].nil?).to(eq(false))
+      end
+    end
   end
 end
