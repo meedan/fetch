@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe AFPFactual do
+describe AFPFactuel do
   describe 'instance' do
     it 'has a hostname' do
       expect(described_class.new.hostname).to(eq('https://factuel.afp.com'))
