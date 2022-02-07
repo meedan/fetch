@@ -7,4 +7,10 @@ class AFPFactual < AFP
   def hostname
     'https://factual.afp.com'
   end
+
+  def parse_raw_claim_review(raw_claim_review)
+    parsed = super(raw_claim_review)
+    parsed[:claim_review_body] = claim_review_body_from_raw_claim_review(raw_claim_review)
+    parsed
+  end
 end
