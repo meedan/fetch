@@ -7,6 +7,10 @@ class Settings
   def self.get_claim_review_social_data_es_index_name
     Settings.get('es_index_name_cr_social_data')
   end
+
+  def self.get_stored_subscription_es_index_name
+    Settings.get('es_index_name_stored_subscription')
+  end
   
   def self.airbrake_specified?
     Settings.blank?('airbrake_api_host')
@@ -30,14 +34,15 @@ class Settings
       'es_host' => 'http://elasticsearch:9200',
       'es_index_name' => 'claim_reviews',
       'es_index_name_cr_social_data' => 'claim_review_social_data',
+      'es_index_name_stored_subscription' => 'stored_subscription',
       'redis_host' => 'redis',
       'redis_port' => 6379,
       'redis_database' => 1,
       'service_heartbeat_ttl' => 60*60*4,
       'env' => 'test',
       'cookie_file' => 'config/cookies.json',
-      'alegre_host_url' => 'http://alegre.local',
-      'pender_host_url' => 'http://pender.local',
+      'alegre_host_url' => 'http://alegre.local/',
+      'pender_host_url' => 'http://pender.local/',
     }
   end
 

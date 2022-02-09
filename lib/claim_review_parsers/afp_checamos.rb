@@ -7,4 +7,16 @@ class AFPChecamos < AFP
   def hostname
     'https://checamos.afp.com'
   end
+
+  def get_image_url_for_raw_claim_review(raw_claim_review)
+    hostname+raw_claim_review["page"].search("article div.article-entry img")[0].attributes["src"].value rescue nil
+  end
+
+  def parse_raw_claim_review(raw_claim_review)
+    parsed = super(raw_claim_review)
+    new_image_url = get_image_url_for_raw_claim_review(raw_claim_review)
+    parsed[:claim_review_body] = claim_review_body_from_raw_claim_review(raw_claim_review)
+    parsed[:claim_review_image_url] = new_image_url if !new_image_url.nil?
+    parsed
+  end
 end

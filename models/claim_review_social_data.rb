@@ -20,13 +20,18 @@ class ClaimReviewSocialData
   end
 
   def self.store_link_for_parsed_claim_review(parsed_claim_review, link)
+    pender_response = PenderClient.get_enrichment_for_url(link)
     repository.save(
       id: self.id_for_record(parsed_claim_review, link),
       link: link,
       claim_review_id: parsed_claim_review["id"],
-      content: PenderClient.get_enrichment_for_url(link),
+      content: self.json_encode_pender_response(pender_response),
       service: parsed_claim_review["service"],
       claim_review_created_at: parsed_claim_review["created_at"]
     )
+  end
+
+  def self.json_encode_pender_response(pender_response)
+    Hash[pender_response.collect{|k,v| [k, v.to_json]}]
   end
 end

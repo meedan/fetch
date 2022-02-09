@@ -61,7 +61,6 @@ class ClaimReview
       NotifySubscriber.perform_async(service, self.convert_to_claim_review(validated_claim_review))
     end
   rescue StandardError => e
-    binding.pry
     Error.log(e, { validated_claim_review: validated_claim_review })
   end
   
@@ -133,7 +132,7 @@ class ClaimReview
 
   def self.enrich_claim_reviews_with_links(results)
     mapped_results = Hash[results.collect{|x| [x[:identifier], x]}]
-    ids = results.collect{|pcr| pcr[:raw]["links"].collect{|l| ClaimReviewSocialData.id_for_record(pcr[:raw], l)}}.flatten
+    ids = results.collect{|pcr| pcr[:raw]["links"].to_a.collect{|l| ClaimReviewSocialData.id_for_record(pcr[:raw], l)}}.flatten
     ids.each_slice(5000) do |id_set|
       ClaimReview.get_claim_review_social_data_by_ids(id_set).each do |claim_review_social_data|
         mapped_results[claim_review_social_data["claim_review_id"]][:raw]["link_data"] ||= []
