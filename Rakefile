@@ -56,10 +56,14 @@ end
 
 task :init_index do
   ClaimReviewRepository.init_index
+  ClaimReviewSocialDataRepository.init_index
+  StoredSubscriptionRepository.init_index
 end
 
 task :safe_init_index do
   ClaimReviewRepository.safe_init_index
+  ClaimReviewSocialDataRepository.safe_init_index
+  StoredSubscriptionRepository.safe_init_index
 end
 
 task :requeue do
