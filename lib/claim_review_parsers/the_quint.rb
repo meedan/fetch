@@ -67,6 +67,16 @@ class TheQuint < ClaimReviewParser
     Error.log(e)
   end
 
+  def claim_reviewed_from_raw_claim_review(raw_claim_review)
+    raw_claim_review['story'] &&
+    raw_claim_review['story']['metadata'] &&
+    raw_claim_review['story']['metadata']['story-attributes'] &&
+    raw_claim_review['story']['metadata']['story-attributes']['claimreviewed'] &&
+    raw_claim_review['story']['metadata']['story-attributes']['claimreviewrating'].first.to_s
+  rescue StandardError => e
+    Error.log(e)
+  end
+
   def claim_headline_from_raw_claim_review(raw_claim_review)
     raw_claim_review['story']['headline']
   rescue StandardError => e
@@ -104,6 +114,7 @@ class TheQuint < ClaimReviewParser
       claim_review_body: claim_body_from_raw_claim_review(raw_claim_review),
       claim_review_image_url: claim_image_url_from_raw_claim_review(raw_claim_review),
       claim_review_result: claim_result_from_raw_claim_review(raw_claim_review),
+      claim_review_reviewed: claim_reviewed_from_raw_claim_review(raw_claim_review),
       claim_review_result_score: claim_result_score_from_raw_claim_review(raw_claim_review),
       claim_review_url: claim_url_from_raw_claim_review(raw_claim_review),
       raw_claim_review: raw_claim_review

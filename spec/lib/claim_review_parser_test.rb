@@ -137,7 +137,7 @@ RSpec.describe "ClaimReviewParser subclasses" do
      	  'Host'=>'www.boomlive.in',
         "User-Agent": /.*/
          }).
-       to_return(status: 200, body: "", headers: {})
+       to_return(status: 200, body: File.read('spec/fixtures/boom_live_raw.html'), headers: {})
      stub_request(:post, "https://yudistira.turnbackhoax.id/api/antihoax/get_authors").
        with(
          body: /.*/,
