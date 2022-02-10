@@ -67,11 +67,19 @@ class BoomLive < ClaimReviewParser
       get_all_stories_by_category(category_id)
     end
   end
-
-  def get_claim_result_for_raw_claim_review(raw_claim_review)
-    found_text = Nokogiri.parse(
+  
+  def get_raw_claim_review_page_from_raw_claim_review(raw_claim_review)
+    Nokogiri.parse(
       get_url(raw_claim_review['url'])
-    ).search('div.claim-review-block div.claim-value').find do |x|
+    )
+  end
+  
+  def get_claim_review_reviewed_from_claim_review(claim_review)
+    claim_review["claimReviewed"] || (claim_review["itemReviewed"] && claim_review["itemReviewed"]["name"])
+  end
+
+  def get_claim_result_for_raw_claim_review(raw_claim_review_page)
+    found_text = raw_claim_review_page.search('div.claim-review-block div.claim-value').find do |x|
       x.text.downcase.include?('fact check')
     end
     if found_text
@@ -82,7 +90,9 @@ class BoomLive < ClaimReviewParser
   end
 
   def parse_raw_claim_review(raw_claim_review)
-    claim_result = get_claim_result_for_raw_claim_review(raw_claim_review)
+    raw_claim_review_page = get_raw_claim_review_page_from_raw_claim_review(raw_claim_review)
+    claim_review_reviewed = get_claim_review_reviewed_from_claim_review(extract_ld_json_script_block(raw_claim_review_page, 0))
+    claim_result = get_claim_result_for_raw_claim_review(raw_claim_review_page)
     {
       id: raw_claim_review['newsId'].to_s,
       created_at: Time.parse(raw_claim_review['date_created']),
@@ -91,6 +101,7 @@ class BoomLive < ClaimReviewParser
       claim_review_headline: raw_claim_review['heading'],
       claim_review_body: raw_claim_review['description'],
       claim_review_image_url: raw_claim_review["mediaId"],
+      claim_review_reviewed: claim_review_reviewed,
       claim_review_result: claim_result,
       claim_review_result_score: claim_result.to_s.downcase.include?('false') ? 0 : 1,
       claim_review_url: raw_claim_review['url'],
