@@ -75,7 +75,7 @@ class BoomLive < ClaimReviewParser
   end
   
   def get_claim_review_reviewed_from_claim_review(claim_review)
-    claim_review["claimReviewed"] || (claim_review["itemReviewed"] && claim_review["itemReviewed"]["name"])
+    claim_review && (claim_review["claimReviewed"] || (claim_review["itemReviewed"] && claim_review["itemReviewed"]["name"]))
   end
 
   def get_claim_result_for_raw_claim_review(raw_claim_review_page)
