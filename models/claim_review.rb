@@ -54,11 +54,13 @@ class ClaimReview
     parsed_claim_review
   end
 
-  def self.save_claim_review(parsed_claim_review, service)
+  def self.save_claim_review(parsed_claim_review, service, send_notifications = true)
     validated_claim_review = validate_claim_review(QuietHashie[parsed_claim_review.merge(service: service)])
     if validated_claim_review
       repository.save(ClaimReview.new(validated_claim_review))
-      NotifySubscriber.perform_async(service, self.convert_to_claim_review(validated_claim_review))
+      if send_notifications
+        NotifySubscriber.perform_async(service, self.convert_to_claim_review(validated_claim_review))
+      end
     end
   rescue StandardError => e
     Error.log(e, { validated_claim_review: validated_claim_review })
@@ -112,8 +114,8 @@ class ClaimReview
     overwrite_existing_claims || self.existing_ids([id], service).empty?
   end
 
-  def self.store_claim_review(parsed_claim_review, service, overwrite_existing_claims)
-    self.save_claim_review(parsed_claim_review, service) if self.should_save_claim_review(parsed_claim_review[:id], service, overwrite_existing_claims)
+  def self.store_claim_review(parsed_claim_review, service, overwrite_existing_claims, send_notifications = true)
+    self.save_claim_review(parsed_claim_review, service, send_notifications) if self.should_save_claim_review(parsed_claim_review[:id], service, overwrite_existing_claims)
   end
 
   def self.search(opts, sort=ElasticSearchQuery.created_at_desc)

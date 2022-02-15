@@ -51,7 +51,7 @@ describe ClaimReviewParser do
       Settings.stub(:get).with('cookie_file').and_return('s3://bucket/cookie_file.json')
       client = Aws::S3::Client.new(stub_responses: true)
       client.stub_responses(:get_object, {body: StringIO.new("{\"claim_review_parser\": true}")})
-      claim_review_parser = described_class.new(nil, false, client)
+      claim_review_parser = described_class.new(nil, false, true, client)
       expect(claim_review_parser.get_cookies(client)).to(eq(true))
     end
 

@@ -23,7 +23,7 @@ class ClaimReviewParser
     nil
   end
 
-  def initialize(cursor_back_to_date = nil, overwrite_existing_claims = false, client=Settings.s3_client)
+  def initialize(cursor_back_to_date = nil, overwrite_existing_claims = false, send_notifications = true, client=Settings.s3_client)
     @fact_list_page_parser ||= 'html'
     @simple_page_urls ||= true
     @run_in_parallel = true
@@ -32,6 +32,7 @@ class ClaimReviewParser
     @cookies = get_cookies(client)
     @overwrite_existing_claims = overwrite_existing_claims
     @cursor_back_to_date = cursor_back_to_date
+    @send_notifications = send_notifications
   end
 
   def get_cookies(client)
@@ -56,8 +57,8 @@ class ClaimReviewParser
     ]
   end
 
-  def self.run(service, cursor_back_to_date = nil, overwrite_existing_claims = false)
-    parsers[service].new(cursor_back_to_date, overwrite_existing_claims).get_claim_reviews
+  def self.run(service, cursor_back_to_date = nil, overwrite_existing_claims = false, send_notifications = true)
+    parsers[service].new(cursor_back_to_date, overwrite_existing_claims, send_notifications).get_claim_reviews
   end
 
   def self.record_service_heartbeat(service)
@@ -66,7 +67,7 @@ class ClaimReviewParser
 
   def store_to_db(claim_reviews, service)
     claim_reviews.each do |parsed_claim_review|
-      ClaimReview.store_claim_review(QuietHashie[parsed_claim_review], service, @overwrite_existing_claims)
+      ClaimReview.store_claim_review(QuietHashie[parsed_claim_review], service, @overwrite_existing_claims, @send_notifications)
     end
   end
 
