@@ -2,10 +2,10 @@
 
 class RunClaimReviewParser
   include Sidekiq::Worker
-  def perform(service, cursor_back_to_date = nil, overwrite_existing_claims=false)
+  def perform(service, cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications=true)
     cursor_back_to_date = Time.parse(cursor_back_to_date) unless cursor_back_to_date.nil?
     ClaimReviewParser.record_service_heartbeat(service)
-    ClaimReviewParser.run(service, cursor_back_to_date, overwrite_existing_claims)
+    ClaimReviewParser.run(service, cursor_back_to_date, overwrite_existing_claims, send_notifications)
     RunClaimReviewParser.perform_in(Settings.task_interevent_time, service)
   end
 
