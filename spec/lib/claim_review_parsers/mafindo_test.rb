@@ -50,7 +50,7 @@ describe Mafindo do
     end
 
     it 'runs get_claim_reviews' do
-      RestClient.stub(:get).with(anything).and_return(RestClient::Response.new('{}'))
+      RestClient::Request.stub(:execute).with(anything).and_return(RestClient::Response.new('{}'))
       described_class.any_instance.stub(:service_key_is_needed?).and_return(false)
       ClaimReview.stub(:existing_urls).with(anything, anything).and_return([])
       ClaimReview.stub(:existing_ids).with(anything, anything).and_return([])

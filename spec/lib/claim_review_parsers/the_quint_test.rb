@@ -5,7 +5,7 @@ describe TheQuint do
     it 'parses get_claim_reviews_for_page' do
       raw = JSON.parse(File.read('spec/fixtures/the_quint_raw.json'))
       raw["story"].delete("cards")
-      RestClient.stub(:get).with(anything).and_return({ 'items' => [raw] }.to_json)
+      RestClient::Request.stub(:execute).with(anything).and_return({ 'items' => [raw] }.to_json)
       expect(described_class.new.get_claim_reviews_for_page(1).class).to(eq(Array))
     end
 
@@ -30,7 +30,7 @@ describe TheQuint do
     it 'walks through get_new_claim_reviews_for_page' do
       raw = JSON.parse(File.read('spec/fixtures/the_quint_raw.json'))
       raw["story"].delete("cards")
-      RestClient.stub(:get).with(anything).and_return({ 'items' => [] }.to_json)
+      RestClient::Request.stub(:execute).with(anything).and_return({ 'items' => [] }.to_json)
       ClaimReview.stub(:existing_urls).with(anything, described_class.service).and_return([])
       ClaimReview.stub(:existing_ids).with(anything, described_class.service).and_return([])
       ClaimReviewRepository.any_instance.stub(:save).with(anything).and_return({ _index: 'claim_reviews', _type: 'claim_review', _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
