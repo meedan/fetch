@@ -16,8 +16,11 @@ class GoogleFactCheck < ClaimReviewParser
   def make_get_request(path, params)
     url = host + path + '?' + URI.encode_www_form(params.merge(key: Settings.get(service_key)))
     JSON.parse(
-      RestClient.get(
-        url
+      RestClient::Request.execute(
+        method: :get,
+        url: url,
+        open_timeout: 10,
+        read_timeout: 10,
       ).body
     )
   end

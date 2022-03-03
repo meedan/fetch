@@ -10,7 +10,14 @@ class TheQuint < ClaimReviewParser
   end
 
   def get_claim_reviews_for_page(page = 1)
-    JSON.parse(RestClient.get(hostname + fact_list_path(page)))['items']
+    JSON.parse(
+      RestClient::Request.execute(
+        method: :get,
+        url: hostname + fact_list_path(page),
+        open_timeout: 10,
+        read_timeout: 10,
+      )
+    )['items']
   end
 
   def get_new_claim_reviews_for_page(page = 1)

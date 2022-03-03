@@ -168,7 +168,8 @@ class ClaimReviewParser
   end
 
   def self.test_parser_on_url(url)
-    params = {"page" => Nokogiri.parse(RestClient.get(url)), "url" => url}
+    response = RestClient::Request.execute(method: :get, url: url, open_timeout: 10, read_timeout: 10)
+    params = {"page" => Nokogiri.parse(response), "url" => url}
     self.new.parse_raw_claim_review(params)
   end
 

@@ -16,9 +16,12 @@ class BoomLive < ClaimReviewParser
 
   def get_path(path)
     JSON.parse(
-      RestClient.get(
-        hostname + path,
-        api_params
+      RestClient::Request.execute(
+        method: :get,
+        url: hostname + path,
+        open_timeout: 10,
+        read_timeout: 10,
+        headers: api_params
       )
     )
   end

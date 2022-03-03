@@ -7,9 +7,12 @@ class PenderClient
     parsed_url = URI.parse(url) rescue nil
     if self.allowed_domain(parsed_url)
       JSON.parse(
-        RestClient.get(
-          self.host+"api/medias.json?url=#{CGI.escape(url)}",
-          {
+        RestClient::Request.execute(
+          method: :get,
+          url: self.host+"api/medias.json?url=#{CGI.escape(url)}",
+          open_timeout: 10,
+          read_timeout: 10,
+          headers: {
             content_type: 'application/json',
             'X-Pender-Token' => Settings.get("pender_api_key")
           }
