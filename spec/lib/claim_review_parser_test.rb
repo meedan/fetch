@@ -121,7 +121,7 @@ describe ClaimReviewParser do
     end
 
     it 'tests a parser on a url' do
-      RestClient.stub(:get).with(anything).and_return(JSON.parse(File.read('spec/fixtures/india_today_raw.json'))["page"])
+      RestClient::Request.stub(:execute).with(anything).and_return(JSON.parse(File.read('spec/fixtures/india_today_raw.json'))["page"])
       expect(IndiaToday.test_parser_on_url("http://blah.org").class).to(eq(Hash))
     end
   end

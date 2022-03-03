@@ -4,12 +4,15 @@
 class GESISClaims < ClaimReviewParser
   include GenericRawClaimParser
   def post_request_get_fact_ids(page, limit)
-    RestClient.post(
-      'https://data.gesis.org/claimskg/sparql', {
+    RestClient::Request.execute(
+      :method => :post,
+      :url => 'https://data.gesis.org/claimskg/sparql',
+      :payload => {
         query: "PREFIX schema: <http://schema.org/> PREFIX nif: <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#> select * where {select distinct (?claims as ?id) COALESCE(?date, 'Unknown') as ?date ?truthRating ?ratingName COALESCE(?author, 'Unknown') as ?author COALESCE(?link, '') as ?link?text where { ?claims a schema:ClaimReview . OPTIONAL {?claims schema:headline ?headline} . ?claims schema:reviewRating ?truth_rating_review . ?truth_rating_review schema:alternateName ?ratingName . ?truth_rating_review schema:author <http://data.gesis.org/claimskg/organization/claimskg> . ?truth_rating_review schema:ratingValue ?truthRating . OPTIONAL {?claims schema:url ?link} . ?item a schema:CreativeWork . ?claims schema:itemReviewed ?item . ?item schema:text ?text . OPTIONAL {?item schema:author ?author_info . ?author_info schema:name ?author } . OPTIONAL {?item schema:datePublished ?date} . }ORDER BY desc (?date)}LIMIT #{limit} OFFSET #{limit * (page - 1)}"
-      }, {
-        "Accept": 'application/sparql-results+json'
-      }
+      },
+      :headers => {"Accept": 'application/sparql-results+json'},
+      :timeout => 10,
+      :open_timeout => 10
     )
   end
 
@@ -49,12 +52,15 @@ class GESISClaims < ClaimReviewParser
   end
 
   def post_request_fact_id(fact_id)
-    RestClient.post(
-      'https://data.gesis.org/claimskg/sparql', {
+    RestClient::Request.execute(
+      :method => :post,
+      :url => 'https://data.gesis.org/claimskg/sparql',
+      :payload => {
         query: 'PREFIX schema: <http://schema.org/> PREFIX nif: <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#> select distinct (?claim as ?id) COALESCE(?date, "") as ?date COALESCE(?keywords, "") as ?keywords group_concat(distinct ?entities_name, ";!;") as ?mentions group_concat(distinct ?entities_name_article, ";!;") as ?mentionsArticle COALESCE(?language, "") as ?language group_concat(?citations, ";!;") as ?citations ?truthRating ?ratingName ?text COALESCE(?author, "") as ?author COALESCE(?source, "") as ?source COALESCE(?sourceURL, "") as ?sourceURL COALESCE(?link, "") as ?link where { ?claim a schema:ClaimReview . OPTIONAL{ ?claim schema:headline ?headline} . ?claim schema:reviewRating ?truth_rating_review . ?truth_rating_review schema:author <http://data.gesis.org/claimskg/organization/claimskg> . ?truth_rating_review schema:alternateName ?ratingName . ?truth_rating_review schema:ratingValue ?truthRating . OPTIONAL {?claim schema:url ?link} . ?item a schema:CreativeWork . ?item schema:text ?text . ?claim schema:itemReviewed ?item . OPTIONAL {?item schema:mentions ?entities . ?entities nif:isString ?entities_name} . OPTIONAL {?claim schema:mentions ?entities_article . ?entities_article nif:isString ?entities_name_article} . OPTIONAL {?item schema:author ?author_info .  ?author_info schema:name ?author } . OPTIONAL {?claim schema:inLanguage ?inLanguage . ?inLanguage schema:name ?language} . OPTIONAL {?claim schema:author ?sourceAuthor . ?sourceAuthor schema:name ?source . ?sourceAuthor schema:url ?sourceURL} . OPTIONAL {?item schema:keywords ?keywords} . OPTIONAL {?item schema:citation ?citations} . OPTIONAL {?item schema:datePublished ?date} . FILTER (?claim = <http://data.gesis.org/claimskg/claim_review/' + fact_id + '>) }'
-      }, {
-        "Accept": 'application/sparql-results+json'
-      }
+      },
+      :headers => {"Accept": 'application/sparql-results+json'},
+      :timeout => 10,
+      :open_timeout => 10
     )
   end
 

@@ -10,23 +10,23 @@ describe GESISClaims do
     end
 
     it 'parses get_fact_ids when standard error hit' do
-      RestClient.stub(:post).with(anything, anything, anything).and_raise(StandardError)
+      RestClient::Request.stub(:execute).with(anything).and_raise(StandardError)
       expect(described_class.new.get_fact_ids(1)).to(eq([]))
     end
 
     it 'parses get_fact_ids' do
-      RestClient.stub(:post).with(anything, anything, anything).and_return({ 'results' => { 'bindings' => [{ 'id' => { 'value' => '/123' } }] } }.to_json)
+      RestClient::Request.stub(:execute).with(anything).and_return({ 'results' => { 'bindings' => [{ 'id' => { 'value' => '/123' } }] } }.to_json)
       expect(described_class.new.get_fact_ids(1)).to(eq([%w[123 123]]))
     end
 
     it 'executes post_request_fact_id' do
       response = { 'results' => { 'bindings' => [{ 'id' => { 'value' => '/123' } }] } }.to_json
-      RestClient.stub(:post).with(anything, anything, anything).and_return(response)
+      RestClient::Request.stub(:execute).with(anything).and_return(response)
       expect(described_class.new.post_request_fact_id("1")).to(eq(response))
     end
 
     it 'walks through the get_request' do
-      RestClient.stub(:post).with(anything, anything, anything).and_return({}.to_json)
+      RestClient::Request.stub(:execute).with(anything).and_return({}.to_json)
       expect(described_class.new.get_fact('123')).to(eq({}))
     end
 
@@ -34,7 +34,7 @@ describe GESISClaims do
       raw = JSON.parse(File.read('spec/fixtures/gesis_claims_raw.json'))['content']
       described_class.any_instance.stub(:get_all_fact_ids).and_return([[raw['id']['value'].split('/').last, raw['id']['value'].split('/').last]])
       ClaimReview.stub(:existing_ids).with([raw['id']['value'].split('/').last], described_class.service).and_return([])
-      RestClient.stub(:post).with(anything, anything, anything).and_return({ 'results' => { 'bindings' => [raw] } })
+      RestClient::Request.stub(:execute).with(anything).and_return({ 'results' => { 'bindings' => [raw] } })
       described_class.any_instance.stub(:get_fact).with(raw['id']['value'].split('/').last).and_return(raw)
       ClaimReviewRepository.any_instance.stub(:save).with(anything).and_return({ _index: 'claim_reviews', _type: 'claim_review', _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
       expect(described_class.new.get_claim_reviews).to(eq(nil))
@@ -42,7 +42,7 @@ describe GESISClaims do
 
     it 'runs through get_claim_reviews in response failure' do
       ClaimReview.stub(:existing_ids).with(['123'], described_class.service).and_return([])
-      RestClient.stub(:post).with(anything, anything, anything).and_return({})
+      RestClient::Request.stub(:execute).with(anything).and_return({})
       expect(described_class.new.get_claim_reviews).to(eq(nil))
     end
 

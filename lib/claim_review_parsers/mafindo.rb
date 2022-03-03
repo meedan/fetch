@@ -15,7 +15,15 @@ class Mafindo < ClaimReviewParser
   end
 
   def get_authors
-    JSON.parse(RestClient.post(self.hostname+self.authors_endpoint, {key: Settings.get("mafindo_api_key")}))
+    JSON.parse(
+      RestClient::Request.execute(
+        :method => :post,
+        :url => self.hostname+self.authors_endpoint,
+        :payload => {key: Settings.get("mafindo_api_key")},
+        :timeout => 10,
+        :open_timeout => 10
+      )
+    )
   end
 
   def service_key
@@ -35,7 +43,13 @@ class Mafindo < ClaimReviewParser
   end
 
   def request_fact_page(page, limit)
-    RestClient.post(self.hostname+self.fact_list_path, {key: Settings.get("mafindo_api_key"), limit: limit, offset: page*limit})
+    RestClient::Request.execute(
+      :method => :post,
+      :url => self.hostname+self.fact_list_path,
+      :payload => {key: Settings.get("mafindo_api_key"), limit: limit, offset: page*limit},
+      :timeout => 10,
+      :open_timeout => 10
+    )
   end
 
   def get_fact_page_response(page)
