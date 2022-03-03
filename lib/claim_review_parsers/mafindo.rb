@@ -19,8 +19,7 @@ class Mafindo < ClaimReviewParser
       RestClient::Request.execute(
         :method => :post,
         :url => self.hostname+self.authors_endpoint,
-        :payload => {key: Settings.get("mafindo_api_key")}.to_json,
-        :headers => {content_type: 'application/json'},
+        :payload => {key: Settings.get("mafindo_api_key")},
         :timeout => 10,
         :open_timeout => 10
       )
@@ -47,8 +46,7 @@ class Mafindo < ClaimReviewParser
     RestClient::Request.execute(
       :method => :post,
       :url => self.hostname+self.fact_list_path,
-      :payload => {key: Settings.get("mafindo_api_key"), limit: limit, offset: page*limit}.to_json,
-      :headers => {content_type: 'application/json'},
+      :payload => {key: Settings.get("mafindo_api_key"), limit: limit, offset: page*limit},
       :timeout => 10,
       :open_timeout => 10
     )

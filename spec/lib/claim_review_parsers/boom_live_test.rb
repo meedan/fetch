@@ -15,12 +15,12 @@ describe BoomLive do
   end
   describe 'instance' do
     it 'walks through get_stories_by_category' do
-      RestClient::Request.stub(:execute).with(anything, described_class.new.api_params).and_return(File.read('spec/fixtures/boom_live_raw.json'))
+      RestClient::Request.stub(:execute).with(anything).and_return(File.read('spec/fixtures/boom_live_raw.json'))
       expect(described_class.new.get_stories_by_category(1, 1, 1).class).to(eq(Hash))
     end
 
     it 'walks through get_new_stories_by_category' do
-      RestClient::Request.stub(:execute).with(anything, described_class.new.api_params).and_return({ 'news' => [JSON.parse(File.read('spec/fixtures/boom_live_raw.json'))] }.to_json)
+      RestClient::Request.stub(:execute).with(anything).and_return({ 'news' => [JSON.parse(File.read('spec/fixtures/boom_live_raw.json'))] }.to_json)
       ClaimReview.stub(:existing_urls).with(anything, anything).and_return([])
       expect(described_class.new.get_new_stories_by_category(1, 1).class).to(eq(Array))
     end
@@ -60,7 +60,7 @@ describe BoomLive do
     end
 
     it 'walks through get_path' do
-      RestClient::Request.stub(:execute).with(anything, described_class.new.api_params).and_return(File.read('spec/fixtures/boom_live_raw.json'))
+      RestClient::Request.stub(:execute).with(anything).and_return(File.read('spec/fixtures/boom_live_raw.json'))
       expect(described_class.new.get_path('123').class).to(eq(Hash))
     end
     it 'has a hostname' do
@@ -73,7 +73,7 @@ describe BoomLive do
 
     it 'parses a raw_claim_review' do
       raw = JSON.parse(File.read('spec/fixtures/boom_live_raw.json'))
-      RestClient::Request.stub(:execute).with(raw['url']).and_return("<html><div class='claim-review-block'><div class='claim-value'>fact check <span class='value'>False</span></div></div></html>")
+      RestClient::Request.stub(:execute).with({:cookies=>{}, :headers=>{}, :method=>:get, :payload=>nil, :url=>raw['url']}).and_return("<html><div class='claim-review-block'><div class='claim-value'>fact check <span class='value'>False</span></div></div></html>")
       parsed_claim = described_class.new.parse_raw_claim_review(raw)
       expect(parsed_claim.class).to(eq(Hash))
       ClaimReview.mandatory_fields.each do |field|
