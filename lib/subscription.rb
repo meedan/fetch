@@ -1,4 +1,4 @@
-class Subscription.get_subscriptions
+class Subscription
   def self.keyname(service)
     "claim_review_webhooks_#{service}"
   end
