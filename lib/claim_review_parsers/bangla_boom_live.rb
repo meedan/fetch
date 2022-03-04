@@ -28,7 +28,7 @@ class BanglaBoomLive < ClaimReviewParser
       author: article && article["author"] && article["author"]["name"],
       author_link: article && article["author"] && hostname+article["author"]["url"],
       claim_review_headline: article["claimReviewed"],
-      claim_review_body: raw_claim_review["page"].search("div.short-factcheck-snippet").text,
+      claim_review_body: raw_claim_review["page"].search("div.single-post-summary h2").text,
       claim_review_reviewed: article["itemReviewed"] && article["itemReviewed"]["name"],
       claim_review_image_url: article["image"] && article["image"]["contentUrl"],
       claim_review_result: article["reviewRating"] && article["reviewRating"]["alternateName"],
