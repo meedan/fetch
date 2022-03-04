@@ -48,7 +48,7 @@ describe TheQuint do
       expect(described_class.new.claim_image_url_from_raw_claim_review({})).to(eq(nil))
     end
     it 'rescues from claim_reviewed_from_raw_claim_review' do
-      expect(described_class.new.claim_reviewed_from_raw_claim_review(nil)).to(eq(nil))
+      expect(described_class.new.claim_reviewed_from_raw_claim_review(nil)).to(eq(""))
     end
     it 'rescues from created_at_from_raw_claim_review' do
       expect(described_class.new.created_at_from_raw_claim_review({})).to(eq(nil))
@@ -79,7 +79,7 @@ describe TheQuint do
     end
 
     it 'rescues from claim_result_score_from_raw_claim_review' do
-      expect(described_class.new.claim_result_score_from_raw_claim_review(nil)).to(eq(nil))
+      expect(described_class.new.claim_result_score_from_raw_claim_review(nil)).to(eq(0))
     end
   end
 end
