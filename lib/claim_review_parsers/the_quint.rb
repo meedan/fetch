@@ -53,38 +53,31 @@ class TheQuint < ClaimReviewParser
     Error.log(e)
   end
 
-  def claim_result_from_raw_claim_review(raw_claim_review)
+  def story_attributes_key_from_raw_claim_review(raw_claim_review, keyname)
     raw_claim_review['story'] &&
     raw_claim_review['story']['metadata'] &&
     raw_claim_review['story']['metadata']['story-attributes'] &&
-    raw_claim_review['story']['metadata']['story-attributes']['factcheck'] &&
-    raw_claim_review['story']['metadata']['story-attributes']['factcheck'].first
+    raw_claim_review['story']['metadata']['story-attributes'][keyname] &&
+    raw_claim_review['story']['metadata']['story-attributes'][keyname].first
   rescue StandardError => e
     Error.log(e)
+  end
+
+  def claim_result_from_raw_claim_review(raw_claim_review)
+    story_attributes_key_from_raw_claim_review(raw_claim_review, 'factcheck')
   end
 
   def claim_result_score_from_raw_claim_review(raw_claim_review)
-    value = raw_claim_review['story'] &&
-    raw_claim_review['story']['metadata'] &&
-    raw_claim_review['story']['metadata']['story-attributes'] &&
-    raw_claim_review['story']['metadata']['story-attributes']['claimreviewrating'] &&
-    raw_claim_review['story']['metadata']['story-attributes']['claimreviewrating'].first.to_s
+    value = story_attributes_key_from_raw_claim_review(raw_claim_review, 'claimreviewrating').to_s
     value.to_s.empty? ? 0 : Integer(value, 10)
-  rescue StandardError => e
-    Error.log(e)
   end
 
   def claim_reviewed_from_raw_claim_review(raw_claim_review)
-    raw_claim_review['story'] &&
-    raw_claim_review['story']['metadata'] &&
-    raw_claim_review['story']['metadata']['story-attributes'] &&
-    raw_claim_review['story']['metadata']['story-attributes']['claimreviewed'] &&
-    raw_claim_review['story']['metadata']['story-attributes']['claimreviewrating'].first.to_s
-  rescue StandardError => e
-    Error.log(e)
+    story_attributes_key_from_raw_claim_review(raw_claim_review, 'claimreviewed').to_s
   end
 
   def claim_headline_from_raw_claim_review(raw_claim_review)
+    raw_claim_review['story'] && 
     raw_claim_review['story']['headline']
   rescue StandardError => e
     Error.log(e)
