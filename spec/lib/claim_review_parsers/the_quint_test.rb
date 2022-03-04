@@ -44,6 +44,10 @@ describe TheQuint do
       expect(described_class.new.get_claim_reviews).to(eq(nil))
     end
 
+    it 'rescues from claim_headline_from_raw_claim_review' do
+      expect(described_class.new.claim_headline_from_raw_claim_review(nil)).to(eq(nil))
+    end
+
     it 'rescues from claim_image_url_from_raw_claim_review' do
       expect(described_class.new.claim_image_url_from_raw_claim_review({})).to(eq(nil))
     end

@@ -65,21 +65,15 @@ class TheQuint < ClaimReviewParser
 
   def claim_result_from_raw_claim_review(raw_claim_review)
     story_attributes_key_from_raw_claim_review(raw_claim_review, 'factcheck')
-  rescue StandardError => e
-    Error.log(e)
   end
 
   def claim_result_score_from_raw_claim_review(raw_claim_review)
     value = story_attributes_key_from_raw_claim_review(raw_claim_review, 'claimreviewrating').to_s
     value.to_s.empty? ? 0 : Integer(value, 10)
-  rescue StandardError => e
-    Error.log(e)
   end
 
   def claim_reviewed_from_raw_claim_review(raw_claim_review)
     story_attributes_key_from_raw_claim_review(raw_claim_review, 'claimreviewed').to_s
-  rescue StandardError => e
-    Error.log(e)
   end
 
   def claim_headline_from_raw_claim_review(raw_claim_review)
