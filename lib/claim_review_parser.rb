@@ -90,12 +90,14 @@ class ClaimReviewParser
   def request(method, url, payload=nil)
     make_request do
       headers = @user_agent ? {user_agent: @user_agent} : {}
+      proxy = @proxy ? @proxy : nil
       RestClient::Request.execute(
         method: method,
         url: url,
         payload: payload,
         cookies: @cookies,
-        headers: headers
+        headers: headers,
+        proxy: proxy
       )
     end
   end
@@ -168,7 +170,7 @@ class ClaimReviewParser
   end
 
   def self.test_parser_on_url(url)
-    response = RestClient::Request.execute(method: :get, url: url, open_timeout: 10, read_timeout: 10)
+    response = self.new.request(:get, url)
     params = {"page" => Nokogiri.parse(response), "url" => url}
     self.new.parse_raw_claim_review(params)
   end

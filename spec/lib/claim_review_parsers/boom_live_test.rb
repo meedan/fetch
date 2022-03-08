@@ -73,7 +73,7 @@ describe BoomLive do
 
     it 'parses a raw_claim_review' do
       raw = JSON.parse(File.read('spec/fixtures/boom_live_raw.json'))
-      RestClient::Request.stub(:execute).with({:cookies=>{}, :headers=>{}, :method=>:get, :payload=>nil, :url=>raw['url']}).and_return("<html><div class='claim-review-block'><div class='claim-value'>fact check <span class='value'>False</span></div></div></html>")
+      RestClient::Request.stub(:execute).with({:cookies=>{}, :headers=>{}, :method=>:get, :payload=>nil, :proxy=>nil, :url=>raw['url']}).and_return("<html><div class='claim-review-block'><div class='claim-value'>fact check <span class='value'>False</span></div></div></html>")
       parsed_claim = described_class.new.parse_raw_claim_review(raw)
       expect(parsed_claim.class).to(eq(Hash))
       ClaimReview.mandatory_fields.each do |field|
