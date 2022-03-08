@@ -22,7 +22,7 @@ class VeraFiles < ClaimReviewParser
   end
 
   def url_extractor(atag)
-    hostname + atag.attributes['href'].value
+    atag.attributes['href'].value
   end
 
   def parse_raw_claim_review(raw_claim_review)
