@@ -26,6 +26,10 @@ namespace :test do
   end
 end
 
+task :schedule_stale_parser_check do
+  Sidekiq::Cron::Job.create(name: 'Stale Parser Check', cron: '0 0 * * *', class: 'CheckForStaleParsers')
+end
+
 task :list_datasources do
   puts ClaimReviewParser.subclasses.map(&:service)
 end
