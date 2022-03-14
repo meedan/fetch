@@ -56,5 +56,14 @@ describe TempoCekfakta do
         expect(QuietHashie[parsed_claim][field].nil?).to(eq(false))
       end
     end
+
+    it 'fails to parse a wrong-domained raw_claim_review' do
+      raw = JSON.parse(File.read('spec/fixtures/tempo_cekfakta_raw.json'))
+      raw["url"] = "https://gaya.tempo.co/read/1534430/lebih-detail-tentang-varian-omicron-dan-beberapa-gejalanya"
+      raw['page'] = Nokogiri.parse(raw['page'])
+      parsed_claim = described_class.new.parse_raw_claim_review(raw)
+      expect(parsed_claim.class).to(eq(Hash))
+      expect(parsed_claim).to(eq({}))
+    end
   end
 end

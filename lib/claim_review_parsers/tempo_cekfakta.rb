@@ -44,9 +44,13 @@ class TempoCekfakta < ClaimReviewParser
     "section#article div.card a"
   end
 
+  def domain_is_only_cekfakta(url)
+    url.include?("cekfakta.tempo.co")
+  end
+
   def url_extractor(atag)
     url = atag.attributes["href"].value
-    url.include?("cekfakta.tempo.co") ? url : nil
+    domain_is_only_cekfakta(url) ? url : nil
   end
 
   def store_claim_reviews_for_page(time=DateTime.now)
@@ -75,6 +79,7 @@ class TempoCekfakta < ClaimReviewParser
   end
 
   def parse_raw_claim_review(raw_claim_review)
+    return {} if !domain_is_only_cekfakta(raw_claim_review['url'])
     claim_review_result, claim_review_result_score = get_claim_review_results_from_raw_claim_review(raw_claim_review)
     {
       id: raw_claim_review['url'],
