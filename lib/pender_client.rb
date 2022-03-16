@@ -22,7 +22,7 @@ class PenderClient
       return {}
     end
   rescue => e
-    Error.log(e, {url: url}) if (e.class.ancestors.include?(RestClient::Exception) && (e.http_code||500) >= 500 || !e.class.ancestors.include?(RestClient::Exception))
+    Error.log(e, {url: url})#lets just throw all errors until we figure out whats going on here.# if (e.class.ancestors.include?(RestClient::Exception) && (e.http_code||500) >= 500 || !e.class.ancestors.include?(RestClient::Exception))
     return {}
   end
 
