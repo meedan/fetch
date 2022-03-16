@@ -3,12 +3,16 @@
 # Parser for https://factcheck.afp.com
 class Telemundo < ClaimReviewParser
   include PaginatedReviewClaims
+  def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
+    cursor_back_to_date ||= Time.now-60*60*24*7 #looks like their pagination just loops back to other stories, breaking our iteration completion logic. Override to short window when not specified.
+    super(cursor_back_to_date, overwrite_existing_claims, send_notifications)
+  end
+
   def hostname
     'https://www.telemundo.com'
   end
 
   def fact_list_path(page = 1)
-    # appears to be zero-indexed
     "/noticias/t-verifica?page=#{page}"
   end
 
