@@ -133,7 +133,7 @@ class ClaimReviewParser
                   else
                     times.min
                   end
-    claim_reviews.empty? || (!@cursor_back_to_date.nil? && oldest_time < @cursor_back_to_date)
+    claim_reviews.empty? || oldest_time.nil? || (!@cursor_back_to_date.nil? && oldest_time < @cursor_back_to_date)
   end
 
   def parse_raw_claim_reviews(raw_claim_reviews)
