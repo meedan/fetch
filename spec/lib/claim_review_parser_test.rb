@@ -68,6 +68,17 @@ describe ClaimReviewParser do
       expect(StubReviewJSON.new.get_url(StubReviewJSON.new.hostname).class).to(eq(RestClient::Response))
     end
 
+    it "expects finsihed_iterating? when getting invalid articles" do
+      claim_reviews = [
+        {:id=>"https://www.indiatoday.in/fact-check/video/fact-check-video-no-this-video-doesn-t-show-us-army-troops-paradropping-into-ukraine-1926219-2022-03-16"},
+        {:id=>"https://www.indiatoday.in/fact-check/story/fact-check-centre-not-interest-free-loans-kcc-scheme-april-1-1926214-2022-03-16"},
+        {:id=>"https://www.indiatoday.in/fact-check/video/fact-check-video-this-is-not-lk-advani-breaking-down-after-watching-the-kashmir-files-1925769-2022-03-15"},
+        {:id=>"https://www.indiatoday.in/fact-check/story/fact-check-2019-haryana-viral-bjp-capturing-booths-up-assembly-polls-1925303-2022-03-14"},
+        {:id=>"https://www.indiatoday.in/fact-check/video/rahul-didnt-play-badminton-after-poll-drubbing-1924860-2022-03-13"}
+      ]
+      expect(StubReviewJSON.new.finished_iterating?(claim_reviews)).to(eq(true))
+    end
+
     it 'expects forcefully-emptied get_existing_urls' do
       rp = described_class.new(Time.now - 60 * 60 * 24)
       expect(rp.get_existing_urls(['123'])).to(eq([]))
