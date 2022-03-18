@@ -6,20 +6,8 @@ describe AfricaCheck do
       expect(described_class.new.hostname).to(eq('https://africacheck.org'))
     end
 
-    it 'has a fact_list_path' do
-      expect(described_class.new.fact_list_path(1)).to(eq('/fact-checks?field_article_type_value=reports&field_rated_value=All&field_country_value=All&sort_bef_combine=created_DESC&sort_by=created&sort_order=DESC&page=1'))
-    end
-
-    it 'has a url_extraction_search' do
-      expect(described_class.new.url_extraction_search).to(eq('article'))
-    end
-
     it 'rescues against a claim_review_image_url_from_raw_claim_review' do
       expect(described_class.new.claim_review_image_url_from_raw_claim_review({"page" => Nokogiri.parse("<article about='/blah'>wow</article>")})).to(eq(nil))
-    end
-
-    it 'extracts a url' do
-      expect(described_class.new.url_extractor(Nokogiri.parse("<article about='/blah'>wow</article>").search('article')[0])).to(eq(described_class.new.hostname+'/blah'))
     end
 
     it 'expects a claim_result_text_map' do
@@ -28,6 +16,14 @@ describe AfricaCheck do
 
     it 'stubs the response for a nil get_claim_review_from_raw_claim_review' do
       expect(described_class.new.parse_raw_claim_review({"url" => "blah"})).to(eq({id: "blah"}))
+    end
+
+    it 'checks that get_new_fact_page_urls(page) works' do
+      RestClient::Request.stub(:execute).with(anything).and_return(JSON.parse(File.read('spec/fixtures/africa_check_page_response.json')).to_json)
+      described_class.any_instance.stub(:get_existing_urls).with(anything).and_return([])
+      response = described_class.new.get_new_fact_page_urls(1)
+      expect(response.class).to(eq(Array))
+      expect(response.empty?).to(eq(false))
     end
 
     it 'parses a raw_claim_review' do

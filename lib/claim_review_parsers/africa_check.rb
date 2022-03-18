@@ -7,16 +7,29 @@ class AfricaCheck < ClaimReviewParser
     'https://africacheck.org'
   end
 
-  def fact_list_path(page = 1)
-    "/fact-checks?field_article_type_value=reports&field_rated_value=All&field_country_value=All&sort_bef_combine=created_DESC&sort_by=created&sort_order=DESC&page=#{page}"
+  def request_fact_page(page)
+    RestClient::Request.execute(
+      method: :post,
+      url: self.hostname+"/views/ajax?_wrapper_format=drupal_ajax",
+      payload: "view_name=article&view_display_id=pg_landing&view_args=&view_path=%2Ffact-checks&view_base_path=fact-checkspager_element=0&field_article_type_value=All&field_rated_value=All&field_country_value=All&sort_bef_combine=created_DESC&sort_by=created&sort_order=DESC&page=2",
+    )
   end
 
-  def url_extraction_search
-    'article'
+  def url_from_raw_article(a_tag)
+    a_tag.attributes["href"].value
   end
 
-  def url_extractor(atag)
-    atag.attributes['about'] && atag.attributes['about'].value && hostname+atag.attributes['about'].value
+  def get_page_urls(page)
+    Nokogiri.parse(
+      JSON.parse(
+        request_fact_page(page)
+      )[-1]["data"]
+    ).search("h3 a").collect{|a| url_from_raw_article(a)}
+  end
+
+  def get_new_fact_page_urls(page)
+    urls = get_page_urls(page)
+    urls-get_existing_urls(urls)
   end
 
   def claim_review_image_url_from_raw_claim_review(raw_claim_review)

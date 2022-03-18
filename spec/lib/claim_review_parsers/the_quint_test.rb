@@ -38,7 +38,7 @@ describe TheQuint do
     end
 
     it 'walks through get_claim_reviews' do
-      described_class.any_instance.stub(:get_new_claim_reviews_for_page).with(1).and_return([{}])
+      described_class.any_instance.stub(:get_new_claim_reviews_for_page).with(1).and_return([{created_at: Time.now, id: "blah"}])
       described_class.any_instance.stub(:get_new_claim_reviews_for_page).with(2).and_return([])
       ClaimReview.stub(:existing_urls).with(anything, described_class.service).and_return([])
       expect(described_class.new.get_claim_reviews).to(eq(nil))
