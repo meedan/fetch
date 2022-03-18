@@ -38,7 +38,7 @@ describe BoomLive do
     end
 
     it 'walks through get_all_stories_by_category' do
-      described_class.any_instance.stub(:store_claim_reviews_for_category_id_and_page).with(1, 1).and_return([{}])
+      described_class.any_instance.stub(:store_claim_reviews_for_category_id_and_page).with(1, 1).and_return([{created_at: Time.now, id: "blah"}])
       described_class.any_instance.stub(:store_claim_reviews_for_category_id_and_page).with(1, 2).and_return([])
       expect(described_class.new.get_all_stories_by_category(1)).to(eq(nil))
     end
