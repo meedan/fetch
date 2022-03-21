@@ -7,6 +7,11 @@ describe StoredSubscription do
     end
   end
   describe 'class' do
+    it 'expects to rescue failed storage' do
+      StoredSubscriptionRepository.any_instance.stub(:delete).with(anything).and_raise(Elasticsearch::Transport::Transport::Errors::NotFound.new({}))
+      StoredSubscription.stub(:get_subscription_for_url).with(anything, anything).and_return({"params" => "{}"})
+      expect(StoredSubscription.delete_subscription("service", "url")).to(eq({}))
+    end
     it 'expects repository instance' do
       expect(described_class.repository.class).to(eq(StoredSubscriptionRepository))
     end

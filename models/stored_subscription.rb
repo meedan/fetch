@@ -30,6 +30,8 @@ class StoredSubscription
   def self.delete_subscription(service, url)
     document = self.get_subscription_for_url(service, url)
     repository.delete(id: self.id_for_record(document["service"], document["subscription_url"]))
+  rescue => e
+    return {} if e.class == Elasticsearch::Transport::Transport::Errors::NotFound
   end
 
   def self.get_subscriptions_for_service(service)
