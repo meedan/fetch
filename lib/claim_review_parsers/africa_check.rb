@@ -76,7 +76,7 @@ class AfricaCheck < ClaimReviewParser
     if claim_review
       {
         id: raw_claim_review['url'],
-        created_at: Time.parse(claim_review["datePublished"]||claim_review["dateModified"]),
+        created_at: get_created_at_from_article(claim_review),
         author: claim_review["author"]["name"],
         author_link: claim_review["author"]["url"],
         claim_review_headline: claim_review["headline"],

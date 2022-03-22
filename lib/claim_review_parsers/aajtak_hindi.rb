@@ -20,10 +20,6 @@ class AajtakHindi < ClaimReviewParser
     Nokogiri.parse("<html><body>"+response['html_content']+"</html></body>").search("li a").collect{|x| x.attributes['href'].value}
   end
 
-  def get_created_at_from_article(article)
-    (Time.parse(article['datePublished'] || article["dateModified"]) rescue nil)
-  end
-
   def get_author_attribute(article, attribute)
     article && article["author"] && article["author"][0] && article["author"][0][attribute]
   end
