@@ -20,10 +20,6 @@ class Tsek < ClaimReviewParser
     )
   end
 
-  def url_from_raw_article(raw_article)
-    raw_article.search("a").first.attributes["href"].value
-  end
-
   def get_page_urls
     JSON.parse(
       request_fact_page
