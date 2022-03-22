@@ -28,11 +28,10 @@ describe Tsek do
 
     it 'returns get_new_fact_page_urls' do
       described_class.any_instance.stub(:get_existing_urls).with(anything).and_return([])
-      expect(described_class.new.get_new_fact_page_urls(1)).to(eq(["/blah", "/blah2"]))
+      expect(described_class.new.get_new_fact_page_urls(1)[0]).to(eq("https://www.tsek.ph/70-million-katao-dumalo-sa-leni-kiko-grand-rally-sa-bacolod/"))
     end
 
     it 'parses a raw_claim_review' do
-      binding.pry
       raw = JSON.parse(File.read('spec/fixtures/tsek_raw.json'))
       raw['page'] = Nokogiri.parse(raw['page'])
       parsed_claim = described_class.new.parse_raw_claim_review(raw)
