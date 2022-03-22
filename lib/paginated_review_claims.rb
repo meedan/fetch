@@ -19,6 +19,10 @@ module PaginatedReviewClaims
     Error.log(e)
   end
 
+  def get_created_at_from_article(article)
+    (Time.parse(article['datePublished'] || article["dateModified"]) rescue nil)
+  end
+
   def parsed_fact_list_page(page = 1)
     response = get_url(hostname + fact_list_path(page))
       return if response.nil?
