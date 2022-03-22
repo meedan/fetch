@@ -23,11 +23,7 @@ describe Tsek do
     end
 
     it 'gets urls from a fact page' do
-      expect(described_class.new.get_page_urls).to(eq(["/blah", "/blah2"]))
-    end
-
-    it 'gets a created_at from a raw_claim_review' do
-      expect(described_class.new.created_at_from_raw_claim_review({"page" => Nokogiri.parse("<html><body><div id='primary'><div class='cs-meta-date'>29/01/2021</div></div></body></html>")})).to(eq("29/01/2021"))
+      expect(described_class.new.get_page_urls[0]).to(eq("https://www.tsek.ph/70-million-katao-dumalo-sa-leni-kiko-grand-rally-sa-bacolod/"))
     end
 
     it 'returns get_new_fact_page_urls' do
