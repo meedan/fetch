@@ -41,18 +41,18 @@ class Telemundo < ClaimReviewParser
   end
 
   def parse_raw_claim_review(raw_claim_review)
-    claim_review = extract_ld_json_script_block(raw_claim_review["page"], 2)
+    best_schema_object_available = JSON.parse(extract_all_ld_json_script_blocks(raw_claim_review["page"]).select{|x| JSON.parse(x).keys.include?("headline") rescue nil}.first)
     latest_timestamp = [(Time.parse(claim_review["datePublished"]) rescue nil), og_timestamps_from_raw_claim_review(raw_claim_review)].compact.flatten.sort.last
     {
       id: raw_claim_review['url'],
       created_at: latest_timestamp,
-      author: get_claim_review_author_value(claim_review, "name"),
-      author_link: get_claim_review_author_value(claim_review, "id"),
-      claim_review_headline: claim_review["headline"],
-      claim_review_body: claim_review["description"] || claim_review_body_from_raw_claim_review(raw_claim_review),
+      author: get_claim_review_author_value(best_schema_object_available, "name"),
+      author_link: get_claim_review_author_value(best_schema_object_available, "id"),
+      claim_review_headline: best_schema_object_available["headline"],
+      claim_review_body: best_schema_object_available["description"] || claim_review_body_from_raw_claim_review(raw_claim_review),
       claim_review_image_url: claim_review_image_url_from_raw_claim_review(raw_claim_review),
       claim_review_url: raw_claim_review['url'],
-      raw_claim_review: claim_review
+      raw_claim_review: best_schema_object_available
     }
   end
 end
