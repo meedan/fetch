@@ -24,7 +24,7 @@ class AfricaCheck < ClaimReviewParser
       JSON.parse(
         request_fact_page(page)
       )[-1]["data"]
-    ).search("h3 a").collect{|a| url_from_raw_article(a)}
+    ).search("h3 a").collect{|a| self.hostname+url_from_raw_article(a)}
   end
 
   def get_new_fact_page_urls(page)
