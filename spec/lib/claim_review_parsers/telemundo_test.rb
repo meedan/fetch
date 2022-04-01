@@ -27,6 +27,14 @@ describe Telemundo do
       expect(described_class.new.claim_review_image_url_from_raw_claim_review({"page" => Nokogiri.parse("<a href='/blah'>wow</a>")})).to(eq(nil))
     end
 
+    it 'generates a workable text from the raw_claim_review' do
+      raw = JSON.parse(File.read('spec/fixtures/telemundo_raw.json'))
+      raw['page'] = Nokogiri.parse(raw['page'])
+      response = Telemundo.new.claim_review_body_from_raw_claim_review(raw)
+      expect(response.class).to(eq(String))
+      expect(response.length > 100).to(eq(true))
+    end
+
     it 'parses a raw_claim_review' do
       raw = JSON.parse(File.read('spec/fixtures/telemundo_raw.json'))
       raw['page'] = Nokogiri.parse(raw['page'])

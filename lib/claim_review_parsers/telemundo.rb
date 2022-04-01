@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Parser for https://factcheck.afp.com
+# Parser for https://www.telemundo.com
 class Telemundo < ClaimReviewParser
   include PaginatedReviewClaims
   def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
@@ -41,7 +41,9 @@ class Telemundo < ClaimReviewParser
   end
 
   def parse_raw_claim_review(raw_claim_review)
-    best_schema_object_available = JSON.parse(extract_all_ld_json_script_blocks(raw_claim_review["page"]).select{|x| JSON.parse(x).keys.include?("headline") rescue nil}.first)
+    article_object = extract_all_ld_json_script_blocks(raw_claim_review["page"]).select{|x| JSON.parse(x).keys.include?("headline") rescue nil}.first
+    return {} if article_object.nil?
+    best_schema_object_available = JSON.parse(article_object)
     latest_timestamp = [(Time.parse(claim_review["datePublished"]) rescue nil), og_timestamps_from_raw_claim_review(raw_claim_review)].compact.flatten.sort.last
     {
       id: raw_claim_review['url'],
