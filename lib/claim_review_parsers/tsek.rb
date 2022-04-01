@@ -57,7 +57,7 @@ class Tsek < ClaimReviewParser
       claim_review_headline: news_article["headline"],
       claim_review_body: get_description(raw_claim_review),
       claim_review_image_url: get_image_url(raw_claim_review),
-      claim_review_result: news_article["articleSection"][0],
+      claim_review_result: news_article["articleSection"] && news_article["articleSection"][0],
       claim_review_url: raw_claim_review['url'],
       raw_claim_review: news_article
     }
