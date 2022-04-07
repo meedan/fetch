@@ -22,6 +22,7 @@ class PenderClient
       return {}
     end
   rescue => e
+    Error.log("Pender Client Failed to Get URL!", {error: e.to_s, url: url})
     Error.log(e, {url: url})#lets just throw all errors until we figure out whats going on here.# if (e.class.ancestors.include?(RestClient::Exception) && (e.http_code||500) >= 500 || !e.class.ancestors.include?(RestClient::Exception))
     return {}
   end
