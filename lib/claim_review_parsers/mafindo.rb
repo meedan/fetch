@@ -46,7 +46,7 @@ class Mafindo < ClaimReviewParser
     RestClient::Request.execute(
       :method => :post,
       :url => self.hostname+self.fact_list_path,
-      :payload => {key: Settings.get("mafindo_api_key"), limit: limit, offset: page*limit},
+      :payload => {key: Settings.get("mafindo_api_key"), limit: limit, offset: (page-1)*limit},
       :timeout => 10,
       :open_timeout => 10
     )
@@ -106,6 +106,7 @@ class Mafindo < ClaimReviewParser
   end
 
   def parse_raw_claim_review(raw_claim_review)
+    binding.pry
     authors = @authors.select{|x| !([x["id"]]&[raw_claim_review['authors']].flatten).empty?}
     {
       id: raw_claim_review['id'],
