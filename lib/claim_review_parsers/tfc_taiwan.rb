@@ -13,7 +13,7 @@ class TFCTaiwan < ClaimReviewParser
   end
 
   def url_extraction_search
-    'article.post-body h3.article-title a'
+    'h3.entity-list-title a'
   end
 
   def url_extractor(atag)
@@ -21,15 +21,15 @@ class TFCTaiwan < ClaimReviewParser
   end
 
   def claim_review_headline_from_raw_claim_review(raw_claim_review)
-    raw_claim_review["page"].search("article.blog-post h3.article-title").text
+    raw_claim_review["page"].search("div.content-main div.node-header h2.node-title").text
   end
   
   def claim_review_body_from_raw_claim_review(raw_claim_review)
-    raw_claim_review["page"].search("article.blog-post div.field-type-text-with-summary p").text
+    raw_claim_review["page"].search("div.content-main div.field-name-body").text
   end
 
   def claim_review_image_url_from_raw_claim_review(raw_claim_review)
-    image = raw_claim_review["page"].search("article.blog-post div.field-type-text-with-summary p img").first
+    image = raw_claim_review["page"].search("div.content-main img").first
     if image
       hostname+image.attributes["src"].value
     end
