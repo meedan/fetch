@@ -11,7 +11,7 @@ describe TFCTaiwan do
     end
 
     it 'has a url_extraction_search' do
-      expect(described_class.new.url_extraction_search).to(eq('article.post-body h3.article-title a'))
+      expect(described_class.new.url_extraction_search).to(eq('h3.entity-list-title a'))
     end
 
     it 'extracts a url' do
