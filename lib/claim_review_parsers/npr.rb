@@ -3,6 +3,10 @@
 # Parser for https://www.npr.org
 class NPR < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'https://www.npr.org'
   end
