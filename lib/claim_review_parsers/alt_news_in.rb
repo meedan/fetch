@@ -12,7 +12,7 @@ class AltNewsIn < ClaimReviewParser
   end
 
   def url_extraction_search
-    'div.herald-main-content h2.entry-title a'
+    'article .entry-title a'
   end
 
   def url_extractor(atag)
@@ -22,7 +22,7 @@ class AltNewsIn < ClaimReviewParser
   def parse_raw_claim_review(raw_claim_review)
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], 0, "script.yoast-schema-graph")
     claim_review_graph_article = claim_review["@graph"].select{|x| x["@type"] == "Article"}[0]
-    claim_review_graph_author = claim_review["@graph"].select{|x| x["@type"] == ["Person"]}[0]
+    claim_review_graph_author = claim_review["@graph"].select{|x| x["@type"] == ["Person"]}[0]||{}
     {
       id: raw_claim_review['url'],
       created_at: Time.parse(claim_review_graph_article["datePublished"]),

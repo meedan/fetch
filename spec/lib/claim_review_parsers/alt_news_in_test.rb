@@ -11,7 +11,7 @@ describe AltNewsIn do
     end
 
     it 'has a url_extraction_search' do
-      expect(described_class.new.url_extraction_search).to(eq('div.herald-main-content h2.entry-title a'))
+      expect(described_class.new.url_extraction_search).to(eq('article .entry-title a'))
     end
 
     it 'extracts a url' do
