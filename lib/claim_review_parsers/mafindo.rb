@@ -106,7 +106,6 @@ class Mafindo < ClaimReviewParser
   end
 
   def parse_raw_claim_review(raw_claim_review)
-    binding.pry
     authors = @authors.select{|x| !([x["id"]]&[raw_claim_review['authors']].flatten).empty?}
     {
       id: raw_claim_review['id'],
