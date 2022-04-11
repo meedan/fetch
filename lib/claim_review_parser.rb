@@ -58,7 +58,7 @@ class ClaimReviewParser
   end
 
   def self.run(service, cursor_back_to_date = nil, overwrite_existing_claims = false, send_notifications = true)
-    parsers[service].new(cursor_back_to_date, overwrite_existing_claims, send_notifications).get_claim_reviews
+    parsers[service] && parsers[service].new(cursor_back_to_date, overwrite_existing_claims, send_notifications).get_claim_reviews
   end
 
   def self.record_service_heartbeat(service)
