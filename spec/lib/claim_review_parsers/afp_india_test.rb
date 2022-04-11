@@ -15,7 +15,7 @@ describe AFPIndia do
     end
 
     it 'extracts a url' do
-      expect(described_class.new.url_extractor(Nokogiri.parse("<a href='/blah'>wow</a>").search('a')[0])).to(eq('https://factcheck.afp.com/afp-india'))
+      expect(described_class.new.url_extractor(Nokogiri.parse("<a href='/blah'>wow</a>").search('a')[0])).to(eq('https://factcheck.afp.com/afp-india/blah'))
     end
 
     it 'rescues against a claim_review_image_url_from_raw_claim_review' do
@@ -23,7 +23,7 @@ describe AFPIndia do
     end
 
     it 'parses a raw_claim_review' do
-      raw = JSON.parse(File.read('spec/fixtures/afp_faktencheck_raw.json'))
+      raw = JSON.parse(File.read('spec/fixtures/afp_india_raw.json'))
       raw['page'] = Nokogiri.parse(raw['page'])
       parsed_claim_review = described_class.new.parse_raw_claim_review(raw)
       expect(parsed_claim_review.class).to(eq(Hash))
