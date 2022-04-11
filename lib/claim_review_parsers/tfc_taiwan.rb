@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Parser for https://factcheck.afp.com
+# Parser for https://tfc-taiwan.org.tw
 class TFCTaiwan < ClaimReviewParser
   include PaginatedReviewClaims
   def hostname
