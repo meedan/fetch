@@ -3,6 +3,10 @@
 require_relative('india_today')
 class AajtakIndiaToday < IndiaToday
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'https://aajtak.intoday.in'
   end
