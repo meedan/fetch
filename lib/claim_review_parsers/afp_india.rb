@@ -13,6 +13,10 @@ class AFPIndia < AFP
     "?page=#{page - 1}"
   end
 
+  def url_extractor(atag)
+    hostname.gsub("/afp-india", "") + atag.attributes['href'].value
+  end
+
   def get_text_blocks(raw_claim_review)
     raw_claim_review["page"].search("article div.article-entry p").collect(&:text).join(" ")
   end
