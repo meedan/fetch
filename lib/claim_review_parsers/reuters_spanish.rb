@@ -2,8 +2,12 @@
 
 class ReutersSpanish < Reuters
   include PaginatedReviewClaims
+  def self.deprecated
+    false
+  end
+
   def hostname
-    'https://www.reuters.com/fact-check/espanol'
+    'https://www.reuters.com'
   end
 
   def fact_list_path(page = 1)
