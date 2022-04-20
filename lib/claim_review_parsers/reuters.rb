@@ -2,6 +2,10 @@
 
 class Reuters < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'https://www.reuters.com'
   end
