@@ -68,6 +68,8 @@ GEM
     elasticsearch-transport (7.15.0)
       faraday (~> 1)
       multi_json
+    et-orbi (1.2.7)
+      tzinfo
     fakeredis (0.8.0)
       redis (~> 4.1)
     faraday (1.8.0)
@@ -90,6 +92,9 @@ GEM
     faraday-patron (1.0.0)
     faraday-rack (1.0.0)
     ffi (1.12.2)
+    fugit (1.5.3)
+      et-orbi (~> 1, >= 1.2.7)
+      raabro (~> 1.4)
     fuzzy-string-match (1.0.1)
       RubyInline (>= 3.8.6)
     hamster (3.0.0)
@@ -102,6 +107,7 @@ GEM
       domain_name (~> 0.5)
     i18n (1.8.2)
       concurrent-ruby (~> 1.0)
+    io-console (0.5.11)
     jmespath (1.4.0)
     json (2.6.1)
     json-canonicalization (0.3.0)
@@ -118,14 +124,17 @@ GEM
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.1115)
-    mini_portile2 (2.6.1)
+    mini_portile2 (2.8.0)
     minitest (5.14.4)
     multi_json (1.14.1)
     multipart-post (2.1.1)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     netrc (0.11.0)
-    nokogiri (1.12.5-x86_64-linux)
+    nokogiri (1.13.4)
+      mini_portile2 (~> 2.8.0)
+      racc (~> 1.4)
+    nokogiri (1.13.4-x86_64-linux)
       racc (~> 1.4)
     parallel (1.19.1)
     parser (3.0.3.2)
@@ -134,6 +143,7 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (4.0.5)
+    raabro (1.4.0)
     racc (1.6.0)
     rack (2.2.3)
     rack-protection (2.1.0)
@@ -147,6 +157,8 @@ GEM
       link_header (~> 0.0, >= 0.0.8)
     redis (4.1.4)
     regexp_parser (2.2.0)
+    reline (0.3.1)
+      io-console (~> 0.5)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
@@ -189,6 +201,9 @@ GEM
       rack (~> 2.0)
       rack-protection (>= 2.0.0)
       redis (>= 4.1.0)
+    sidekiq-cron (1.3.0)
+      fugit (>= 1.1)
+      sidekiq (>= 4.2.1)
     sidekiq-unique-jobs (7.1.12)
       brpoplpush-redis_script (> 0.1.1, <= 2.0.0)
       concurrent-ruby (~> 1.0, >= 1.0.5)
@@ -246,9 +261,9 @@ DEPENDENCIES
   i18n (= 1.8.2)
   json-ld
   matrix
-  mini_portile2 (= 2.6.1)
+  mini_portile2 (= 2.8.0)
   multi_json (= 1.14.1)
-  nokogiri (= 1.12.5)
+  nokogiri (= 1.13.4)
   parallel (= 1.19.1)
   pry
   public_suffix (= 4.0.5)
@@ -256,6 +271,7 @@ DEPENDENCIES
   rack-test
   rake
   redis (= 4.1.4)
+  reline
   rest-client
   retriable
   rspec
@@ -265,6 +281,7 @@ DEPENDENCIES
   rubocop-rspec (= 1.40.0)
   ruby-progressbar
   sidekiq
+  sidekiq-cron
   sidekiq-unique-jobs
   simplecov (= 0.17)
   sinatra
