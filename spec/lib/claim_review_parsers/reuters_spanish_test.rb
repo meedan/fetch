@@ -3,7 +3,7 @@
 describe ReutersSpanish do
   describe 'instance' do
     it 'has a hostname' do
-      expect(described_class.new.hostname).to(eq('https://www.reuters.com'))
+      expect(described_class.new.hostname).to(eq('https://www.reuters.com/fact-check/espanol'))
     end
 
     it 'has a fact_list_path' do
