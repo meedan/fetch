@@ -46,9 +46,49 @@ class Tsek < ClaimReviewParser
     description
   end
 
+  def claim_review_results_from_news_article(news_article)
+    news_article && [name_map[news_article["articleSection"]], rating_map[news_article["articleSection"]]]
+  end
+
+  def rating_map
+    {
+      ["Quiz"] => nil,
+      ["FALSE"] => 0.0,
+      ["MISLEADING"] => 0.5,
+      ["NEEDS CONTEXT"] => 0.5,
+      ["NO BASIS"] => 0.5,
+      ["Weekly update"] => nil,
+      ["ACCURATE"] => 1.0,
+      ["Videos"] => nil,
+      ["Press Releases"] => nil,
+      ["In the News"] => nil,
+      ["FALSE", "NO BASIS"] => 0.0,
+      ["FALSE", "MISLEADING"] => 0.0,
+    }
+  end
+
+  def name_map
+    {
+      ["Quiz"] => nil,
+      ["FALSE"] => "False",
+      ["MISLEADING"] => "Misleading",
+      ["NEEDS CONTEXT"] => "Needs Context",
+      ["NO BASIS"] => "No Basis",
+      ["Weekly update"] => nil,
+      ["ACCURATE"] => "Accurate",
+      ["Videos"] => nil,
+      ["Press Releases"] => nil,
+      ["In the News"] => nil,
+      ["FALSE", "NO BASIS"] => "False",
+      ["FALSE", "MISLEADING"] => "False",
+    }
+  end
+
+
   def parse_raw_claim_review(raw_claim_review)
     news_article = extract_ld_json_script_block(raw_claim_review["page"], 0)["@graph"].select{|x| x["@type"] == "NewsArticle"}[0] rescue {}
     author = extract_ld_json_script_block(raw_claim_review["page"], 0)["@graph"].select{|x| x["@type"] == "Person"}.last rescue {}
+    result, result_score = claim_review_results_from_news_article(news_article)
     {
       id: raw_claim_review['url'],
       created_at: get_created_at_from_article(news_article),
@@ -57,7 +97,8 @@ class Tsek < ClaimReviewParser
       claim_review_headline: news_article["headline"],
       claim_review_body: get_description(raw_claim_review),
       claim_review_image_url: get_image_url(raw_claim_review),
-      claim_review_result: news_article["articleSection"] && news_article["articleSection"][0],
+      claim_review_result: result,
+      claim_review_result_score: result_score,
       claim_review_url: raw_claim_review['url'],
       raw_claim_review: news_article
     }
