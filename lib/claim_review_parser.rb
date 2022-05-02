@@ -159,6 +159,14 @@ class ClaimReviewParser
     end
   end
 
+  def og_timestamps_from_raw_claim_review(raw_claim_review)
+    raw_claim_review["page"].search("meta").select{|x|
+      x.attributes["property"] && x.attributes["property"].value.include?("_time")
+    }.collect{|x|
+      Time.parse(x.attributes["content"].value) rescue nil
+    }.compact
+  end
+
   def value_from_og_tag(og_tag)
     og_tag.attributes["content"].value if og_tag
   end
