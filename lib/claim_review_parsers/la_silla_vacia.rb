@@ -20,8 +20,11 @@ class LaSillaVacia < ClaimReviewParser
     atag.attributes['href'].value
   end
 
-  def claim_review_result_and_score_from_raw_claim_review(raw_claim_review)
-    title_classes = raw_claim_review["page"].search("div.detector-article h1.h2").first.attributes["class"].value
+  def get_title_classes_from_raw_claim_review(raw_claim_review)
+    raw_claim_review["page"].search("div.detector-article h1.h2").first.attributes["class"].value
+  end
+
+  def claim_review_result_and_score_from_title_classes(title_classes)
     if title_classes.include?("border-scale-red")
       return [0.0, "False"]
     elsif title_classes.include?("border-scale-orange")
@@ -34,9 +37,8 @@ class LaSillaVacia < ClaimReviewParser
   end
 
   def parse_raw_claim_review(raw_claim_review)
-    claim_review = extract_ld_json_script_block(raw_claim_review["page"], 0)
     timestamp = Time.parse(raw_claim_review["page"].search("div.detector-article time.p").first.text.strip) rescue nil
-    claim_review_result, claim_review_result_score = claim_review_result_and_score_from_raw_claim_review(raw_claim_review)
+    claim_review_result, claim_review_result_score = claim_review_result_and_score_from_title_classes(get_title_classes_from_raw_claim_review(raw_claim_review))
     {
       id: raw_claim_review['url'],
       created_at: timestamp,

@@ -18,6 +18,13 @@ describe LaSillaVacia do
       expect(described_class.new.url_extractor(Nokogiri.parse("<a href='/blah'>wow</a>").search('a')[0])).to(eq('/blah'))
     end
 
+    it "checks all status returns for title_classes" do
+      expect(described_class.new.claim_review_result_and_score_from_title_classes("border-scale-red")).to(eq([0.0, "False"]))
+      expect(described_class.new.claim_review_result_and_score_from_title_classes("border-scale-orange")).to(eq([0.33, "Mostly False"]))
+      expect(described_class.new.claim_review_result_and_score_from_title_classes("border-scale-ligth-green")).to(eq([0.66, "Mostly True"]))
+      expect(described_class.new.claim_review_result_and_score_from_title_classes("border-scale-green")).to(eq([1.0, "True"]))
+    end
+
     it 'parses a raw_claim_review' do
       raw = JSON.parse(File.read('spec/fixtures/la_silla_vacia_raw.json'))
       raw['page'] = Nokogiri.parse(raw['page'])
