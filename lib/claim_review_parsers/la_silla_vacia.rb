@@ -44,7 +44,7 @@ class LaSillaVacia < ClaimReviewParser
       claim_review_body: "blah",
       claim_review_image_url: "blah",
       claim_review_result: "wow",
-      claim_review_result_score: 0
+      claim_review_result_score: 0,
       claim_review_url: raw_claim_review['url'],
     }
     # timestamp = Time.parse(raw_claim_review["page"].search("div.detector-article time.p").first.text.strip) rescue nil
