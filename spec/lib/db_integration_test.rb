@@ -58,6 +58,7 @@ describe 'integration test with ElasticSearch' do#, integration: true do
 
     it "ensures #{subclass}'s response looks as if it were saved" do
       expect(@storage_results[subclass].class).to(eq(Array))
+      print(@storage_results[subclass][0]) if subclass == LaSillaVacia
       expect(@storage_results[subclass][0].class).to(eq(Hash))
     end
 
