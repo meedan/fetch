@@ -37,9 +37,11 @@ class LaSillaVacia < ClaimReviewParser
   end
 
   def parse_raw_claim_review(raw_claim_review)
+    timestamp = Time.parse(raw_claim_review["page"].search("div.detector-article time.p").first.text.strip) rescue nil
+    claim_review_result, claim_review_result_score = claim_review_result_and_score_from_title_classes(get_title_classes_from_raw_claim_review(raw_claim_review))
     {
       id: "123",
-      created_at: Time.now,
+      created_at: timestamp,
       claim_review_headline: "Blah",
       claim_review_body: "blah",
       claim_review_image_url: "blah",
@@ -47,8 +49,6 @@ class LaSillaVacia < ClaimReviewParser
       claim_review_result_score: 0,
       claim_review_url: raw_claim_review['url'],
     }
-    # timestamp = Time.parse(raw_claim_review["page"].search("div.detector-article time.p").first.text.strip) rescue nil
-    # claim_review_result, claim_review_result_score = claim_review_result_and_score_from_title_classes(get_title_classes_from_raw_claim_review(raw_claim_review))
     # {
     #   id: Digest::MD5.hexdigest(raw_claim_review['url']),
     #   created_at: timestamp,
