@@ -24,6 +24,22 @@ class LaSillaVacia < ClaimReviewParser
     raw_claim_review["page"].search("div.detector-article h1.h2").first.attributes["class"].value
   end
 
+  def specifically_finished_iterating?(processed_claim_reviews, pages_since_last_hit)
+    finished_iterating?(processed_claim_reviews) && pages_since_last_hit < 10
+  end
+
+  def get_claim_reviews
+    page = 1
+    pages_since_last_hit = 0
+    processed_claim_reviews = store_claim_reviews_for_page(page)
+    until specifically_finished_iterating?(processed_claim_reviews, pages_since_last_hit)
+      page += 1
+      pages_since_last_hit += 1
+      processed_claim_reviews = store_claim_reviews_for_page(page)
+      pages_since_last_hit = 0 if !processed_claim_reviews.empty?
+    end
+  end
+
   def claim_review_result_and_score_from_title_classes(title_classes)
     if title_classes.include?("border-scale-red")
       return [0.0, "False"]
