@@ -38,7 +38,7 @@ class LaSillaVacia < ClaimReviewParser
 
   def parse_raw_claim_review(raw_claim_review)
     timestamp = Time.parse(raw_claim_review["page"].search("div.detector-article time.p").first.text.strip) rescue nil
-    claim_review_result, claim_review_result_score = claim_review_result_and_score_from_title_classes(get_title_classes_from_raw_claim_review(raw_claim_review))
+    claim_review_result_score, claim_review_result = claim_review_result_and_score_from_title_classes(get_title_classes_from_raw_claim_review(raw_claim_review))
     {
       id: raw_claim_review['url'],
       created_at: timestamp,
