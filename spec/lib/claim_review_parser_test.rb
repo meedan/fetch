@@ -68,7 +68,7 @@ describe ClaimReviewParser do
       expect(StubReviewJSON.new.get_url(StubReviewJSON.new.hostname).class).to(eq(RestClient::Response))
     end
 
-    it "expects finsihed_iterating? when getting invalid articles" do
+    it "expects finished_iterating? when getting invalid articles" do
       claim_reviews = [
         {:id=>"https://www.indiatoday.in/fact-check/video/fact-check-video-no-this-video-doesn-t-show-us-army-troops-paradropping-into-ukraine-1926219-2022-03-16"},
         {:id=>"https://www.indiatoday.in/fact-check/story/fact-check-centre-not-interest-free-loans-kcc-scheme-april-1-1926214-2022-03-16"},

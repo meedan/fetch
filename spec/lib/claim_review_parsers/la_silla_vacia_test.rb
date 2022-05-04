@@ -18,6 +18,13 @@ describe LaSillaVacia do
       expect(described_class.new.url_extractor(Nokogiri.parse("<a href='/blah'>wow</a>").search('a')[0])).to(eq('/blah'))
     end
 
+    it 'iterates on get_claim_reviews' do
+      described_class.any_instance.stub(:store_claim_reviews_for_page).with(1).and_return([{ 'created_at': Time.now - 7 * 24 * 24 * 60 }])
+      described_class.any_instance.stub(:store_claim_reviews_for_page).with(2).and_return([])
+      response = described_class.new.get_claim_reviews
+      expect(response).to(eq(nil))
+    end
+
     it "checks all status returns for title_classes" do
       expect(described_class.new.claim_review_result_and_score_from_title_classes("border-scale-red")).to(eq([0.0, "False"]))
       expect(described_class.new.claim_review_result_and_score_from_title_classes("border-scale-orange")).to(eq([0.33, "Mostly False"]))
