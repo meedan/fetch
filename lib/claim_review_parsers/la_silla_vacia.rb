@@ -25,9 +25,9 @@ class LaSillaVacia < ClaimReviewParser
   end
 
   def specifically_finished_iterating?(processed_claim_reviews, pages_since_last_hit)
-    finished_iterating?(processed_claim_reviews) && pages_since_last_hit < 10
+    finished_iterating?(processed_claim_reviews) && pages_since_last_hit > 10
   end
-
+  
   def get_claim_reviews
     page = 1
     pages_since_last_hit = 0
