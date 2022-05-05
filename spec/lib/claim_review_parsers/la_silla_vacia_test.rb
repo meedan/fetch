@@ -20,7 +20,7 @@ describe LaSillaVacia do
 
     it 'iterates on get_claim_reviews' do
       described_class.any_instance.stub(:store_claim_reviews_for_page).with(1).and_return([{ 'created_at': Time.now - 7 * 24 * 24 * 60 }])
-      1.upto(described_class.new.max_pages).each do |page|
+      1.upto(described_class.new.max_pages+1).each do |page|
         described_class.any_instance.stub(:store_claim_reviews_for_page).with(page).and_return([])
       end
       response = described_class.new.get_claim_reviews
