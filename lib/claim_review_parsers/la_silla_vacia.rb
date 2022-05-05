@@ -24,8 +24,12 @@ class LaSillaVacia < ClaimReviewParser
     raw_claim_review["page"].search("div.detector-article h1.h2").first.attributes["class"].value
   end
 
+  def max_pages
+    30
+  end
+
   def specifically_finished_iterating?(processed_claim_reviews, pages_since_last_hit)
-    finished_iterating?(processed_claim_reviews) && pages_since_last_hit > 30
+    finished_iterating?(processed_claim_reviews) && pages_since_last_hit > max_pages
   end
   
   def get_claim_reviews
