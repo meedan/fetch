@@ -20,12 +20,12 @@ describe HindiBoomLive do
 
     it "gets article authors from array" do
       article = {"author" => [{"@type"=>"Person", "name"=>"Runjay Kumar", "url"=>"/authors/runjay-kumar", "jobTitle"=>"Editor", "image"=>"/images/authorplaceholder.jpg?type=1", "sameAs"=>[]}]}
-      expect(described_class.new.get_article_author(article).to(eq({:author=>"Runjay Kumar", :author_link=>"http://hindi.boomlive.in/authors/runjay-kumar"})))
+      expect(described_class.new.get_article_author(article)).to(eq({:author=>"Runjay Kumar", :author_link=>"http://hindi.boomlive.in/authors/runjay-kumar"}))
     end
 
     it "gets article authors from dict" do
       article = {"author" => {"@type"=>"Person", "name"=>"Runjay Kumar", "url"=>"/authors/runjay-kumar", "jobTitle"=>"Editor", "image"=>"/images/authorplaceholder.jpg?type=1", "sameAs"=>[]}}
-      expect(described_class.new.get_article_author(article).to(eq({:author=>"Runjay Kumar", :author_link=>"http://hindi.boomlive.in/authors/runjay-kumar"})))
+      expect(described_class.new.get_article_author(article)).to(eq({:author=>"Runjay Kumar", :author_link=>"http://hindi.boomlive.in/authors/runjay-kumar"}))
     end
 
     it 'parses a raw_claim_review' do
