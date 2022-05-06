@@ -18,6 +18,16 @@ describe HindiBoomLive do
       expect(described_class.new.url_extractor(Nokogiri.parse("<a href='/blah'>wow</a>").search('a')[0])).to(eq('http://hindi.boomlive.in/blah'))
     end
 
+    it "gets article authors from array" do
+      article = {"author" => [{"@type"=>"Person", "name"=>"Runjay Kumar", "url"=>"/authors/runjay-kumar", "jobTitle"=>"Editor", "image"=>"/images/authorplaceholder.jpg?type=1", "sameAs"=>[]}]}
+      expect(described_class.new.get_article_author(article)).to(eq({:author=>"Runjay Kumar", :author_link=>"http://hindi.boomlive.in/authors/runjay-kumar"}))
+    end
+
+    it "gets article authors from dict" do
+      article = {"author" => {"@type"=>"Person", "name"=>"Runjay Kumar", "url"=>"/authors/runjay-kumar", "jobTitle"=>"Editor", "image"=>"/images/authorplaceholder.jpg?type=1", "sameAs"=>[]}}
+      expect(described_class.new.get_article_author(article)).to(eq({:author=>"Runjay Kumar", :author_link=>"http://hindi.boomlive.in/authors/runjay-kumar"}))
+    end
+
     it 'parses a raw_claim_review' do
       raw = JSON.parse(File.read('spec/fixtures/hindi_boom_live_raw.json'))
       raw['page'] = Nokogiri.parse(raw['page'])
