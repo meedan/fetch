@@ -29,6 +29,7 @@ class LaSillaVacia < ClaimReviewParser
   end
 
   def specifically_finished_iterating?(processed_claim_reviews, pages_since_last_hit)
+    puts [processed_claim_reviews, pages_since_last_hit].inspect
     finished_iterating?(processed_claim_reviews) && pages_since_last_hit > max_pages
   end
   
@@ -48,9 +49,11 @@ class LaSillaVacia < ClaimReviewParser
     if title_classes.include?("border-scale-red")
       return [0.0, "False"]
     elsif title_classes.include?("border-scale-orange")
-      return [0.33, "Mostly False"]
+      return [0.25, "Mostly False"]
+    elsif title_classes.include?("border-scale-yellow")
+      return [0.5, "Debatable"]
     elsif title_classes.include?("border-scale-ligth-green")
-      return [0.66, "Mostly True"]
+      return [0.75, "Mostly True"]
     elsif title_classes.include?("border-scale-green")
       return [1.0, "True"]
     end
