@@ -24,10 +24,15 @@ class LaSillaVacia < ClaimReviewParser
     raw_claim_review["page"].search("div.detector-article h1.h2").first.attributes["class"].value
   end
 
-  def specifically_finished_iterating?(processed_claim_reviews, pages_since_last_hit)
-    finished_iterating?(processed_claim_reviews) && pages_since_last_hit < 10
+  def max_pages
+    30
   end
 
+  def specifically_finished_iterating?(processed_claim_reviews, pages_since_last_hit)
+    puts [processed_claim_reviews, pages_since_last_hit].inspect
+    finished_iterating?(processed_claim_reviews) && pages_since_last_hit > max_pages
+  end
+  
   def get_claim_reviews
     page = 1
     pages_since_last_hit = 0
@@ -44,9 +49,11 @@ class LaSillaVacia < ClaimReviewParser
     if title_classes.include?("border-scale-red")
       return [0.0, "False"]
     elsif title_classes.include?("border-scale-orange")
-      return [0.33, "Mostly False"]
+      return [0.25, "Mostly False"]
+    elsif title_classes.include?("border-scale-yellow")
+      return [0.5, "Debatable"]
     elsif title_classes.include?("border-scale-ligth-green")
-      return [0.66, "Mostly True"]
+      return [0.75, "Mostly True"]
     elsif title_classes.include?("border-scale-green")
       return [1.0, "True"]
     end

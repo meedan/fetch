@@ -20,15 +20,18 @@ describe LaSillaVacia do
 
     it 'iterates on get_claim_reviews' do
       described_class.any_instance.stub(:store_claim_reviews_for_page).with(1).and_return([{ 'created_at': Time.now - 7 * 24 * 24 * 60 }])
-      described_class.any_instance.stub(:store_claim_reviews_for_page).with(2).and_return([])
+      2.upto(described_class.new.max_pages+2).each do |page|
+        described_class.any_instance.stub(:store_claim_reviews_for_page).with(page).and_return([])
+      end
       response = described_class.new.get_claim_reviews
       expect(response).to(eq(nil))
     end
 
     it "checks all status returns for title_classes" do
       expect(described_class.new.claim_review_result_and_score_from_title_classes("border-scale-red")).to(eq([0.0, "False"]))
-      expect(described_class.new.claim_review_result_and_score_from_title_classes("border-scale-orange")).to(eq([0.33, "Mostly False"]))
-      expect(described_class.new.claim_review_result_and_score_from_title_classes("border-scale-ligth-green")).to(eq([0.66, "Mostly True"]))
+      expect(described_class.new.claim_review_result_and_score_from_title_classes("border-scale-orange")).to(eq([0.25, "Mostly False"]))
+      expect(described_class.new.claim_review_result_and_score_from_title_classes("border-scale-yellow")).to(eq([0.5, "Debatable"]))
+      expect(described_class.new.claim_review_result_and_score_from_title_classes("border-scale-ligth-green")).to(eq([0.75, "Mostly True"]))
       expect(described_class.new.claim_review_result_and_score_from_title_classes("border-scale-green")).to(eq([1.0, "True"]))
     end
 
