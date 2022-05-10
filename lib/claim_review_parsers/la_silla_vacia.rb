@@ -66,7 +66,7 @@ class LaSillaVacia < ClaimReviewParser
       id: raw_claim_review['url'],
       created_at: timestamp,
       claim_review_headline: raw_claim_review["page"].search("div.detector-article h1.h2").text.strip,
-      claim_review_body: raw_claim_review["page"].search("div.detector-article div.mainInternalArticle__content p").collect(&:text).collect(&:strip).join(" "),
+      claim_review_body: raw_claim_review["page"].search("div#detector-pocasPalabras p").collect(&:text).collect(&:strip).join(" "),
       claim_review_image_url: og_image_url_from_raw_claim_review(raw_claim_review),
       claim_review_result: claim_review_result,
       claim_review_result_score: claim_review_result_score,
