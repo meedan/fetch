@@ -25,18 +25,20 @@ module PaginatedReviewClaims
 
   def parsed_fact_list_page(page = 1)
     response = get_url(hostname + fact_list_path(page))
-      return if response.nil?
+    return if response.nil?
     if @fact_list_page_parser == 'html'
       Nokogiri.parse(response)
     elsif @fact_list_page_parser == 'json'
       JSON.parse(response)
+    elsif @fact_list_page_parser == "html_body_encased_html"
+      Nokogiri.parse("<html><body>"+response+"</body></html>")
     end
   end
 
   def get_fact_page_urls(page = 1)
     response = parsed_fact_list_page(page)
     if response
-      if @fact_list_page_parser == 'html'
+      if ["html", "html_body_encased_html"].include?(@fact_list_page_parser)
         response.search(url_extraction_search).map { |atag| url_extractor(atag) }.compact
       elsif @fact_list_page_parser == 'json'
         url_extractor(response)
