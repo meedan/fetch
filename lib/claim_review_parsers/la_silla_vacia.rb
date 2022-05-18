@@ -3,6 +3,11 @@
 # Parser for https://www.lasillavacia.com/la-silla-vacia/detector-de-mentiras/
 class LaSillaVacia < ClaimReviewParser
   include PaginatedReviewClaims
+  def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
+    super(cursor_back_to_date, overwrite_existing_claims, send_notifications)
+    @fact_list_page_parser = 'html_body_encased_html'
+  end
+
   def hostname
     'https://www.lasillavacia.com'
   end
@@ -29,7 +34,6 @@ class LaSillaVacia < ClaimReviewParser
   end
 
   def specifically_finished_iterating?(processed_claim_reviews, pages_since_last_hit)
-    puts [processed_claim_reviews, pages_since_last_hit].inspect
     finished_iterating?(processed_claim_reviews) && pages_since_last_hit > max_pages
   end
   
