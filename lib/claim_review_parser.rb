@@ -93,7 +93,7 @@ class ClaimReviewParser
       proxy = @proxy ? @proxy : nil
       RestClient::Request.execute(
         method: method,
-        url: url,
+        url: URI.escape(url),
         payload: payload,
         cookies: @cookies,
         headers: headers,
