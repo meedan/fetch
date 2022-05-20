@@ -1,17 +1,5 @@
 # frozen_string_literal: true
 describe Globo do
-  before do
-    stub_request(:get, "https://www.vishvasnews.com/blah").
-      with(
-        headers: {
-    	  'Accept'=>'*/*',
-    	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-    	  'Host'=>'www.vishvasnews.com',
-    	  'User-Agent'=>/.*/
-        }).
-      to_return(status: 200, body: JSON.parse(File.read('spec/fixtures/globo_raw.json'))["page"], headers: {})
-  end
-
   describe 'instance' do
     it 'has a hostname' do
       expect(described_class.new.hostname).to(eq('https://falkor-cda.bastian.globo.com'))

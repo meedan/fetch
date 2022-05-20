@@ -23,15 +23,29 @@ module PaginatedReviewClaims
     (Time.parse(article['datePublished'] || article["dateModified"]) rescue nil)
   end
 
+  def nokogiri_parse(response)
+    Nokogiri.parse(response)
+  end
+
+  def json_parse(response)
+    JSON.parse(response)
+  end
+
   def parsed_fact_list_page(page = 1)
     response = get_url(hostname + fact_list_path(page))
     return if response.nil?
     if @fact_list_page_parser == 'html'
-      Nokogiri.parse(response)
+      nokogiri_parse(response)
     elsif @fact_list_page_parser == 'json'
-      JSON.parse(response)
+      json_parse(response)
     elsif @fact_list_page_parser == "html_body_encased_html"
-      Nokogiri.parse("<html><body>"+response+"</body></html>")
+      nokogiri_parse("<html><body>"+response+"</body></html>")
+    elsif @fact_list_page_parser == 'html_first_then_json'
+      if page == 1
+        nokogiri_parse(response)
+      else
+        json_parse(response)
+      end
     end
   end
 
@@ -41,6 +55,8 @@ module PaginatedReviewClaims
       if ["html", "html_body_encased_html"].include?(@fact_list_page_parser)
         response.search(url_extraction_search).map { |atag| url_extractor(atag) }.compact
       elsif @fact_list_page_parser == 'json'
+        url_extractor(response)
+      elsif @fact_list_page_parser == 'html_first_then_json'
         url_extractor(response)
       end
     else
