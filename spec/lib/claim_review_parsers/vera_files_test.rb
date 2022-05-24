@@ -15,7 +15,7 @@ describe VeraFiles do
     end
 
     it 'extracts a url' do
-      expect(described_class.new.url_extractor(Nokogiri.parse("<a href='https://verafiles.org/blah'>wow</a>").search('a')[0])).to(eq('https://verafiles.org/blah'))
+      expect(described_class.new.url_extractor(Nokogiri.parse("<a href='https://verafiles.org/articles/'>wow</a>").search('a')[0])).to(eq("https://verafiles.org/articles/" ))
     end
 
     it 'rescues against a claim_review_image_url_from_raw_claim_review' do
