@@ -11,7 +11,7 @@ describe VeraFiles do
     end
 
     it 'has a url_extraction_search' do
-      expect(described_class.new.url_extraction_search).to(eq('div.collection__main div.page-list-article div.page-list-article__title a'))
+      expect(described_class.new.url_extraction_search).to(eq('figure a'))
     end
 
     it 'extracts a url' do
