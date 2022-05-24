@@ -53,7 +53,7 @@ module PaginatedReviewClaims
     response = parsed_fact_list_page(page)
     if response
       if ["html", "html_body_encased_html"].include?(@fact_list_page_parser)
-        response.search(url_extraction_search).map { |atag| url_extractor(atag) }.compact
+        response.search(url_extraction_search).map { |atag| url_extractor(atag) }.compact.uniq
       elsif @fact_list_page_parser == 'json'
         url_extractor(response)
       elsif @fact_list_page_parser == 'html_first_then_json'
