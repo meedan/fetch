@@ -181,6 +181,12 @@ class ClaimReviewParser
     )
   end
 
+  def og_title_from_raw_claim_review(raw_claim_review)
+    value_from_og_tag(
+      search_for_og_tags(raw_claim_review["page"], ["og:title"])
+    )
+  end
+
   def self.test_parser_on_url(url)
     response = self.new.request(:get, url)
     params = {"page" => Nokogiri.parse(response), "url" => url}
