@@ -2,15 +2,16 @@
 
 describe Tsek do
   before do
-    stub_request(:get, "https://www.tsek.ph/wp-json/newspack-blocks/v1/articles?className=is-style-borders&imageShape=uncropped&moreButton=1&postsToShow=20&mediaPosition=left&mobileStack=1&showExcerpt=1&excerptLength=55&showReadMore=0&readMoreLabel=Keep%20reading&showDate=1&showImage=1&showCaption=0&disableImageLazyLoad=0&minHeight=0&moreButtonText&showAuthor=1&showAvatar=1&showCategory=0&postLayout=list&columns=3&&&&&&&typeScale=4&imageScale=3&sectionHeader&specificMode=0&textColor&customTextColor&singleMode=0&showSubtitle=0&postType%5B0%5D=post&textAlign=left&page=2&exclude_ids=").
+    stub_request(:get, "https://www.tsek.ph/wp-json/newspack-blocks/v1/articles?className=is-style-borders&columns=3&customTextColor&disableImageLazyLoad=0&excerptLength=55&exclude_ids=&imageScale=3&imageShape=uncropped&mediaPosition=left&minHeight=0&mobileStack=1&moreButton=1&moreButtonText&page=2&postLayout=list&postType%255B0%255D=post&postsToShow=20&readMoreLabel=Keep%2520reading&sectionHeader&showAuthor=1&showAvatar=1&showCaption=0&showCategory=0&showDate=1&showExcerpt=1&showImage=1&showReadMore=0&showSubtitle=0&singleMode=0&specificMode=0&textAlign=left&textColor&typeScale=4").
       with(
         headers: {
-      	  'Accept'=>'*/*',
-      	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-      	  'Host'=>'www.tsek.ph',
-      	  'User-Agent'=>/.*/
+    	  'Accept'=>'*/*',
+    	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+    	  'Host'=>'www.tsek.ph',
+    	  'User-Agent'=>'rest-client/2.1.0 (linux x86_64) ruby/2.7.6p219'
         }).
-      to_return(status: 200, body: File.read("spec/fixtures/tsek_index_response.json"), headers: {})
+        to_return(status: 200, body: File.read("spec/fixtures/tsek_index_response.json"), headers: {})
+  
   end
 
   describe 'instance' do

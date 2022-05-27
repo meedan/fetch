@@ -8,10 +8,9 @@ class AfricaCheck < ClaimReviewParser
   end
 
   def request_fact_page(page)
-    RestClient::Request.execute(
-      method: :post,
-      url: self.hostname+"/views/ajax?_wrapper_format=drupal_ajax",
-      payload: "view_name=article&view_display_id=pg_landing&view_args=&view_path=%2Ffact-checks&view_base_path=fact-checkspager_element=0&field_article_type_value=All&field_rated_value=All&field_country_value=All&sort_bef_combine=created_DESC&sort_by=created&sort_order=DESC&page=2",
+    post_url(
+      self.hostname+"/views/ajax?_wrapper_format=drupal_ajax",
+      "view_name=article&view_display_id=pg_landing&view_args=&view_path=%2Ffact-checks&view_base_path=fact-checkspager_element=0&field_article_type_value=All&field_rated_value=All&field_country_value=All&sort_bef_combine=created_DESC&sort_by=created&sort_order=DESC&page=2"
     )
   end
 
