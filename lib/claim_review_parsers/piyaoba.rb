@@ -8,10 +8,9 @@ class Piyaoba < ClaimReviewParser
   end
 
   def request_fact_page(page)
-    RestClient::Request.execute(
-      method: :post,
-      url: self.hostname+"/wp-admin/admin-ajax.php",
-      payload: "action=get_filter_posts&nonce=6916ff7a61&params%5Bpage%5D=#{page}&params%5Btax%5D=category&params%5Bpost-type%5D=post&params%5Bterm%5D=10%2C9%2C11&params%5Bper-page%5D=9&params%5Bfilter-id%5D=1612&params%5Bcaf-post-layout%5D=post-layout4&params%5Bdata-target-div%5D=.data-target-div1",
+    post_url(
+      self.hostname+"/wp-admin/admin-ajax.php",
+      "action=get_filter_posts&nonce=6916ff7a61&params%5Bpage%5D=#{page}&params%5Btax%5D=category&params%5Bpost-type%5D=post&params%5Bterm%5D=10%2C9%2C11&params%5Bper-page%5D=9&params%5Bfilter-id%5D=1612&params%5Bcaf-post-layout%5D=post-layout4&params%5Bdata-target-div%5D=.data-target-div1"
     )
   end
 
@@ -58,7 +57,7 @@ class Piyaoba < ClaimReviewParser
     claim_review_result, claim_review_result_score = get_claim_review_results_from_raw_claim_review(raw_claim_review)
     {
       id: raw_claim_review['url'],
-      created_at: og_date_from_raw_claim_review(raw_claim_review),
+      created_at: Time.parse(og_date_from_raw_claim_review(raw_claim_review)),
       author: person["name"],
       author_link: person["url"],
       claim_review_headline: og_title_from_raw_claim_review(raw_claim_review).split(" - ").first,

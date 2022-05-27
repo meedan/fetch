@@ -14,9 +14,8 @@ class Tsek < ClaimReviewParser
   end
 
   def request_fact_page
-    RestClient::Request.execute(
-      method: :get,
-      url: self.hostname+"/wp-json/newspack-blocks/v1/articles?className=is-style-borders&imageShape=uncropped&moreButton=1&postsToShow=20&mediaPosition=left&mobileStack=1&showExcerpt=1&excerptLength=55&showReadMore=0&readMoreLabel=Keep%20reading&showDate=1&showImage=1&showCaption=0&disableImageLazyLoad=0&minHeight=0&moreButtonText&showAuthor=1&showAvatar=1&showCategory=0&postLayout=list&columns=3&&&&&&&typeScale=4&imageScale=3&sectionHeader&specificMode=0&textColor&customTextColor&singleMode=0&showSubtitle=0&postType%5B0%5D=post&textAlign=left&page=2&exclude_ids=#{@already_observed_ids.join(",")}",
+    get_url(
+      self.hostname+"/wp-json/newspack-blocks/v1/articles?className=is-style-borders&imageShape=uncropped&moreButton=1&postsToShow=20&mediaPosition=left&mobileStack=1&showExcerpt=1&excerptLength=55&showReadMore=0&readMoreLabel=Keep%20reading&showDate=1&showImage=1&showCaption=0&disableImageLazyLoad=0&minHeight=0&moreButtonText&showAuthor=1&showAvatar=1&showCategory=0&postLayout=list&columns=3&&&&&&&typeScale=4&imageScale=3&sectionHeader&specificMode=0&textColor&customTextColor&singleMode=0&showSubtitle=0&postType%5B0%5D=post&textAlign=left&page=2&exclude_ids=#{@already_observed_ids.join(",")}"
     )
   end
 

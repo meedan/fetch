@@ -13,10 +13,9 @@ class FactCheckCite < ClaimReviewParser
   end
 
   def request_fact_page(page, limit)
-    RestClient::Request.execute(
-      method: :post,
-      url: self.hostname,
-      payload: {page: page, posts_per_page: limit, action: "csco_ajax_load_more"},
+    post_url(
+      self.hostname,
+      {page: page, posts_per_page: limit, action: "csco_ajax_load_more"}
     )
   end
 
