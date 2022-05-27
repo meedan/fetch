@@ -38,13 +38,13 @@ class TwentyMinutes < ClaimReviewParser
     end
   end
 
-  def find_claim_reivew(page)
+  def find_claim_review(page)
     extract_all_ld_json_script_blocks(page).collect{|b| JSON.parse(b.text)}.select{|x| x["@type"] == "ClaimReview"}.first
   end
 
   def parse_raw_claim_review(raw_claim_review)
     article = extract_ld_json_script_block(raw_claim_review["page"], 0)
-    claim_review = find_claim_reivew(raw_claim_review["page"])
+    claim_review = find_claim_review(raw_claim_review["page"])
     {
       id: raw_claim_review["url"],
       created_at: get_created_at_from_article(article),

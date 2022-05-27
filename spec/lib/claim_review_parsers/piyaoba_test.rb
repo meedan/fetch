@@ -26,7 +26,6 @@ describe Piyaoba do
 
     it 'returns get_new_fact_page_urls' do
       described_class.any_instance.stub(:get_existing_urls).with(anything).and_return([])
-      puts described_class.new.get_new_fact_page_urls(1).inspect
       expect(described_class.new.get_new_fact_page_urls(1)).to(eq(["https://www.piyaoba.org/baby-formula-immigrants/", "https://www.piyaoba.org/white-supremacy-gun/", "https://www.piyaoba.org/gun-crime-biden/", "https://www.piyaoba.org/crt-doj-fbi/", "https://www.piyaoba.org/biden-pedophile-news/", "https://www.piyaoba.org/biden-resign-hunter/", "https://www.piyaoba.org/obama-trump-vaccine/", "https://www.piyaoba.org/musk-twitter-follower/", "https://www.piyaoba.org/trump-contempt-fine/"]))
     end
 
