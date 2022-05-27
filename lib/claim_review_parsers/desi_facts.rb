@@ -3,8 +3,12 @@
 # Parser for https://www.desifacts.org/
 class DesiFacts < ClaimReviewParser
   include PaginatedReviewClaims
-  def hostname
-    'https://www.desifacts.org'
+  def hostnames
+    [
+      "https://www.desifacts.org",
+      "https://hi.desifacts.org",
+      "https://bn.desifacts.org",
+    ]
   end
 
   def is_claim_or_explainer(image_title_node)
@@ -18,7 +22,9 @@ class DesiFacts < ClaimReviewParser
   end
 
   def get_article_urls
-    Nokogiri.parse(get_url(hostname+"/sitemap.xml")).search("url").select{|url| is_article_url(url)}.collect{|x| x.search("loc").text}
+    hostnames.collect do |hostname|
+      Nokogiri.parse(get_url(hostname+"/sitemap.xml")).search("url").select{|url| is_article_url(url)}.collect{|x| x.search("loc").text}
+    end.flatten
   end
   
   def get_new_article_urls

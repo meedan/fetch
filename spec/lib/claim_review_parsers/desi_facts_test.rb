@@ -11,10 +11,33 @@ describe DesiFacts do
         "User-Agent": /.*/
         }).
       to_return(status: 200, body: File.read("spec/fixtures/desi_facts_index_raw.xml"), headers: {})
+    stub_request(:get, "https://bn.desifacts.org/sitemap.xml").
+      with(
+        headers: {
+    	  'Accept'=>'*/*',
+    	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+    	  'Host'=>'bn.desifacts.org',
+        "User-Agent": /.*/
+        }).
+      to_return(status: 200, body: File.read("spec/fixtures/desi_facts_index_raw.xml"), headers: {})
+    stub_request(:get, "https://hi.desifacts.org/sitemap.xml").
+      with(
+        headers: {
+    	  'Accept'=>'*/*',
+    	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+    	  'Host'=>'hi.desifacts.org',
+        "User-Agent": /.*/
+        }).
+      to_return(status: 200, body: File.read("spec/fixtures/desi_facts_index_raw.xml"), headers: {})
   end
   describe 'instance' do
-    it 'has a hostname' do
-      expect(described_class.new.hostname).to(eq('https://www.desifacts.org'))
+    it 'has hostnames' do
+      hostnames = [
+      "https://www.desifacts.org",
+      "https://hi.desifacts.org",
+      "https://bn.desifacts.org",
+    ]
+      expect(described_class.new.hostnames).to(eq(hostnames))
     end
 
     it 'runs get_claim_reviews' do
