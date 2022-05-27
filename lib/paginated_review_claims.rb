@@ -6,11 +6,17 @@ require_relative('review_rating_parser')
 module PaginatedReviewClaims
   include ReviewRatingParser
 
+  def og_images_from_raw_claim_review(raw_claim_review)
+    raw_claim_review["page"].search("meta").select{|x| x.attributes["property"] && x.attributes["property"].value == "og:image"}
+  end
+
+  def og_image_url_from_og_image(og_image)
+    og_image.attributes["content"].value
+  end
+
   def og_image_url_from_raw_claim_review(raw_claim_review)
-    image = raw_claim_review["page"].search("meta").select{|x| x.attributes["property"] && x.attributes["property"].value == "og:image"}.first
-    if image
-      image.attributes["content"].value
-    end
+    image = og_images_from_raw_claim_review(raw_claim_review).first
+    og_image_url_from_og_image(image) if image
   end
 
   def claim_review_image_url_from_raw_claim_review(raw_claim_review)
