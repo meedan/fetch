@@ -18,7 +18,7 @@ class AFPIndia < AFP
   end
 
   def get_text_blocks(raw_claim_review)
-    raw_claim_review["page"].search("article div.article-entry p").collect(&:text).join(" ")
+    raw_claim_review["page"].search("article div.article-entry h3").text
   end
 
   def parse_raw_claim_review(raw_claim_review)
