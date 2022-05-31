@@ -45,10 +45,11 @@ class VietFactCheck < ClaimReviewParser
       "dial_that" => ["True", 0.0],
     }
     mapped_image_classes.each do |image_url_subsection, classification|
-      if image_url.include?(image_url_subsection)
+      if image_url && image_url.include?(image_url_subsection)
         return classification
       end
     end
+    return [nil, nil]
   end
 
   def get_claim_review_body_from_raw_claim_review(raw_claim_review)
