@@ -123,6 +123,7 @@ module PaginatedReviewClaims
       Hash[urls.map do |fact_page_url|
         safe_parsed_fact_page(fact_page_url)
       end.compact].values
+      sleep(@per_article_sleep_time) if @per_article_sleep_time
     end
   end
 end
