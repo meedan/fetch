@@ -28,6 +28,10 @@ describe VietFactCheck do
       described_class.any_instance.stub(:get_existing_urls).with(anything).and_return([])
       expect(described_class.new.get_new_fact_page_urls(1).length).to(eq(10))
     end
+    
+    it "returns nil for bad lookup on claim review result" do
+      expect(described_class.new.claim_review_result_from_raw_claim_review({"page" => Nokogiri.parse("<html><body></body></html>")})).to(eq([nil, nil]))
+    end
 
     it 'parses a raw_claim_review' do
       raw = JSON.parse(File.read('spec/fixtures/viet_fact_check_raw.json'))

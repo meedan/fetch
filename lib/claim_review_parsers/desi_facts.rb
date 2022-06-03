@@ -39,7 +39,7 @@ class DesiFacts < ClaimReviewParser
   end
 
   def get_claim_reviews
-    get_parsed_fact_pages_from_urls(get_new_article_urls)
+    process_claim_reviews(get_parsed_fact_pages_from_urls(get_new_article_urls))
   end
 
   def find_claim_review(page)
