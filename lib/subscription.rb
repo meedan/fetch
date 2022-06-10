@@ -45,13 +45,17 @@ class Subscription
 
   def self.send_webhook_notification(webhook_url, webhook_params, claim_review)
     if self.claim_review_can_be_sent(webhook_url, webhook_params, claim_review)
-      RestClient::Request.execute(
+      request_params = {
         :method => :post,
         :url => webhook_url,
         :payload => {claim_review: claim_review}.to_json,
         :headers => {content_type: 'application/json'},
         :timeout => 10,
         :open_timeout => 10
+      }
+      puts "Sending Subscriber Notification with params of #{request_params.inspect}"
+      RestClient::Request.execute(
+        request_params
       )
     end
   end
