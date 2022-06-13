@@ -10,7 +10,7 @@ class AFPFactual < AFP
 
   def parse_raw_claim_review(raw_claim_review)
     parsed = super(raw_claim_review)
-    parsed[:claim_review_body] = claim_review_body_from_raw_claim_review(raw_claim_review)
+    parsed[:claim_review_body] = raw_claim_review["page"].search("article div.article-entry h3").text
     parsed
   end
 end
