@@ -26,10 +26,6 @@ class AFP < ClaimReviewParser
     title
   end
 
-  def claim_review_body_from_raw_claim_review(raw_claim_review)
-    raw_claim_review['page'].search("div.article-entry p").collect(&:text).collect(&:strip).join(" ")
-  end
-
   def parse_raw_claim_review(raw_claim_review)
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], 0)
     latest_timestamp = [Time.parse(claim_review["@graph"][0]["datePublished"]), og_timestamps_from_raw_claim_review(raw_claim_review)].flatten.sort.last
