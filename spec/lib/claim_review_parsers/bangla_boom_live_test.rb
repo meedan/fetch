@@ -7,7 +7,7 @@ describe BanglaBoomLive do
     end
 
     it 'has a fact_list_path' do
-      expect(described_class.new.fact_list_path(1)).to(eq('/fast-check/1'))
+      expect(described_class.new.fact_list_path(1)).to(eq('/fact-check/1'))
     end
 
     it 'has a url_extraction_search' do

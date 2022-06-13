@@ -9,7 +9,7 @@ class BanglaBoomLive < ClaimReviewParser
 
   def fact_list_path(page = 1)
     # appears to be zero-indexed
-    "/fast-check/#{page}"
+    "/fact-check/#{page}"
   end
 
   def url_extraction_search
