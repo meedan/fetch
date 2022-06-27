@@ -19,13 +19,9 @@ class ReutersSpanish < ClaimReviewParser
   end
 
   def claim_result_from_subhead(page)
-    begin
-      header = page.search('div.ArticleBodyWrapper h3').first || page.search('div.ArticleBodyWrapper h2').first
-      if header
-        header.next_sibling.text
-      end
-    rescue StandardError => e
-      Error.log(e)
+    header = page.search('div.ArticleBodyWrapper h3').first || page.search('div.ArticleBodyWrapper h2').first
+    if header
+      header.next_sibling.text
     end
   end
 
