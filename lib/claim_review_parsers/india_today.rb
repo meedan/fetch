@@ -18,9 +18,12 @@ class IndiaToday < ClaimReviewParser
   def headline_search
     'div.story-section h1'
   end
-  
-  def body_search
-    'div.story-right p'
+
+  def claim_review_body_from_raw_claim_review(raw_claim_review)
+    header = raw_claim_review["page"].search('span.bordertop').first
+    if header
+      header.next_sibling.text
+    end
   end
 
   def url_extractor(atag)
@@ -29,7 +32,7 @@ class IndiaToday < ClaimReviewParser
 
   def claim_review_from_raw_claim_review(raw_claim_review)
     ld_json_blocks = raw_claim_review["page"].search("script").select{|x| x.attributes["type"] && x.attributes["type"].value == "application/ld+json"}
-    JSON.parse(ld_json_blocks.select{|x| b = JSON.parse(x.text); b.class == Hash && b["@type"] == "ClaimReview"}.first.text)
+    JSON.parse(ld_json_blocks.select{|x| b = JSON.parse(x.text.gsub("\n", " ")); b.class == Hash && b["@type"] == "ClaimReview"}.first.text.gsub("\n", " "))
   rescue JSON::ParserError, NoMethodError
     #send back stubbed claim_review when there's a parse error or no verifiable ClaimReview object in the document
     {}
@@ -44,7 +47,7 @@ class IndiaToday < ClaimReviewParser
         author: claim_review["author"]["name"],
         author_link: nil,
         claim_review_headline: raw_claim_review['page'].search(headline_search).text.strip,
-        claim_review_body: raw_claim_review['page'].search(body_search).text.strip,
+        claim_review_body: claim_review_body_from_raw_claim_review(raw_claim_review),
         claim_review_image_url: claim_review_image_url_from_raw_claim_review(raw_claim_review),
         claim_review_reviewed: claim_review["claimReviewed"],
         claim_review_result: claim_review["reviewRating"]["alternateName"],
