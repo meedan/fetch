@@ -73,9 +73,17 @@ class TempoCekfakta < ClaimReviewParser
     }
   end
 
+  def get_date_from_raw_claim_review(raw_claim_review)
+    Time.parse(raw_claim_review["page"].search("h4.date").first.text) rescue nil
+  end
+
   def get_claim_review_results_from_raw_claim_review(raw_claim_review)
-    image_url = raw_claim_review['page'].search("section#article article img")[0].attributes["src"].value rescue nil
+    image_url = raw_claim_review['page'].search("main.main-left div.detail-in img")[0].attributes["src"].value rescue nil
     return image_url_result_map[image_url] if image_url
+  end
+
+  def get_image_from_raw_claim_review(raw_claim_review)
+    raw_claim_review['page'].search("main.main-left div.detail-in div.fw-bolder img").first.attributes["src"].value
   end
 
   def parse_raw_claim_review(raw_claim_review)
@@ -83,13 +91,13 @@ class TempoCekfakta < ClaimReviewParser
     claim_review_result, claim_review_result_score = get_claim_review_results_from_raw_claim_review(raw_claim_review)
     {
       id: raw_claim_review['url'],
-      created_at: Time.parse(og_date_from_raw_claim_review(raw_claim_review)),
+      created_at: get_date_from_raw_claim_review(raw_claim_review),
       author: "Tempo",
       author_link: "https://cekfakta.tempo.co",
-      claim_review_headline: value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:title"])),
-      claim_review_body: raw_claim_review['page'].search("section#article article p").collect(&:text).join(" "),
-      claim_review_reviewed: value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:title"])),
-      claim_review_image_url: value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:image"])),
+      claim_review_headline: raw_claim_review["page"].search("h1.title").text,
+      claim_review_body: raw_claim_review['page'].search("main.main-left div.detail-in p").text,
+      claim_review_reviewed: raw_claim_review["page"].search("h1.title").text,
+      claim_review_image_url: get_image_from_raw_claim_review(raw_claim_review),
       claim_review_result: claim_review_result,
       claim_review_result_score: claim_review_result_score,
       claim_review_url: raw_claim_review['url'],
