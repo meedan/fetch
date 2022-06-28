@@ -24,6 +24,10 @@ class AajtakHindi < ClaimReviewParser
     article && article["author"] && article["author"][0] && article["author"][0][attribute]
   end
 
+  def claim_review_body_from_raw_claim_review(raw_claim_review)
+    raw_claim_review["page"].search("div.box-gry").select{|x| x.text.include?("निष्कर्ष")}.first.search("p").text rescue nil
+  end
+
   def parse_raw_claim_review(raw_claim_review)
     article = extract_ld_json_script_block(raw_claim_review["page"], -3)
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], -4)
@@ -34,7 +38,7 @@ class AajtakHindi < ClaimReviewParser
       author: get_author_attribute(article, "name"),
       author_link: get_author_attribute(article, "url"),
       claim_review_headline: article["headline"],
-      claim_review_body: article["articleBody"],
+      claim_review_body: claim_review_body_from_raw_claim_review(raw_claim_review),
       claim_review_image_url: article["image"] && article["image"]["url"],
       claim_review_result: claim_review["reviewRating"] && claim_review["reviewRating"]["alternateName"],
       claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),

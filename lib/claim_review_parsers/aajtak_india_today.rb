@@ -24,10 +24,6 @@ class AajtakIndiaToday < IndiaToday
     'h1.secArticleTitle'
   end
 
-  def body_search
-    'div.storyBody p'
-  end
-
   def url_extractor(article)
     hostname + article.search("a").first.attributes['href'].value
   end
