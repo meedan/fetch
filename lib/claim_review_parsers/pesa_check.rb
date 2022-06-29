@@ -15,12 +15,14 @@ class PesaCheck < ClaimReviewParser
   end
 
   def parse_raw_claim_review(feed_item)
+    parsed = Nokogiri.parse("<html><body>"+feed_item["content"]+"</body></html>")
     {
       id: feed_item["link"],
       created_at: Time.parse(feed_item["pubDate"]),
       author: feed_item["author"],
       claim_review_headline: feed_item["title"],
-      claim_review_body: Nokogiri.parse(feed_item["content"]).text,
+      claim_review_body: parsed.text,
+      claim_review_reviwed: parsed.search("strong").first.text,
       claim_review_image_url: feed_item["thumbnail"],
       claim_review_result: feed_item["title"].split(":").first,
       claim_review_url: feed_item["link"],
