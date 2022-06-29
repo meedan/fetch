@@ -26,6 +26,10 @@ class AFP < ClaimReviewParser
     title
   end
 
+  def claim_review_body_from_raw_claim_review(raw_claim_review)
+    raw_claim_review["page"].search("article div.article-entry h3").first.text rescue nil
+  end
+
   def parse_raw_claim_review(raw_claim_review)
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], 0)
     latest_timestamp = [Time.parse(claim_review["@graph"][0]["datePublished"]), og_timestamps_from_raw_claim_review(raw_claim_review)].flatten.sort.last
@@ -35,7 +39,7 @@ class AFP < ClaimReviewParser
       author: claim_review["@graph"][0]["author"]["name"],
       author_link: claim_review["@graph"][0]["author"]["url"],
       claim_review_headline: claim_review_headline_from_raw_claim_review_and_claim_review(raw_claim_review, claim_review),
-      claim_review_body: raw_claim_review["page"].search("article div.article-entry h3").text,
+      claim_review_body: claim_review_body_from_raw_claim_review(raw_claim_review),
       claim_review_reviewed: claim_review["@graph"][0]["claimReviewed"],
       claim_review_image_url: claim_review_image_url_from_raw_claim_review(raw_claim_review),
       claim_review_result: claim_review["@graph"][0]["reviewRating"]["alternateName"],
