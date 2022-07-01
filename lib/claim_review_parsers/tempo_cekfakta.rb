@@ -41,7 +41,7 @@ class TempoCekfakta < ClaimReviewParser
   end
 
   def url_extraction_search
-    "section#article div.card a"
+    "figure.img-card a"
   end
 
   def domain_is_only_cekfakta(url)
@@ -50,7 +50,9 @@ class TempoCekfakta < ClaimReviewParser
 
   def url_extractor(atag)
     url = atag.attributes["href"].value
-    domain_is_only_cekfakta(url) ? url : nil
+    url = domain_is_only_cekfakta(url) ? url : nil
+    url = "http:"+url if url.to_s[0..1] == "//"
+    url
   end
 
   def store_claim_reviews_for_page(time=DateTime.now)
