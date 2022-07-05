@@ -34,7 +34,17 @@ class FactCheckOrg < ClaimReviewParser
   end
 
   def claim_review_body_from_raw_claim_review(raw_claim_review)
+    body = get_claim_review_body_from_article_text(raw_claim_review)
+    body = get_claim_review_body_from_og_description(raw_claim_review) if body.to_s.empty?
+    body
+  end
+
+  def get_claim_review_body_from_article_text(raw_claim_review)
     raw_claim_review['page'].search("article p").collect(&:text).collect(&:strip).join(" ")
+  end
+
+  def get_claim_review_body_from_og_description(raw_claim_review)
+    value_from_og_tags(raw_claim_review, ["og:description"])
   end
 
   def parse_raw_claim_review(raw_claim_review)

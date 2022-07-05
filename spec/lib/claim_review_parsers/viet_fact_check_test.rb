@@ -29,6 +29,12 @@ describe VietFactCheck do
       expect(described_class.new.get_new_fact_page_urls(1).length).to(eq(10))
     end
     
+    it 'gets a body from og description' do
+      raw = JSON.parse(File.read('spec/fixtures/viet_fact_check_raw.json'))
+      raw['page'] = Nokogiri.parse(raw['page'])
+      expect(described_class.new.get_claim_review_body_from_og_description(raw).class).to(eq(String))
+    end
+    
     it "returns nil for bad lookup on claim review result" do
       expect(described_class.new.claim_review_result_from_raw_claim_review({"page" => Nokogiri.parse("<html><body></body></html>")})).to(eq([nil, nil]))
     end
