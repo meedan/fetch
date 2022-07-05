@@ -176,14 +176,16 @@ class ClaimReviewParser
   end
 
   def og_date_from_raw_claim_review(raw_claim_review)
-    value_from_og_tag(
-      search_for_og_tags(raw_claim_review["page"], ["article:published_time", "article:modified_time", "article:updated_time"])
-    )
+    value_from_og_tags(raw_claim_review, ["article:published_time", "article:modified_time", "article:updated_time"])
   end
 
   def og_title_from_raw_claim_review(raw_claim_review)
+    value_from_og_tags(raw_claim_review, ["og:title"])
+  end
+
+  def value_from_og_tags(raw_claim_review, og_tags)
     value_from_og_tag(
-      search_for_og_tags(raw_claim_review["page"], ["og:title"])
+      search_for_og_tags(raw_claim_review["page"], og_tags)
     )
   end
 

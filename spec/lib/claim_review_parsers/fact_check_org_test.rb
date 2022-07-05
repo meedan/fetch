@@ -21,6 +21,12 @@ describe FactCheckOrg do
     it 'rescues against a claim_review_image_url_from_raw_claim_review' do
       expect(described_class.new.claim_review_image_url_from_raw_claim_review({"page" => Nokogiri.parse("<a href='/blah'>wow</a>")})).to(eq(nil))
     end
+    
+    it 'gets a body from og description' do
+      raw = JSON.parse(File.read('spec/fixtures/fact_check_org_raw.json'))
+      raw['page'] = Nokogiri.parse(raw['page'])
+      expect(described_class.new.get_claim_review_body_from_og_description(raw).class).to(eq(String))
+    end
 
     it 'rescues obviously broken against a claim_review_image_url_from_raw_claim_review' do
       described_class.any_instance.stub(:og_image_url_from_raw_claim_review).with(anything()).and_raise(StandardError)

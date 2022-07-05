@@ -27,6 +27,11 @@ describe TempoCekfakta do
     it 'has a hostname' do
       expect(described_class.new.hostname).to(eq('https://cekfakta.tempo.co'))
     end
+    
+    it 'searches for urls' do
+      results = Nokogiri.parse(File.read('spec/fixtures/tempo_cekfakta_index_page.html')).search(described_class.new.url_extraction_search).collect{|x| described_class.new.url_extractor(x)}
+      expect(results.count).to(eq(40))
+    end
 
     it 'has a fact_list_path' do
       expect(described_class.new.fact_list_path(DateTime.now)).to(eq("/#{DateTime.now.year}/#{DateTime.now.strftime("%m")}"))
@@ -40,6 +45,28 @@ describe TempoCekfakta do
       ClaimReviewRepository.any_instance.stub(:save).with(anything).and_return({ _index: 'claim_reviews', _type: 'claim_review', _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
       described_class.any_instance.stub(:parsed_page_from_url).with(anything).and_return(Nokogiri.parse(JSON.parse(File.read("spec/fixtures/tempo_cekfakta_raw.json"))["page"]))
       datetime = DateTime.now
+      prev = datetime.prev_month
+      response = described_class.new.get_claim_reviews(datetime)
+      expect(response).to(eq(nil))
+      # https://cekfakta.tempo.co/2020/11
+      AlegreClient.unstub(:get_enrichment_for_url)
+      PenderClient.unstub(:get_enrichment_for_url)
+    end
+
+    it 'correctly parses an index page with iteration' do
+      Elasticsearch::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [] } })
+      AlegreClient.stub(:get_enrichment_for_url).with(anything).and_return({"text" => "blah", "links" => ["http://example.com"]})
+      PenderClient.stub(:get_enrichment_for_url).with(anything).and_return(JSON.parse(File.read("spec/fixtures/pender_response.json")))
+      ClaimReviewSocialDataRepository.any_instance.stub(:save).with(anything).and_return({ _index: Settings.get('es_index_name_cr_social_data'), _type: Settings.get('es_index_name_cr_social_data'), _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
+      ClaimReviewRepository.any_instance.stub(:save).with(anything).and_return({ _index: 'claim_reviews', _type: 'claim_review', _id: 'vhV84XIBOGf2XeyOAD12', _version: 1, result: 'created', _shards: { total: 2, successful: 1, failed: 0 }, _seq_no: 130_821, _primary_term: 2 })
+      described_class.any_instance.stub(:parsed_page_from_url).with(anything).and_return(Nokogiri.parse(JSON.parse(File.read("spec/fixtures/tempo_cekfakta_raw.json"))["page"]))
+      datetime = DateTime.now
+      prev = datetime.prev_month
+      raw = JSON.parse(File.read('spec/fixtures/tempo_cekfakta_raw.json'))
+      described_class.any_instance.stub(:store_claim_reviews_for_page).with(datetime).and_return([raw])
+      described_class.any_instance.stub(:store_claim_reviews_for_page).with(prev).and_return([])
+      described_class.any_instance.stub(:finished_iterating?).with([raw]).and_return(false)
+      described_class.any_instance.stub(:finished_iterating?).with([]).and_return(true)
       response = described_class.new.get_claim_reviews(datetime)
       expect(response).to(eq(nil))
       # https://cekfakta.tempo.co/2020/11

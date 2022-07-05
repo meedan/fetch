@@ -53,6 +53,16 @@ class VietFactCheck < ClaimReviewParser
   end
 
   def get_claim_review_body_from_raw_claim_review(raw_claim_review)
+    body = get_claim_review_body_from_sibling_node(raw_claim_review)
+    body = get_claim_review_body_from_og_description(raw_claim_review) if body.to_s.empty?
+    body
+  end
+
+  def get_claim_review_body_from_og_description(raw_claim_review)
+    value_from_og_tags(raw_claim_review, ["og:description"])
+  end
+
+  def get_claim_review_body_from_sibling_node(raw_claim_review)
     split_node = raw_claim_review["page"].search("article div.entry-content hr").first
     children = []
     after_split = false
@@ -64,7 +74,7 @@ class VietFactCheck < ClaimReviewParser
     end
     children.collect(&:text).join(" ").strip
   end
-
+    
   def parse_raw_claim_review(raw_claim_review)
     claim_review_reviewed = raw_claim_review["page"].search("article div.entry-content p").select{|x| x.text[0..5] == "Claim:"}.first.text.gsub("Claim: ", "") rescue nil
     claim_review_result, claim_review_result_score = claim_review_result_from_raw_claim_review(raw_claim_review)
