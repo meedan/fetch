@@ -85,7 +85,7 @@ class TempoCekfakta < ClaimReviewParser
   end
 
   def get_image_from_raw_claim_review(raw_claim_review)
-    raw_claim_review['page'].search("main.main-left div.detail-in div.fw-bolder img").first.attributes["src"].value
+    value_from_og_tags(raw_claim_review, ["og:image"]) || raw_claim_review['page'].search("main.main-left div.detail-in img")[1].attributes["src"].value rescue nil
   end
 
   def parse_raw_claim_review(raw_claim_review)
