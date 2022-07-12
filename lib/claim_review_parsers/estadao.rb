@@ -40,7 +40,7 @@ class Estadao < ClaimReviewParser
   end
 
   def claim_review_body_from_raw_claim_review(raw_claim_review)
-    raw_claim_review["page"].search("div.n--noticia__content p").first.text rescue nil
+    raw_claim_review["page"].search("h2.n--noticia__subtitle").first.text rescue nil
   end
 
   def parse_raw_claim_review(raw_claim_review)
