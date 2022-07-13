@@ -38,7 +38,7 @@ class ReutersSpanish < ClaimReviewParser
       author: news_article["author"]["name"],
       author_link: nil,
       claim_review_headline: news_article["headline"],
-      claim_review_body: raw_claim_review['page'].search('div.StandardArticleBody_body p').text,
+      claim_review_body: raw_claim_review['page'].search('div.ArticleBodyWrapper').children.select{|x| x.name == "p"}.first.text,
       claim_review_image_url: news_article["image"]["url"],
       claim_review_result: claim_result,
       claim_review_result_score: claim_result.to_s.downcase.include?('true') ? 0 : 1,
