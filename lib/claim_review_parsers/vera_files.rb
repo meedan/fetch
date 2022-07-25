@@ -41,7 +41,7 @@ class VeraFiles < ClaimReviewParser
       claim_review_body: raw_claim_review["page"].search("article div.entry-content p").first.text,
       claim_review_image_url: value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:image"])),
       claim_review_reviewed: get_claim_review_reviewed_from_raw_claim_review(raw_claim_review),
-      claim_review_result: get_claim_review_reviewed_from_raw_claim_review(raw_claim_review),
+      claim_review_result: get_claim_review_result_from_raw_claim_review(raw_claim_review),
       claim_review_url: raw_claim_review['url']
     }
   end
