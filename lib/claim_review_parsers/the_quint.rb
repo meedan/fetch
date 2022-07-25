@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class TheQuint < ClaimReviewParser
+  include PaginatedReviewClaims
   def hostname
     'https://www.thequint.com'
   end
@@ -63,13 +64,19 @@ class TheQuint < ClaimReviewParser
     Error.log(e)
   end
 
+  def claim_review_from_raw_claim_review(page)
+    block = extract_all_ld_json_script_blocks(page).select{|x| x.text.include?("ClaimReview")}.first
+    JSON.parse(block.text)
+  end
+
   def claim_result_from_raw_claim_review(raw_claim_review)
     story_attributes_key_from_raw_claim_review(raw_claim_review, 'factcheck')
   end
 
-  def claim_result_score_from_raw_claim_review(raw_claim_review)
-    value = story_attributes_key_from_raw_claim_review(raw_claim_review, 'claimreviewrating').to_s
-    value.to_s.empty? ? 0 : Integer(value, 10)
+  def claim_review_result_from_claim_review(claim_review)
+    claim_review &&
+    claim_review["reviewRating"] &&
+    claim_review["reviewRating"]["alternateName"]
   end
 
   def claim_reviewed_from_raw_claim_review(raw_claim_review)
@@ -104,6 +111,9 @@ class TheQuint < ClaimReviewParser
 
   def parse_raw_claim_review(raw_claim_review)
     # delete unnecessary key that flags Hashie key-name warnings later
+    url = claim_url_from_raw_claim_review(raw_claim_review)
+    page = Nokogiri.parse(get_url(url))
+    claim_review = claim_review_from_raw_claim_review(page) rescue nil
     raw_claim_review["story"].delete("cards")
     {
       id: raw_claim_review['id'],
@@ -113,11 +123,11 @@ class TheQuint < ClaimReviewParser
       claim_review_headline: claim_headline_from_raw_claim_review(raw_claim_review),
       claim_review_body: claim_body_from_raw_claim_review(raw_claim_review),
       claim_review_image_url: claim_image_url_from_raw_claim_review(raw_claim_review),
-      claim_review_result: claim_result_from_raw_claim_review(raw_claim_review),
+      claim_review_result: claim_review && claim_review_result_from_claim_review(claim_review),
       claim_review_reviewed: claim_reviewed_from_raw_claim_review(raw_claim_review),
-      claim_review_result_score: claim_result_score_from_raw_claim_review(raw_claim_review),
-      claim_review_url: claim_url_from_raw_claim_review(raw_claim_review),
-      raw_claim_review: raw_claim_review
+      claim_review_result_score: claim_review && claim_result_score_from_raw_claim_review(claim_review),
+      claim_review_url: url,
+      raw_claim_review: raw_claim_review.merge(claim_review: claim_review)
     }
   end
 end
