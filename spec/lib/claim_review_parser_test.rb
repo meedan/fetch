@@ -140,6 +140,15 @@ end
 
 RSpec.describe "ClaimReviewParser subclasses" do
   before do
+    stub_request(:get, "https://www.thequint.com/news/webqoof/are-these-last-tweets-of-sushant-singh-rajput-no-images-are-fake-fact-check").
+      with(
+        headers: {
+    	  'Accept'=>'*/*',
+    	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+    	  'Host'=>'www.thequint.com',
+        "User-Agent": /.*/
+        }).
+      to_return(status: 200, body: File.read("spec/fixtures/the_quint_raw.html"), headers: {})
     stub_request(:get, "https://www.boomlive.in/video-claiming-hindu-kids-are-being-taught-namaz-in-karnataka-is-misleading/")
       .with(
          headers: {

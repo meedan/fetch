@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 
 describe TheQuint do
+  before do
+    stub_request(:get, "https://www.thequint.com/news/webqoof/are-these-last-tweets-of-sushant-singh-rajput-no-images-are-fake-fact-check").
+      with(
+        headers: {
+    	  'Accept'=>'*/*',
+    	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+    	  'Host'=>'www.thequint.com',
+        "User-Agent": /.*/
+        }).
+      to_return(status: 200, body: File.read("spec/fixtures/the_quint_raw.html"), headers: {})
+  end
   describe 'instance' do
     it 'parses get_claim_reviews_for_page' do
       raw = JSON.parse(File.read('spec/fixtures/the_quint_raw.json'))
@@ -80,10 +91,6 @@ describe TheQuint do
 
     it 'rescues from claim_result_from_raw_claim_review' do
       expect(described_class.new.claim_result_from_raw_claim_review(nil)).to(eq(nil))
-    end
-
-    it 'rescues from claim_result_score_from_raw_claim_review' do
-      expect(described_class.new.claim_result_score_from_raw_claim_review(nil)).to(eq(0))
     end
   end
 end
