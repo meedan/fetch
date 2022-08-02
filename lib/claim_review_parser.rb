@@ -3,6 +3,10 @@
 # Eventually all subclasses here will need standardization about
 class ClaimReviewParser
   attr_accessor :fact_list_page_parser, :run_in_parallel, :overwrite_existing_claims
+  def self.interevent_time
+    Settings.task_interevent_time
+  end
+
   def self.enabled_subclasses
     self.subclasses.reject(&:deprecated)
   end

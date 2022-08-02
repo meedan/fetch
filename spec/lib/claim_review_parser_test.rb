@@ -171,7 +171,11 @@ RSpec.describe "ClaimReviewParser subclasses" do
          }).
        to_return(status: 200, body: '[{"website":"blah","nama":"foo"}]', headers: {})
   end
-
+  (ClaimReviewParser.enabled_subclasses-[StubReviewJSON]).each do |subclass|
+    it "ensures an interevent time" do 
+      expect(subclass.interevent_time.class).to(eq(Integer))
+    end
+  end
   (ClaimReviewParser.enabled_subclasses-[StubReviewJSON]).each do |subclass|
     it "ensures #{subclass} returns ES-storable objects" do 
       raw = JSON.parse(File.read("spec/fixtures/#{subclass.service}_raw.json"))

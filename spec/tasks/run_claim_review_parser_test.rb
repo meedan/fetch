@@ -4,6 +4,7 @@ describe RunClaimReviewParser do
   describe 'instance' do
     it 'walks through perform task' do
       ClaimReviewParser.stub(:run).with('foo', nil, false, true).and_return(nil)
+      ClaimReviewParser.stub(:parsers).and_return({"foo" => ClaimReviewParser})
       RunClaimReviewParser.stub(:perform_in).with(60 * 60, 'foo').and_return(nil)
       expect(RunClaimReviewParser.new.perform('foo')).to(eq(nil))
     end
