@@ -173,7 +173,7 @@ RSpec.describe "ClaimReviewParser subclasses" do
   end
   (ClaimReviewParser.enabled_subclasses-[StubReviewJSON]).each do |subclass|
     it "ensures an interevent time" do 
-      expect(subclass.interevent_time.class).to(eq(Float))
+      expect(subclass.interevent_time.class).to(eq(Integer))
     end
   end
   (ClaimReviewParser.enabled_subclasses-[StubReviewJSON]).each do |subclass|
