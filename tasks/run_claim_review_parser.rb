@@ -5,8 +5,9 @@ class RunClaimReviewParser
   def perform(service, cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications=true)
     cursor_back_to_date = Time.parse(cursor_back_to_date) unless cursor_back_to_date.nil?
     ClaimReviewParser.record_service_heartbeat(service)
+    
     ClaimReviewParser.run(service, cursor_back_to_date, overwrite_existing_claims, send_notifications)
-    RunClaimReviewParser.perform_in(Settings.task_interevent_time, service)
+    RunClaimReviewParser.perform_in(ClaimReviewParser.parsers[service].interevent_time, service)
   end
 
   def self.requeue(service)
