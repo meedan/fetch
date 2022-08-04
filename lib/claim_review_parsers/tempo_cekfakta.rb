@@ -83,6 +83,7 @@ class TempoCekfakta < ClaimReviewParser
   def get_created_at_from_raw_claim_review(raw_claim_review)
     get_date_from_raw_claim_review(raw_claim_review)||Time.parse(og_date_from_raw_claim_review(raw_claim_review)) rescue nil
   end
+
   def parse_raw_claim_review(raw_claim_review)
     return {} if !domain_is_only_cekfakta(raw_claim_review['url'])
     claim_review_result, claim_review_result_score = get_claim_review_results_from_raw_claim_review(raw_claim_review)
