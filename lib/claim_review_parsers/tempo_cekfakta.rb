@@ -1,11 +1,3 @@
-# frozen_string_literal: true
-
-# Parser for https://mafindo.github.io/docs/v2/#the-news-object
-# curl --request POST \
-#   --url https://yudistira.turnbackhoax.id/api/antihoax/ \
-#   --header 'Content-Type: application/x-www-form-urlencoded' \
-#   --header 'Accept: application/json' \
-#   --data 'key=123456&id=891&limit=1&offset=1'
 class TempoCekfakta < ClaimReviewParser
   include PaginatedReviewClaims
   def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
@@ -88,12 +80,15 @@ class TempoCekfakta < ClaimReviewParser
     value_from_og_tags(raw_claim_review, ["og:image"]) || raw_claim_review['page'].search("main.main-left div.detail-in img")[1].attributes["src"].value rescue nil
   end
 
+  def get_created_at_from_raw_claim_review(raw_claim_review)
+    get_date_from_raw_claim_review(raw_claim_review)||Time.parse(og_date_from_raw_claim_review(raw_claim_review)) rescue nil
+  end
   def parse_raw_claim_review(raw_claim_review)
     return {} if !domain_is_only_cekfakta(raw_claim_review['url'])
     claim_review_result, claim_review_result_score = get_claim_review_results_from_raw_claim_review(raw_claim_review)
     {
       id: raw_claim_review['url'],
-      created_at: get_date_from_raw_claim_review(raw_claim_review),
+      created_at: get_created_at_from_raw_claim_review(raw_claim_review),
       author: "Tempo",
       author_link: "https://cekfakta.tempo.co",
       claim_review_headline: raw_claim_review["page"].search("h1.title").text,
