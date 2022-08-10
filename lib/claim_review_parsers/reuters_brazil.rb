@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-class ReutersSpanish < Reuters
+class ReutersBrazil < Reuters
   include PaginatedReviewClaims
 
   def fact_list_path(page = 1)
-    "/news/archive/factCheckSpanishNew?view=page&page=#{page}&pageSize=10"
+    "/news/archive/factcheckportuguesenew?view=page&page=#{page}&pageSize=10"
   end
 
   def claim_result_from_subhead(page)
