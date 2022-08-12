@@ -22,7 +22,7 @@ class PesaCheck < ClaimReviewParser
       author: feed_item["author"],
       claim_review_headline: feed_item["title"],
       claim_review_body: parsed.text,
-      claim_review_reviwed: parsed.search("strong").first.text,
+      claim_review_reviewed: parsed.search("strong").first.text,
       claim_review_image_url: feed_item["thumbnail"],
       claim_review_result: feed_item["title"].split(":").first,
       claim_review_url: feed_item["link"],
