@@ -2,6 +2,9 @@
 
 class ReutersSpanish < Reuters
   include PaginatedReviewClaims
+  def self.deprecated
+    false
+  end
 
   def fact_list_path(page = 1)
     "/news/archive/factCheckSpanishNew?view=page&page=#{page}&pageSize=10"
