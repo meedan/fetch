@@ -13,7 +13,7 @@ class ReutersSpanish < Reuters
   def claim_result_from_subhead(page)
     header = page.search('div.ArticleBodyWrapper h3').first || page.search('div.ArticleBodyWrapper h2').first
     if header
-      header.next_sibling.text
+      header.next_sibling.text.split(".").first
     end
   end
 
