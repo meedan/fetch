@@ -30,8 +30,12 @@ class AosFatos < ClaimReviewParser
     raw_claim_review["page"].search("main section.container article.ck-article p")[1].text.strip.gsub("(veja aqui)", "")
   end
   
+  def find_claim_review_from_raw_claim_review(raw_claim_review)
+    extract_all_ld_json_script_blocks(raw_claim_review["page"]).collect{|x| JSON.parse(x.text) rescue nil}.flatten.compact.select{|x| x["@type"].to_s.include?("ClaimReview")}.first
+  end
+  
   def parse_raw_claim_review(raw_claim_review)
-    claim_review = extract_ld_json_script_block(raw_claim_review["page"], 1) || {}
+    claim_review = find_claim_review_from_raw_claim_review(raw_claim_review)
     {
       id: raw_claim_review['url'],
       created_at: claim_review["datePublished"] && Time.parse(claim_review["datePublished"]),
