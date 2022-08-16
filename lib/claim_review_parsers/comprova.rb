@@ -19,13 +19,10 @@ class Comprova < ClaimReviewParser
     atag.attributes["href"].value
   end
   
-  def claim_review_result_from_claim_review(claim_review)
-    claim_review &&
-    claim_review["reviewRating"] &&
-    claim_review["reviewRating"]["alternateName"] && 
-    claim_review["reviewRating"]["alternateName"].to_s.split(":").first
+  def claim_review_result_from_raw_claim_review(raw_claim_review)
+    raw_claim_review["page"].search("dt.answer__tag").text.strip
   end
-  
+
   def claim_review_body_from_raw_claim_review(raw_claim_review)
     raw_claim_review["page"].search("dd.answer__tag__details").text.strip
   end
@@ -41,7 +38,7 @@ class Comprova < ClaimReviewParser
       claim_review_body: claim_review_body_from_raw_claim_review(raw_claim_review),
       claim_review_reviewed: claim_review["claimReviewed"],
       claim_review_image_url: value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:image"])),
-      claim_review_result: claim_review_result_from_claim_review(claim_review),
+      claim_review_result: claim_review_result_from_raw_claim_review(raw_claim_review),
       claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
       claim_review_url: raw_claim_review['url'],
       raw_claim_review: claim_review
