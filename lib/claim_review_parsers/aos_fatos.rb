@@ -27,7 +27,7 @@ class AosFatos < ClaimReviewParser
   end
   
   def claim_review_body_from_raw_claim_review(raw_claim_review)
-    raw_claim_review["page"].search("main section.container article.ck-article p")[1].text.strip
+    raw_claim_review["page"].search("main section.container article.ck-article p")[1].text.strip.gsub("(veja aqui)", "")
   end
   
   def parse_raw_claim_review(raw_claim_review)
