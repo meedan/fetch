@@ -30,9 +30,17 @@ class AFP < ClaimReviewParser
     raw_claim_review["page"].search("article div.article-entry h3").first.text rescue nil
   end
 
+  def latest_timestamp_from_raw_claim_review_and_claim_review(raw_claim_review, claim_review)
+    if claim_review && claim_review["@graph"] && claim_review["@graph"][0] && claim_review["@graph"][0]["datePublished"] && og_timestamps_from_raw_claim_review(raw_claim_review).first
+      [Time.parse(claim_review["@graph"][0]["datePublished"]), og_timestamps_from_raw_claim_review(raw_claim_review)].flatten.sort.last
+    else
+      Time.at(raw_claim_review["page"].search("small.date-post").first.attributes["timestamp"].value.to_i)
+    end
+  end
+
   def parse_raw_claim_review(raw_claim_review)
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], 0)
-    latest_timestamp = [Time.parse(claim_review["@graph"][0]["datePublished"]), og_timestamps_from_raw_claim_review(raw_claim_review)].flatten.sort.last
+    latest_timestamp = latest_timestamp_from_raw_claim_review_and_claim_review(raw_claim_review, claim_review)
     {
       id: raw_claim_review['url'],
       created_at: latest_timestamp,
