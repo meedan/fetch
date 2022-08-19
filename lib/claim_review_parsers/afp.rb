@@ -51,7 +51,7 @@ class AFP < ClaimReviewParser
       claim_review_reviewed: claim_review && claim_review["@graph"][0]["claimReviewed"],
       claim_review_image_url: claim_review_image_url_from_raw_claim_review(raw_claim_review),
       claim_review_result: claim_review && claim_review["@graph"][0]["reviewRating"]["alternateName"],
-      claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review["@graph"][0]),
+      claim_review_result_score: claim_result_score_from_raw_claim_review((claim_review && claim_review["@graph"][0]) || {}),
       claim_review_url: raw_claim_review['url'],
       raw_claim_review: claim_review
     }
