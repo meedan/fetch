@@ -8,6 +8,11 @@ class AFPFactualUsa < AFP
     'https://factual.afp.com/afp-usa'
   end
 
+  def fact_list_path(page = 1)
+    # appears to be zero-indexed
+    "?page=#{page - 1}"
+  end
+
   def url_extractor(atag)
     hostname.split("/afp-usa").first + atag.attributes['href'].value
   end
