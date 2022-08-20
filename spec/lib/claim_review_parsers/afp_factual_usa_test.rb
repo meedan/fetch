@@ -7,7 +7,7 @@ describe AFPFactualUsa do
     end
 
     it 'has a fact_list_path' do
-      expect(described_class.new.fact_list_path(1)).to(eq('/list?page=0'))
+      expect(described_class.new.fact_list_path(1)).to(eq('?page=0'))
     end
 
     it 'has a url_extraction_search' do
