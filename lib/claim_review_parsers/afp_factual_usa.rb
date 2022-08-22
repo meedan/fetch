@@ -4,6 +4,11 @@
 require_relative('afp')
 class AFPFactualUsa < AFP
   include PaginatedReviewClaims
+  def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
+    super(cursor_back_to_date, overwrite_existing_claims, send_notifications)
+    @escape_url_in_request = false
+  end
+
   def hostname
     'https://factual.afp.com/afp-usa'
   end

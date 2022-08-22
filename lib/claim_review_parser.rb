@@ -31,6 +31,7 @@ class ClaimReviewParser
     @fact_list_page_parser ||= 'html'
     @simple_page_urls ||= true
     @run_in_parallel = true
+    @escape_url_in_request = true
     @logger = Logger.new(STDOUT)
     @current_claims = []
     @cookies = get_cookies(client)
@@ -97,7 +98,7 @@ class ClaimReviewParser
       proxy = @proxy ? @proxy : nil
       RestClient::Request.execute(
         method: method,
-        url: URI::Parser.new.escape(url),
+        url: @escape_url_in_request ? URI::Parser.new.escape(url) : url,
         payload: payload,
         cookies: @cookies,
         headers: headers,
