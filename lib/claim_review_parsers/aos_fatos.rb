@@ -47,6 +47,7 @@ class AosFatos < ClaimReviewParser
       claim_review_image_url: value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:image"])),
       claim_review_result: claim_review_result_from_claim_review(claim_review),
       claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
+      keywords: keywords_from_raw_claim_review(raw_claim_review),
       claim_review_url: raw_claim_review['url'],
       raw_claim_review: claim_review
     }

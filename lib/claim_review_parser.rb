@@ -164,6 +164,12 @@ class ClaimReviewParser
     end
   end
 
+  def keywords_from_raw_claim_review(raw_claim_review)
+    raw_claim_review["page"].search("meta").select{|x|
+      x.attributes["name"] && x.attributes["name"].value == "keywords"
+    }.first.attributes["content"].value
+  end
+
   def og_timestamps_from_raw_claim_review(raw_claim_review)
     raw_claim_review["page"].search("meta").select{|x|
       x.attributes["property"] && x.attributes["property"].value.include?("_time")
