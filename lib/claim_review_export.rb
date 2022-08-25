@@ -15,6 +15,7 @@ module ClaimReviewExport
       "claimReviewed": claim_review['claim_review_reviewed'],
       "text": claim_review['claim_review_body'],
       "image": claim_review['claim_review_image_url'],
+      "keywords": claim_review['keywords'],
       "reviewRating": {
         "@type": 'Rating',
         "ratingValue": claim_review['claim_review_result_score'],
