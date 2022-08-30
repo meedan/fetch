@@ -31,7 +31,7 @@ class Comprova < ClaimReviewParser
     claim_review = (extract_ld_json_script_block(raw_claim_review["page"], 1) || [{}]).first
     {
       id: raw_claim_review['url'],
-      created_at: claim_review["datePublished"] && Time.parse(claim_review["datePublished"]),
+      created_at: claim_review["datePublished"] && Time.parse(claim_review["datePublished"]) || og_date_from_raw_claim_review(raw_claim_review) && Time.parse(og_date_from_raw_claim_review(raw_claim_review)),
       author: claim_review["author"] && claim_review["author"]["name"],
       author_link: claim_review["author"] && claim_review["author"]["url"],
       claim_review_headline: og_title_from_raw_claim_review(raw_claim_review).gsub(" : Projeto Comprova", ""),
