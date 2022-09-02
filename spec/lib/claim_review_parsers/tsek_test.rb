@@ -8,7 +8,7 @@ describe Tsek do
     	  'Accept'=>'*/*',
     	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
     	  'Host'=>'www.tsek.ph',
-    	  'User-Agent'=>'rest-client/2.1.0 (linux x86_64) ruby/2.7.6p219'
+    	  'User-Agent'=>/.*/
         }).
         to_return(status: 200, body: File.read("spec/fixtures/tsek_index_response.json"), headers: {})
   
