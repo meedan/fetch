@@ -6,4 +6,8 @@ class UOLEleicoesUltima < UOLComprova
   def fact_list_path(next_page=nil)
     "/eleicoes/ultimas/?next=#{next_page}"
   end
+
+  def url_extraction_search
+    "div.collection-standard section.latest-news-banner div.container section.results-index div.thumbnails-item a"
+  end
 end

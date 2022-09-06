@@ -2,6 +2,11 @@
 
 # Parser for https://noticias.uol.com.br
 class UOLComprova < ClaimReviewParser
+  def get_claim_reviews
+    binding.pry
+    processed_claim_reviews = store_claim_reviews_for_page(@next_page)
+    (processed_claim_reviews = store_claim_reviews_for_page(@next_page)) until finished_iterating?(processed_claim_reviews)
+  end
   include PaginatedReviewClaims
   attr_accessor :next_page
   def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
@@ -18,20 +23,21 @@ class UOLComprova < ClaimReviewParser
   end
 
   def url_extraction_search
-    "div.collection-standard section.latest-news-banner div.container section.results-index div.thumbnails-item a"
+    "div.row div.thumbnails-item a"
   end
 
   def url_extractor(atag)
     atag.attributes['href'].value
   end
 
-  def parsed_fact_list_page(page = 1)
-    response = super(page)
+  def parsed_fact_list_page(next_page=nil)
+    response = super(next_page)
     @next_page = response.search("button.btn-search").first.attributes["data-next"].value
     response
   end
 
   def get_claim_reviews
+    binding.pry
     processed_claim_reviews = store_claim_reviews_for_page(@next_page)
     (processed_claim_reviews = store_claim_reviews_for_page(@next_page)) until finished_iterating?(processed_claim_reviews)
   end
