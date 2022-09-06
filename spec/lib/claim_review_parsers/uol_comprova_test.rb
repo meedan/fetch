@@ -39,7 +39,7 @@ describe UOLComprova do
     end
 
     it 'has a url_extraction_search' do
-      expect(described_class.new.url_extraction_search).to(eq("div.collection-standard section.latest-news-banner div.container section.results-index div.thumbnails-item a"))
+      expect(described_class.new.url_extraction_search).to(eq("div.row div.thumbnails-item a"))
     end
 
     it 'extracts a url' do

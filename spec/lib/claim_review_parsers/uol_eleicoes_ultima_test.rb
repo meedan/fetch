@@ -6,6 +6,10 @@ describe UOLEleicoesUltima do
       expect(described_class.new.fact_list_path("blah")).to(eq('/eleicoes/ultimas/?next=blah'))
     end
 
+    it 'has a url_extraction_search' do
+      expect(described_class.new.url_extraction_search).to(eq("div.collection-standard section.latest-news-banner div.container section.results-index div.thumbnails-item a"))
+    end
+
     it 'parses a raw_claim_review' do
       raw = JSON.parse(File.read('spec/fixtures/uol_eleicoes_ultima_raw.json'))
       raw['page'] = Nokogiri.parse(raw['page'])
