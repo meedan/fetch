@@ -2,11 +2,6 @@
 
 # Parser for https://noticias.uol.com.br
 class UOLComprova < ClaimReviewParser
-  def get_claim_reviews
-    binding.pry
-    processed_claim_reviews = store_claim_reviews_for_page(@next_page)
-    (processed_claim_reviews = store_claim_reviews_for_page(@next_page)) until finished_iterating?(processed_claim_reviews)
-  end
   include PaginatedReviewClaims
   attr_accessor :next_page
   def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
@@ -37,7 +32,6 @@ class UOLComprova < ClaimReviewParser
   end
 
   def get_claim_reviews
-    binding.pry
     processed_claim_reviews = store_claim_reviews_for_page(@next_page)
     (processed_claim_reviews = store_claim_reviews_for_page(@next_page)) until finished_iterating?(processed_claim_reviews)
   end
