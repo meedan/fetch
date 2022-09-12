@@ -22,12 +22,12 @@ describe BanglaBoomLive do
       article = {"author"=>
         [{"@type"=>"Person", "name"=>"Sista Mukherjee", "url"=>"https://bangla.boomlive.in/author-sista", "jobTitle"=>"Editor", "image"=>"https://bangla.boomlive.in/h-upload/2022/07/14/981312-sista-new.webp", "sameAs"=>[]},
          {"@type"=>"Person", "name"=>"Srijit Das", "url"=>"https://bangla.boomlive.in/srijit-das", "jobTitle"=>"Editor", "image"=>"https://bangla.boomlive.in/h-upload/2022/07/14/981312-sista-new.webp", "sameAs"=>["https://www.twitter.com/srijitofficial"]}]}
-      expect(described_class.new.get_author_and_link_from_article(article).to(eq(["Sista Mukherjee", "http://bangla.boomlive.inhttps://bangla.boomlive.in/author-sista"]))
+      expect(described_class.new.get_author_and_link_from_article(article).to(eq(["Sista Mukherjee", "http://bangla.boomlive.inhttps://bangla.boomlive.in/author-sista"])))
     end
 
     it 'gracefully nils on bad article author' do
       article = {"author"=>"blah"}
-      expect(described_class.new.get_author_and_link_from_article(article).to(eq([nil,nil]))
+      expect(described_class.new.get_author_and_link_from_article(article).to(eq([nil,nil])))
     end
 
     it 'parses a raw_claim_review' do
