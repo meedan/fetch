@@ -42,10 +42,10 @@ class BanglaBoomLive < ClaimReviewParser
       author_link: author_link,
       claim_review_headline: article["claimReviewed"],
       claim_review_body: raw_claim_review["page"].search("div.single-post-summary h2").text,
-      claim_review_reviewed: article["itemReviewed"] && article["itemReviewed"]["name"],
-      claim_review_image_url: article["image"] && article["image"]["contentUrl"],
-      claim_review_result: article["reviewRating"] && article["reviewRating"]["alternateName"],
-      claim_review_result_score: claim_result_score_from_raw_claim_review(article["reviewRating"]),
+      claim_review_reviewed: article && article["itemReviewed"] && article["itemReviewed"]["name"],
+      claim_review_image_url: article && article["image"] && article["image"]["contentUrl"],
+      claim_review_result: article && article["reviewRating"] && article["reviewRating"]["alternateName"],
+      claim_review_result_score: claim_result_score_from_raw_claim_review((article && article["reviewRating"] ||{})),
       claim_review_url: raw_claim_review['url'],
       raw_claim_review: article
     }
