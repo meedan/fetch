@@ -18,7 +18,7 @@ class DesiFacts < ClaimReviewParser
   end
 
   def is_claim_or_explainer(image_title_node)
-    image_title_node.text.downcase.include?("claim") || image_title_node.text.downcase.include?("explainer")
+    ["दावा", "स्पष्टीकरण", "দাবি", "ব্যাখ্যাকারী", "claim", "explainer"].collect{|clause| image_title_node.text.downcase.include?(clause)}.include?(true)
   end
 
   def is_article_url(url)
