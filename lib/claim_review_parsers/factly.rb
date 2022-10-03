@@ -39,7 +39,7 @@ class Factly < ClaimReviewParser
 
   def get_fact_index_from_page(page)
     bold_blockquotes = page.search('div.post-content blockquote p strong')
-    found = bold_blockquotes.each_with_index.to_a.reverse.find { |x, _i| x.text.downcase.include?('fact:') }
+    found = bold_blockquotes.each_with_index.to_a.reverse.find { |x, _i| x.text.downcase.include?('fact') || x.text.downcase.include?('ఫాక్ట్')}
     [found && found.last, bold_blockquotes]
   end
 
@@ -48,6 +48,18 @@ class Factly < ClaimReviewParser
     fact_index, bold_blockquotes = get_fact_index_from_page(page)
     fact_result = bold_blockquotes[fact_index + 1].text.strip.gsub(".", "") if fact_index and bold_blockquotes and bold_blockquotes[fact_index + 1]
     return fact_result
+  end
+
+  def get_from_blockquote(page, terms)
+    page.search('div.post-content blockquote p').select{|x| terms.collect{|t| x.text.downcase.include?(t)}.include?(true)}
+  end
+
+  def get_claim_reviewed_from_page(page)
+    get_from_blockquote(page, ["claim", "క్లెయిమ్"]).first.children.last.text
+  end
+
+  def get_body_from_page(page)
+    get_from_blockquote(page, ["fact", "ఫాక్"]).first.children[1..-1].text
   end
 
   def person_from_schema_object(schema_object)
@@ -79,7 +91,8 @@ class Factly < ClaimReviewParser
       author: author_from_raw_claim_review_and_schema_object(raw_claim_review, schema_object),
       author_link: author_link_from_raw_claim_review_and_schema_object(raw_claim_review, schema_object),
       claim_review_headline: raw_claim_review['raw_response']['title']['rendered'],
-      claim_review_body: raw_claim_review['raw_response']['content']['rendered'],
+      claim_review_body: get_body_from_page(raw_claim_review['page']),
+      claim_review_reviewed: get_claim_reviewed_from_page(raw_claim_review['page']),
       claim_review_image_url: claim_review_image_url_from_raw_claim_review(raw_claim_review),
       claim_review_result: get_claim_result_from_page(raw_claim_review['page']),
       claim_review_result_score: nil,
