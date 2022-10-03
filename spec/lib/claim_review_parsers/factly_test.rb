@@ -21,7 +21,7 @@ describe Factly do
     end
 
     it 'extracts parsed_fact_page results' do
-      keys = [:author, :author_link, :claim_review_body, :claim_review_headline, :claim_review_image_url, :claim_review_result, :claim_review_result_score, :claim_review_url, :created_at, :id, :raw_claim_review].sort
+      keys = [:author, :author_link, :claim_review_body, :claim_review_headline, :claim_review_image_url, :claim_review_result, :claim_review_result_score, :claim_review_reviewed, :claim_review_url, :created_at, :id, :raw_claim_review].sort
       raw = JSON.parse(File.read('spec/fixtures/factly_raw.json'))
       raw["raw_response"].delete("_links")
       response = described_class.new.parsed_fact_page(raw["raw_response"])
