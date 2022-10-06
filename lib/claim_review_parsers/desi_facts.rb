@@ -50,11 +50,12 @@ class DesiFacts < ClaimReviewParser
     article = find_claim_review(raw_claim_review["page"]) || {}
     timestamp = [article["datePublished"], article["dateModified"]].compact.sort.first
     claim_review_result = raw_claim_review["page"].search("figcaption div.image-caption p").text
+    headline = raw_claim_review["page"].search("h1.entry-title").text
     {
       id: raw_claim_review['url'],
       created_at: timestamp && Time.parse(timestamp),
       author: article["author"],
-      claim_review_headline: article["headline"],
+      claim_review_headline: headline.empty? ? article["headline"] : headline,
       claim_review_body: raw_claim_review["page"].search("p.sqsrte-large em").text,
       claim_review_image_url: article["image"],
       claim_review_result: claim_review_result,
