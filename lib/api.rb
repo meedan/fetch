@@ -8,7 +8,7 @@ class API
   def self.claim_reviews(opts = {})
     opts[:per_page] ||= 20
     opts[:offset] ||= 0
-    return {error: "Offset is #{opts[:offset]}, and cannot be bigger than 10000. Query cannot execute"} if opts[:offset] > 10000
+    return {error: "Offset is #{opts[:offset]}, and cannot be bigger than 10000. Query cannot execute"} if opts[:offset].to_i > 10000
     results = ClaimReview.search(
       opts
     )
