@@ -15,14 +15,14 @@ describe Site do
     end
 
     it 'returns an empty GET claim_reviews response' do
-      ClaimReview.stub(:search).with({:offset=>0, :per_page=>20}).and_return([])
+      ClaimReview.stub(:search).with({:offset=>0, :per_page=>20}, true).and_return([])
       response = get "/claim_reviews"
       expect(response.status).to(eq(200))
       expect(JSON.parse(response.body)).to(eq([]))
     end
 
     it 'returns a non-empty GET claim_reviews response' do
-      ClaimReview.stub(:search).with({:offset=>0, :per_page=>20}).and_return([{ bloop: 1 }])
+      ClaimReview.stub(:search).with({:offset=>0, :per_page=>20}, true).and_return([{ bloop: 1 }])
       response = get "/claim_reviews"
       expect(response.status).to(eq(200))
       expect(JSON.parse(response.body)).to(eq([{ 'bloop' => 1 }]))
