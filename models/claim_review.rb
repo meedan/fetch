@@ -118,11 +118,11 @@ class ClaimReview
     self.save_claim_review(parsed_claim_review, service, send_notifications) if self.should_save_claim_review(parsed_claim_review[:id], service, overwrite_existing_claims)
   end
 
-  def self.search(opts, sort=ElasticSearchQuery.created_at_desc)
+  def self.search(opts, include_raw=true, sort=ElasticSearchQuery.created_at_desc)
     ElasticSearchQuery.get_hits(
       ClaimReview,
       body: ElasticSearchQuery.claim_review_search_query(opts, sort)
-    ).map { |r| ClaimReview.convert_to_claim_review(r) }
+    ).map { |r| ClaimReview.convert_to_claim_review(r, include_raw) }
   end
 
   def self.get_claim_review_social_data_by_ids(ids)

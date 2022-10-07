@@ -7,12 +7,12 @@ describe API do
     end
 
     it 'has a claim review endpoint' do
-      ClaimReview.stub(:search).with({:offset=>0, :per_page=>20}).and_return([])
+      ClaimReview.stub(:search).with({:offset=>0, :per_page=>20}, true).and_return([])
       expect(described_class.claim_reviews({})).to(eq([]))
     end
 
     it 'has a nonempty claim review endpoint' do
-      ClaimReview.stub(:search).with({:offset=>0, :per_page=>20}).and_return([{ bloop: 1 }])
+      ClaimReview.stub(:search).with({:offset=>0, :per_page=>20}, true).and_return([{ bloop: 1 }])
       expect(described_class.claim_reviews({})).to(eq([{ bloop: 1 }]))
     end
 
@@ -48,7 +48,7 @@ describe API do
     end
 
     it "includes link data when specified in search query" do
-      ClaimReview.stub(:search).with({:offset=>0, :per_page=>20, :include_link_data => true}).and_return([{ bloop: 1 }])
+      ClaimReview.stub(:search).with({:offset=>0, :per_page=>20, :include_link_data => true}, true).and_return([{ bloop: 1 }])
       ClaimReview.stub(:enrich_claim_reviews_with_links).with([{ bloop: 1 }]).and_return([{ bloop: 1 }])
       expect(described_class.claim_reviews({include_link_data: true})).to(eq([{ bloop: 1 }]))
     end

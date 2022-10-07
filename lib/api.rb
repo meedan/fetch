@@ -8,9 +8,12 @@ class API
   def self.claim_reviews(opts = {})
     opts[:per_page] ||= 20
     opts[:offset] ||= 0
+    include_raw = opts[:include_raw] == "true" || opts[:include_raw].nil?
+    opts.delete(:include_raw)
     return {error: "Offset is #{opts[:offset]}, and cannot be bigger than 10000. Query cannot execute"} if opts[:offset].to_i > 10000
     results = ClaimReview.search(
-      opts
+      opts,
+      include_raw
     )
     if opts[:include_link_data]
       results = ClaimReview.enrich_claim_reviews_with_links(results)

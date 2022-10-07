@@ -1,6 +1,6 @@
 module ClaimReviewExport
-  def convert_to_claim_review(claim_review)
-    {
+  def convert_to_claim_review(claim_review, include_raw=true)
+    output = {
       "identifier": claim_review["id"],
       "@context": 'http://schema.org',
       "@type": 'ClaimReview',
@@ -22,7 +22,8 @@ module ClaimReviewExport
         "bestRating": 1,
         "alternateName": claim_review['claim_review_result']
       },
-      "raw": claim_review,
     }
+    output[:raw] = claim_review if include_raw
+    output
   end
 end
