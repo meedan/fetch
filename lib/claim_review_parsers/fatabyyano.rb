@@ -11,7 +11,7 @@ class Fatabyyano < ClaimReviewParser
     post_url(
       self.hostname+"/wp-admin/admin-ajax.php",
       URI.encode_www_form(fact_page_params(page))
-      )
+    )
   end
 
   def fact_page_params(page)
@@ -44,7 +44,6 @@ class Fatabyyano < ClaimReviewParser
     ld_json_obj = extract_ld_json_script_block(raw_claim_review["page"], 0)
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], 1).first
     person = ld_json_obj["@graph"].select{|x| x["@type"] == "Person"}.first || {}
-    claim_review_result, claim_review_result_score = get_claim_review_results_from_raw_claim_review(raw_claim_review)
     {
       id: raw_claim_review['url'],
       created_at: Time.parse(og_date_from_raw_claim_review(raw_claim_review)),
