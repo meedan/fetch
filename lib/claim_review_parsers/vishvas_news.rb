@@ -2,36 +2,40 @@
 
 # Parser for https://www.vishvasnews.com
 class VishvasNews < ClaimReviewParser
-  attr_accessor :raw_response
   include PaginatedReviewClaims
-  def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
-    super(cursor_back_to_date, overwrite_existing_claims, send_notifications)
-    @fact_list_page_parser = 'json'
-    @raw_response = {}
-  end
-
-  def get_new_fact_page_urls(page)
-    response = get_fact_page_urls(page)
-    existing_urls = get_existing_urls(response.collect{|d| d["link"]})
-    response.select{|d| !existing_urls.include?(d["link"])}
-  end
-
-  def parsed_fact_page(fact_page_response)
-    parsed_page = parsed_page_from_url(fact_page_response["link"])
-    return if parsed_page.nil?
-    [fact_page_response["link"], parse_raw_claim_review(QuietHashie[{ raw_response: fact_page_response, page: parsed_page, url: fact_page_response["link"] }])]
-  end
 
   def hostname
     'https://www.vishvasnews.com'
   end
 
-  def fact_list_path(page = nil)
-    "/jsonfeeds/?task=whatsapplatest&page=#{page}&limit=50"
+  def request_fact_page(page)
+    post_url(
+      self.hostname+"/wp-admin/admin-ajax.php",
+      URI.encode_www_form(fact_page_params(page))
+    )
   end
 
-  def url_extractor(response)
-    response["response"]["docs"]
+  def fact_page_params(page)
+    {
+      action: "ajax_pagination",
+      query_vars: "[]",
+      page:  page.to_s,
+      loadPage: "file-latest-posts-part"
+    }
+  end
+
+  def parsed_fact_list_page(page)
+    Nokogiri.parse(
+      "<html><body>"+request_fact_page(page)+"</body></html>"
+    )
+  end
+
+  def url_extraction_search
+    "ul div.imagebox a"
+  end
+
+  def url_extractor(atag)
+    atag.attributes['href'].value
   end
 
   def get_claim_review_rating_from_claim_review(claim_review)
