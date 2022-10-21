@@ -194,6 +194,10 @@ class ClaimReviewParser
     value_from_og_tags(raw_claim_review, ["og:title"])
   end
 
+  def get_og_image_url(raw_claim_review)
+    value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:image"])) rescue nil
+  end
+
   def value_from_og_tags(raw_claim_review, og_tags)
     value_from_og_tag(
       search_for_og_tags(raw_claim_review["page"], og_tags)

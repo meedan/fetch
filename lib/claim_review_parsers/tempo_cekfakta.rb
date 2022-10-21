@@ -77,7 +77,7 @@ class TempoCekfakta < ClaimReviewParser
   end
 
   def get_image_from_raw_claim_review(raw_claim_review)
-    value_from_og_tags(raw_claim_review, ["og:image"]) || raw_claim_review['page'].search("main.main-left div.detail-in img")[1].attributes["src"].value rescue nil
+    get_og_image_url(raw_claim_review) || raw_claim_review['page'].search("main.main-left div.detail-in img")[1].attributes["src"].value rescue nil
   end
 
   def get_created_at_from_raw_claim_review(raw_claim_review)

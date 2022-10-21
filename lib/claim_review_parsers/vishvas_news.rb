@@ -46,17 +46,16 @@ class VishvasNews < ClaimReviewParser
   end
 
   def parse_raw_claim_review(raw_claim_review)
-    api_response = raw_claim_review["raw_response"]
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], 0) || {}
     {
-      id: api_response["id"].to_s,
+      id: raw_claim_review["url"].to_s,
       created_at: claim_review["datePublished"] && Time.parse(claim_review["datePublished"]),
       author: claim_review["author"] && claim_review["author"]["name"],
       author_link: claim_review["author"] && claim_review["author"]["url"],
-      claim_review_headline: api_response["title"],
-      claim_review_body: raw_claim_review["page"].search("div.lhs-area p").text.strip,
+      claim_review_headline: og_title_from_raw_claim_review(raw_claim_review).split(" - ")[0..-2].join(" - "),
+      claim_review_body: raw_claim_review["page"].search("div.lhs-area div.view-full p").first.children.last.text.split(":")[1..-1].join(":").strip,
       claim_review_reviewed: claim_review["claimReviewed"],
-      claim_review_image_url: api_response["image"],
+      claim_review_image_url: get_og_image_url(raw_claim_review),
       claim_review_result: get_claim_review_rating_from_claim_review(claim_review),
       claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
       claim_review_url: raw_claim_review['url'],
