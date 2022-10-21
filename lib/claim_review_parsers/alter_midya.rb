@@ -31,7 +31,7 @@ class AlterMidya < ClaimReviewParser
   end
 
   def claim_review_image_url_from_article_or_raw_claim_review(article, raw_claim_review)
-    article && article["image"] && article["image"]["@id"] || value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:image"]))
+    article && article["image"] && article["image"]["@id"] || get_og_image_url(raw_claim_review)
   end
 
   def parse_raw_claim_review(raw_claim_review)

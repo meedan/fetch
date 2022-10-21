@@ -35,10 +35,6 @@ class Tsek < ClaimReviewParser
     urls-get_existing_urls(urls)
   end
 
-  def get_image_url(raw_claim_review)
-    search_for_og_tags(raw_claim_review["page"], ["og:image"]).attributes["content"].value rescue nil
-  end
-
   def get_description(raw_claim_review)
     description = search_for_og_tags(raw_claim_review["page"], ["og:description"]).attributes["content"].value rescue nil
     description = raw_claim_review["page"].search("article.post div.entry-content p").collect(&:text).join(" ") if description.nil?
@@ -95,7 +91,7 @@ class Tsek < ClaimReviewParser
       author_link: author["url"],
       claim_review_headline: news_article["headline"],
       claim_review_body: get_description(raw_claim_review),
-      claim_review_image_url: get_image_url(raw_claim_review),
+      claim_review_image_url: get_og_image_url(raw_claim_review),
       claim_review_result: result,
       claim_review_result_score: result_score,
       claim_review_url: raw_claim_review['url'],

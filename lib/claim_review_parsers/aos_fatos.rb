@@ -44,7 +44,7 @@ class AosFatos < ClaimReviewParser
       claim_review_headline: og_title_from_raw_claim_review(raw_claim_review).gsub(" | Aos Fatos", ""),
       claim_review_body: claim_review_body_from_raw_claim_review(raw_claim_review),
       claim_review_reviewed: claim_review["claimReviewed"],
-      claim_review_image_url: value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:image"])),
+      claim_review_image_url: get_og_image_url(raw_claim_review),
       claim_review_result: claim_review_result_from_claim_review(claim_review),
       claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
       keywords: keywords_from_raw_claim_review(raw_claim_review),
