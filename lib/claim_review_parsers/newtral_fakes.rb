@@ -21,11 +21,10 @@ class NewtralFakes < ClaimReviewParser
   end
 
   def claim_review_body_from_raw_claim_review(raw_claim_review)
-    raw_claim_review["page"].search("div.box-gry").select{|x| x.text.include?("निष्कर्ष")}.first.search("p").text rescue nil
+    raw_claim_review["page"].search("div.entry-content p")[1].text
   end
 
   def parse_raw_claim_review(raw_claim_review)
-    binding.pry
     ld_json_object = extract_ld_json_script_block(raw_claim_review["page"], 0)
     claim_review = ld_json_object["@graph"].select{|x| x["@type"]=="ClaimReview"}.first
     {
