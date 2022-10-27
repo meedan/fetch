@@ -151,9 +151,7 @@ class ClaimReviewParser
     page.search(search_path).select{|x| x.attributes["type"] && x.attributes["type"].value == "application/ld+json"}
   end
 
-  def extract_ld_json_script_block(page, index, search_path="script")
-    script_block = page && extract_all_ld_json_script_blocks(page, search_path)[index]
-    script_block
+  def parse_script_block(script_block)
     if !script_block.nil?
       begin
         parsed = JSON.parse(script_block.text)
@@ -162,6 +160,11 @@ class ClaimReviewParser
         return nil
       end
     end
+  end
+
+  def extract_ld_json_script_block(page, index, search_path="script")
+    script_block = page && extract_all_ld_json_script_blocks(page, search_path)[index]
+    parse_script_block(script_block)
   end
 
   def keywords_from_raw_claim_review(raw_claim_review)
