@@ -2,63 +2,47 @@
 
 class IndiaToday < ClaimReviewParser
   include PaginatedReviewClaims
+  def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
+    super(cursor_back_to_date, overwrite_existing_claims, send_notifications)
+    @fact_list_page_parser = 'json'
+  end
+
   def hostname
     'https://www.indiatoday.in'
   end
 
   def fact_list_path(page = 1)
-    # they start with 0-indexes, so push back internally
-    "/fact-check?page=#{page - 1}"
+    "/api/ajax/newslist?page=#{page}&id=1792990&type=story&display=12"
   end
 
-  def url_extraction_search
-    'div.detail h2 a'
+  def url_extractor(page_data)
+    page_data["data"]["content"].collect{|x| self.hostname+x["canonical_url"]}
   end
 
-  def headline_search
-    'div.story-section h1'
-  end
-
-  def claim_review_body_from_raw_claim_review(raw_claim_review)
-    header = raw_claim_review["page"].search('span.bordertop').first
-    if header
-      header.next_sibling.text
-    end
-  end
-
-  def url_extractor(atag)
-    hostname + atag.attributes['href'].value
-  end
-
-  def claim_review_from_raw_claim_review(raw_claim_review)
-    ld_json_blocks = raw_claim_review["page"].search("script").select{|x| x.attributes["type"] && x.attributes["type"].value == "application/ld+json"}
-    JSON.parse(ld_json_blocks.select{|x| b = JSON.parse(x.text.gsub("\n", " ")); b.class == Hash && b["@type"] == "ClaimReview"}.first.text.gsub("\n", " "))
-  rescue JSON::ParserError, NoMethodError
-    #send back stubbed claim_review when there's a parse error or no verifiable ClaimReview object in the document
-    {}
+  def get_ld_json_by_type_from_raw_claim_review(raw_claim_review, ld_json_type)
+    extract_all_ld_json_script_blocks(raw_claim_review["page"]).collect{|x|
+      parse_script_block(x)
+    }.select{|x|
+      x.class == Hash && x["@type"] == ld_json_type
+    }.first
   end
 
   def parse_raw_claim_review(raw_claim_review)
-    claim_review = claim_review_from_raw_claim_review(raw_claim_review)
-    if !claim_review.empty?
-      {
-        id: raw_claim_review['url'],
-        created_at: Time.parse(claim_review["datePublished"]),
-        author: claim_review["author"]["name"],
-        author_link: nil,
-        claim_review_headline: raw_claim_review['page'].search(headline_search).text.strip,
-        claim_review_body: claim_review_body_from_raw_claim_review(raw_claim_review),
-        claim_review_image_url: claim_review_image_url_from_raw_claim_review(raw_claim_review),
-        claim_review_reviewed: claim_review["claimReviewed"],
-        claim_review_result: claim_review["reviewRating"]["alternateName"],
-        claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
-        claim_review_url: raw_claim_review['url'],
-        raw_claim_review: claim_review
-      }
-    else
-      {
-        id: raw_claim_review['url'],
-      }
-    end
+    claim_review = get_ld_json_by_type_from_raw_claim_review(raw_claim_review, "ClaimReview")
+    news_article = get_ld_json_by_type_from_raw_claim_review(raw_claim_review, "NewsArticle")
+    {
+      id: raw_claim_review['url'],
+      created_at: Time.parse(news_article["datePublished"]),
+      author: news_article["author"]["name"],
+      author_link: news_article["author"]["url"],
+      claim_review_headline: news_article["headline"],
+      claim_review_body: news_article["description"],
+      claim_review_image_url: get_og_image_url(raw_claim_review),
+      claim_review_reviewed: claim_review["claimReviewed"],
+      claim_review_result: claim_review["reviewRating"]["alternateName"],
+      claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
+      claim_review_url: raw_claim_review['url'],
+      raw_claim_review: {claim_review: claim_review, news_article: news_article}
+    }
   end
 end
