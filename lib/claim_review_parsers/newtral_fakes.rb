@@ -1,3 +1,7 @@
+# https://www.newtral.es/factcheck-sitemap.xml  2022-10-27 15:41 +00:00
+# https://www.newtral.es/fake-sitemap.xml  2022-10-27 17:03 +00:00
+# https://www.newtral.es/fake-sitemap2.xml  2022-08-04 07:22 +00:00
+# https://www.newtral.es/fake-sitemap3.xml  2022-10-27 17:03 +00:00
 # frozen_string_literal: true
 
 # Parser for https://www.newtral.es
@@ -7,17 +11,35 @@ class NewtralFakes < ClaimReviewParser
     super(cursor_back_to_date, overwrite_existing_claims, send_notifications)
     @fact_list_page_parser = 'json'
   end
-
   def hostname
     'https://www.newtral.es'
   end
 
-  def fact_list_path(page = 1)
-    "/wp-json/nwtfmg/v1/fakes?page=#{page}&posts_per_page=15&firstDate=2018-01-01&lastDate=#{Time.now.strftime("%Y-%m-%d")}"
+  def relevant_sitemap_subpath
+    "www.newtral.es/fake"
   end
 
-  def url_extractor(response)
-    response["data"].collect{|r| r["url"]}
+  def includes_relevant_path(url)
+    url.include?(relevant_sitemap_subpath)
+  end
+
+  def get_sitemap_urls(url)
+    Nokogiri.parse(get_url(url)).search("loc").collect(&:text)
+  end
+
+  def get_article_urls
+    get_sitemap_urls(hostname+"/sitemap_index.xml").select{|url| includes_relevant_path(url)}.collect do |sitemap_url|
+      get_sitemap_urls(sitemap_url)
+    end.flatten
+  end
+  
+  def get_new_article_urls
+    page_urls = get_article_urls
+    page_urls-page_urls.each_slice(200).collect{|subset| get_existing_urls(subset)}.flatten # paginate because page_urls can be *huge*
+  end
+
+  def get_claim_reviews
+    process_claim_reviews(get_parsed_fact_pages_from_urls(get_new_article_urls))
   end
 
   def claim_review_body_from_raw_claim_review(raw_claim_review)

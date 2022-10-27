@@ -2,16 +2,8 @@
 
 describe NewtralFactCheck do
   describe 'instance' do
-    it 'has a hostname' do
-      expect(described_class.new.hostname).to(eq('https://www.newtral.es'))
-    end
-
-    it 'has a fact_list_path' do
-      expect(described_class.new.fact_list_path(1)).to(eq("/wp-json/nwtfmg/v1/claim-reviews?page=1&posts_per_page=15&firstDate=2018-01-01&lastDate=#{Time.now.strftime("%Y-%m-%d")}"))
-    end
-
-    it 'extracts a url' do
-      expect(described_class.new.url_extractor({"data" => [{"url" => "blah"}]})).to(eq(["blah"]))
+    it 'has a relevant_sitemap_subpath' do
+      expect(described_class.new.relevant_sitemap_subpath).to(eq("www.newtral.es/factcheck"))
     end
 
     it 'parses a raw_claim_review' do
