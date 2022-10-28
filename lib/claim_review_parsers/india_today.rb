@@ -12,7 +12,7 @@ class IndiaToday < ClaimReviewParser
   end
 
   def fact_list_path(page = 1)
-    "/api/ajax/newslist?page=#{page}&id=1792990&type=story&display=12"
+    "/api/ajax/newslist?page=#{page-1}&id=1792990&type=story&display=12"
   end
 
   def url_extractor(page_data)
