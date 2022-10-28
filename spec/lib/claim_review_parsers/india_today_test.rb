@@ -7,7 +7,7 @@ describe IndiaToday do
     end
 
     it 'has a fact_list_path' do
-      expect(described_class.new.fact_list_path(1)).to(eq('/api/ajax/newslist?page=1&id=1792990&type=story&display=12'))
+      expect(described_class.new.fact_list_path(1)).to(eq('/api/ajax/newslist?page=0&id=1792990&type=story&display=12'))
     end
 
     it 'extracts a url' do
