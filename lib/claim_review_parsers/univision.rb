@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Parser for https://www.aajtak.in
-class AajtakHindi < ClaimReviewParser
+# Parser for https://syndicator.univision.com
+class Univision < ClaimReviewParser
   include PaginatedReviewClaims
   def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
     super(cursor_back_to_date, overwrite_existing_claims, send_notifications)
@@ -9,26 +9,19 @@ class AajtakHindi < ClaimReviewParser
   end
 
   def hostname
-    'https://www.aajtak.in'
+    'https://syndicator.univision.com'
   end
 
-  def fact_list_path(page = 1)
-    "/ajax/load-more-special-listing?id=#{page-1}&type=story/photo_gallery/video/breaking_news&path=/fact-check"
+  def fact_list_path(page = 1, limit=20)
+    "/web-api/widget?wid=$-719170345&offset=#{(page-1)*limit}&limit=#{limit}&url=https://www.univision.com/temas/detector-de-mentiras&mrpts=1667232059000"
   end
 
   def url_extractor(response)
-    Nokogiri.parse("<html><body>"+response['html_content']+"</html></body>").search("li a").collect{|x| x.attributes['href'].value}
-  end
-
-  def get_author_attribute(article, attribute)
-    article && article["author"] && article["author"][0] && article["author"][0][attribute]
-  end
-
-  def claim_review_body_from_raw_claim_review(raw_claim_review)
-    raw_claim_review["page"].search("div.box-gry").select{|x| x.text.include?("निष्कर्ष")}.first.search("p").text rescue nil
+    response["data"]["widget"]["contents"].collect{|x| x["uri"]}
   end
 
   def parse_raw_claim_review(raw_claim_review)
+    binding.pry
     article = extract_ld_json_script_block(raw_claim_review["page"], -3)
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], -4)
     return {} if article.nil?
