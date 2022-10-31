@@ -2,6 +2,10 @@
 
 describe UOLConfere do
   describe 'instance' do
+    it 'has a shortened interevent_time' do
+      expect(described_class.interevent_time).to(eq(60*5))
+    end
+
     it 'has a fact_list_path' do
       expect(described_class.new.fact_list_path("blah")).to(eq('/confere/?next=blah'))
     end
