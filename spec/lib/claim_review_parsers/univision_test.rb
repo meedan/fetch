@@ -13,18 +13,27 @@ describe Univision do
 
     it 'has a url_extraction_search' do
       urls = [
-        "https://www.20minutes.fr/monde/3293399-20220519-guerre-ukraine-prisonniers-meritent-vivre-selon-depute-russe-dit-convention-geneve",
-        "https://www.20minutes.fr/monde/ukraine/3292711-20220519-guerre-ukraine-telegram-cyber-soldats-amateurs-tentent-rallier-opinion-russe-garanties",
-        "https://www.20minutes.fr/monde/3292431-20220519-robes-courtes-interdites-ecole-allemande-demande-professeurs-issus-immigration-faux",
-        "https://www.20minutes.fr/societe/3292355-20220518-securite-france-vraiment-pays-plus-dangereux-europe-non-tel-classement-existe",
-        "https://www.20minutes.fr/politique/3291939-20220518-legislatives-2022-quoi-histoire-nuance-politique-nupes-gauche-raison-craindre-entourloupe",
-        "https://www.20minutes.fr/sante/3290963-20220517-covid-19-soignants-non-vaccines-reintegres-raison-manque-effectif-non-faux",
-        "https://www.20minutes.fr/sante/3291539-20220517-coronavirus-vaccin-pfizer-origine-meforme-rafael-nadal-faux",
-        "https://www.20minutes.fr/societe/3291275-20220516-logement-cases-trois-metres-carres-destination-etudiants-17e-arrondissement-prudence",
-        "https://www.20minutes.fr/economie/3289743-20220514-bareme-macron-licencier-cdi-cause-reviendrait-moins-cher-payer-prime-precarite-cdd-plus-complique-ca",
-        "https://www.20minutes.fr/elections/3288831-20220514-legislatives-2022-faut-desobeir-traites-europeens-pouvoir-mettre-place-cantines-locales-bios"
+        "https://www.univision.com/noticias/falso-este-puente-no-lo-destruyo-el-huracan-fiona",
+        "https://www.univision.com/noticias/soldados-otan-luchando-ucrania-afirma-video-viral",
+        "https://www.univision.com/noticias/falso-reina-isabelii-aparece-video-lanzando-monedas-gente-asiatica",
+        "https://www.univision.com/noticias/falso-corte-suprema-vacuna-arnm-dano-irreparable",
+        "https://www.univision.com/noticias/no-hay-evidenicas-vinagre-de-sidra-manzana-cura-gastritis",
+        "https://www.univision.com/noticias/falso-bonos-socorristas-florida-son-fondos-federales",
+        "https://www.univision.com/noticias/falso-nih-no-incluyo-ivermectina-tratamiento-covid",
+        "https://www.univision.com/noticias/falso-video-demuestra-familia-real-britanica-son-reptilianos",
+        "https://www.univision.com/noticias/enganoso-bill-gates-atenuar-el-sol",
+        "https://www.univision.com/noticias/falso-crecimiento-hielo-groenlandia-desmiente-cambio-climatico",
+        "https://www.univision.com/noticias/en-pocas-palabras-pobres-minorias-afectadas-cambio-climatico-fotos",
+        "https://www.univision.com/noticias/falso-pavarotti-mario-lanza-pelicula-gran-caruso",
+        "https://www.univision.com/noticias/verificamos-falsedades-fotos-twitter-reina-isabel-ii-fotos",
+        "https://www.univision.com/noticias/falso-perros-isabel-enterrados-vivos",
+        "https://www.univision.com/noticias/biden-no-autorizo-venezolanos-volar-eeuu-desde-bogota-sin-visa",
+        "https://www.univision.com/noticias/falso-vacuna-novavax-segura-eficaz-antivacunas-kory",
+        "https://www.univision.com/noticias/falso-perder-7-kilos-defecando-limpiando-colon",
+        "https://www.univision.com/noticias/verdad-bolsas-tela-mas-sostenibles-igual-contaminan",
+        "https://www.univision.com/noticias/falso-djokovic-no-juegue-us-open-moderna-veto",
+        "https://www.univision.com/noticias/falta-contexto-califoria-redujo-desempleo-no-mayor-crecimiento-empleo-newsom"
       ]
-      binding.pry
       expect(described_class.new.url_extractor(JSON.parse(File.read("spec/fixtures/univision_index_raw.json")))).to(eq(urls))
     end
 

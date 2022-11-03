@@ -37,7 +37,7 @@ class Univision < ClaimReviewParser
       claim_review_image_url: get_og_image_url(raw_claim_review),
       claim_review_result: nil,
       claim_review_result_score: nil,
-      claim_review_url: nil,
+      claim_review_url: raw_claim_review['url'],
       raw_claim_review: {}
     }
   end
