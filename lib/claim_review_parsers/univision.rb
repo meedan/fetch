@@ -38,7 +38,7 @@ class Univision < ClaimReviewParser
       claim_review_result: nil,
       claim_review_result_score: nil,
       claim_review_url: nil,
-      raw_claim_review: {article: article}
+      raw_claim_review: {}
     }
   end
 end
