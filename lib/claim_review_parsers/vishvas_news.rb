@@ -19,7 +19,7 @@ class VishvasNews < ClaimReviewParser
     {
       action: "ajax_pagination",
       query_vars: "[]",
-      page:  page.to_s,
+      page:  (page-1).to_s,
       loadPage: "file-latest-posts-part"
     }
   end

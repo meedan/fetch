@@ -20,7 +20,7 @@ describe VishvasNews do
     end
 
     it 'has a fact_list_path' do
-      expect(described_class.new.fact_page_params(1)).to(eq({action: "ajax_pagination", query_vars: "[]", page: "1", loadPage: "file-latest-posts-part"}))
+      expect(described_class.new.fact_page_params(1)).to(eq({action: "ajax_pagination", query_vars: "[]", page: "0", loadPage: "file-latest-posts-part"}))
 
     end
     it 'returns get_new_fact_page_urls' do
