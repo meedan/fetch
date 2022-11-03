@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Parser for https://factly.in
+# Parser for https://www.aajtak.in
 class AajtakHindi < ClaimReviewParser
   include PaginatedReviewClaims
   def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
