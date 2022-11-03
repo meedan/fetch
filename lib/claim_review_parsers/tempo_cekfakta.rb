@@ -22,7 +22,6 @@ class TempoCekfakta < ClaimReviewParser
       request_fact_page(date)
     )
   end
-  
 
   def get_claim_reviews(time=DateTime.now)
     raw_claims = store_claim_reviews_for_page(time)

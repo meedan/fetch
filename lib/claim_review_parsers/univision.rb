@@ -20,22 +20,24 @@ class Univision < ClaimReviewParser
     response["data"]["widget"]["contents"].collect{|x| x["uri"]}
   end
 
+  def get_time_from_raw_claim_review(raw_claim_review)
+    ["datePublished", "dateUpdated"].collect{|key|
+      Time.parse(raw_claim_review["page"].search("meta[@itemprop='#{key}']").first.attributes["content"].value) rescue nil
+    }.flatten.sort.first
+  end
+
   def parse_raw_claim_review(raw_claim_review)
-    binding.pry
-    article = extract_ld_json_script_block(raw_claim_review["page"], -3)
-    claim_review = extract_ld_json_script_block(raw_claim_review["page"], -4)
-    return {} if article.nil?
     {
       id: raw_claim_review['url'],
-      created_at: get_created_at_from_article(article),
-      author: get_author_attribute(article, "name"),
-      author_link: get_author_attribute(article, "url"),
-      claim_review_headline: article["headline"],
-      claim_review_body: claim_review_body_from_raw_claim_review(raw_claim_review),
-      claim_review_image_url: article["image"] && article["image"]["url"],
-      claim_review_result: claim_review["reviewRating"] && claim_review["reviewRating"]["alternateName"],
-      claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
-      claim_review_url: raw_claim_review['url'],
+      created_at: get_time_from_raw_claim_review(raw_claim_review),
+      author: raw_claim_review["page"].search("span[@itemprop='name'] a span").text,
+      author_link: "https://www.univision.com/equipo",
+      claim_review_headline: og_title_from_raw_claim_review(raw_claim_review),
+      claim_review_body: nil,
+      claim_review_image_url: get_og_image_url(raw_claim_review),
+      claim_review_result: nil,
+      claim_review_result_score: nil,
+      claim_review_url: nil,
       raw_claim_review: {article: article}
     }
   end
