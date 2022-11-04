@@ -42,7 +42,7 @@ class TempoCekfakta < ClaimReviewParser
   def url_extractor(atag)
     url = atag.attributes["href"].value
     url = domain_is_only_cekfakta(url) ? url : nil
-    url = "http:"+url if url.to_s[0..1] == "//"
+    url = "https:"+url if url.to_s[0..1] == "//"
     url
   end
 
