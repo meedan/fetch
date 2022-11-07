@@ -30,14 +30,14 @@ class AFP < ClaimReviewParser
     raw_claim_review["page"].search("article div.article-entry h3").first.text rescue nil
   end
 
-  def get_claim_review_safely
+  def get_claim_review_safely(raw_claim_review)
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], 0)
     claim_review && claim_review["@graph"] && claim_review["@graph"][0] || {}
   end
 
   def parse_raw_claim_review(raw_claim_review)
     claim_review = get_claim_review_safely(raw_claim_review)
-    latest_timestamp = [Time.parse(claim_review["@graph"][0]["datePublished"]), og_timestamps_from_raw_claim_review(raw_claim_review)].flatten.sort.last
+    latest_timestamp = [Time.parse(claim_review["datePublished"]), og_timestamps_from_raw_claim_review(raw_claim_review)].flatten.sort.last
     {
       id: raw_claim_review['url'],
       created_at: latest_timestamp,

@@ -37,10 +37,8 @@ class UOLComprova < ClaimReviewParser
   end
 
   def get_claim_reviews
-    if @next_page
-      processed_claim_reviews = store_claim_reviews_for_page(@next_page)
-      (processed_claim_reviews = store_claim_reviews_for_page(@next_page)) until finished_iterating?(processed_claim_reviews)
-    end
+    processed_claim_reviews = store_claim_reviews_for_page(@next_page)
+    (processed_claim_reviews = store_claim_reviews_for_page(@next_page)) until finished_iterating?(processed_claim_reviews)
   end
 
   def claim_review_body_from_raw_claim_review(raw_claim_review)
