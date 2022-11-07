@@ -53,7 +53,7 @@ class VishvasNews < ClaimReviewParser
       author: claim_review["author"] && claim_review["author"]["name"],
       author_link: claim_review["author"] && claim_review["author"]["url"],
       claim_review_headline: og_title_from_raw_claim_review(raw_claim_review).split(" - ")[0..-2].join(" - "),
-      claim_review_body: raw_claim_review["page"].search("div.lhs-area div.view-full p").first.children.last.text.split(":")[1..-1].join(":").strip,
+      claim_review_body: raw_claim_review["page"].search("div.lhs-area div.view-full p").first.children.last.text.split(":")[1..-1].to_a.join(":").strip,
       claim_review_reviewed: claim_review["claimReviewed"],
       claim_review_image_url: get_og_image_url(raw_claim_review),
       claim_review_result: get_claim_review_rating_from_claim_review(claim_review),

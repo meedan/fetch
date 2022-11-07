@@ -28,7 +28,7 @@ class EfeVerifica < ClaimReviewParser
     claim_review = get_claim_review_from_raw_claim_review(raw_claim_review)
     {
       id: raw_claim_review['url'],
-      created_at: Time.parse(claim_review["datePublished"]),
+      created_at: Time.parse(claim_review["datePublished"] || og_date_from_raw_claim_review(raw_claim_review)),
       author: claim_review["author"]["name"],
       author_link: claim_review["author"]["url"],
       claim_review_headline: value_from_og_tags(raw_claim_review, ["og:title"]),

@@ -31,13 +31,16 @@ class UOLComprova < ClaimReviewParser
 
   def parsed_fact_list_page(next_page=nil)
     response = super(next_page)
-    @next_page = response.search("button.btn-search").first.attributes["data-next"].value
+    search_button = response.search("button.btn-search").first
+    @next_page = search_button && search_button.attributes["data-next"].value
     response
   end
 
   def get_claim_reviews
-    processed_claim_reviews = store_claim_reviews_for_page(@next_page)
-    (processed_claim_reviews = store_claim_reviews_for_page(@next_page)) until finished_iterating?(processed_claim_reviews)
+    if @next_page
+      processed_claim_reviews = store_claim_reviews_for_page(@next_page)
+      (processed_claim_reviews = store_claim_reviews_for_page(@next_page)) until finished_iterating?(processed_claim_reviews)
+    end
   end
 
   def claim_review_body_from_raw_claim_review(raw_claim_review)

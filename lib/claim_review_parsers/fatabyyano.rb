@@ -44,6 +44,7 @@ class Fatabyyano < ClaimReviewParser
     ld_json_obj = extract_ld_json_script_block(raw_claim_review["page"], 0)
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], 1).first
     person = ld_json_obj["@graph"].select{|x| x["@type"] == "Person"}.first || {}
+    blockquote = raw_claim_review["page"].search("blockquote")
     {
       id: raw_claim_review['url'],
       created_at: Time.parse(og_date_from_raw_claim_review(raw_claim_review)),
@@ -52,7 +53,7 @@ class Fatabyyano < ClaimReviewParser
       claim_review_headline: og_title_from_raw_claim_review(raw_claim_review).split(" - ").first,
       claim_review_body: raw_claim_review["page"].search("div.wpb_wrapper h3").first.text,
       claim_review_image_url: claim_review_image_url_from_raw_claim_review(raw_claim_review),
-      claim_review_reviewed: raw_claim_review["page"].search("blockquote").first.text.strip,
+      claim_review_reviewed: blockquote && blockquote.first && blockquote.first.text.strip,
       claim_review_result: claim_review["reviewRating"]["alternateName"],
       claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
       claim_review_url: raw_claim_review['url'],
