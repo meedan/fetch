@@ -40,9 +40,14 @@ class Fatabyyano < ClaimReviewParser
     atag.attributes['href'].value
   end
 
+  def safe_extract_ld_json_script_block(raw_claim_review)
+    cr = extract_ld_json_script_block(raw_claim_review["page"], 1)
+    cr && cr.first || {}
+  end
+
   def parse_raw_claim_review(raw_claim_review)
     ld_json_obj = extract_ld_json_script_block(raw_claim_review["page"], 0)
-    claim_review = extract_ld_json_script_block(raw_claim_review["page"], 1).first
+    claim_review = safe_extract_ld_json_script_block(raw_claim_review)
     person = ld_json_obj["@graph"].select{|x| x["@type"] == "Person"}.first || {}
     blockquote = raw_claim_review["page"].search("blockquote")
     {
