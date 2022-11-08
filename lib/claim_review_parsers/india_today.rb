@@ -32,14 +32,14 @@ class IndiaToday < ClaimReviewParser
     news_article = get_ld_json_by_type_from_raw_claim_review(raw_claim_review, "NewsArticle")
     {
       id: raw_claim_review['url'],
-      created_at: Time.parse(news_article["datePublished"]),
-      author: news_article["author"]["name"],
-      author_link: news_article["author"]["url"],
-      claim_review_headline: news_article["headline"],
-      claim_review_body: news_article["description"],
+      created_at: (Time.parse(news_article && news_article["datePublished"]) rescue nil),
+      author: news_article && news_article["author"] && news_article["author"]["name"],
+      author_link: news_article && news_article["author"] && news_article["author"]["url"],
+      claim_review_headline: news_article && news_article["headline"],
+      claim_review_body: news_article && news_article["description"],
       claim_review_image_url: get_og_image_url(raw_claim_review),
-      claim_review_reviewed: claim_review["claimReviewed"],
-      claim_review_result: claim_review["reviewRating"]["alternateName"],
+      claim_review_reviewed: claim_review && claim_review["claimReviewed"],
+      claim_review_result: claim_review && claim_review["reviewRating"] && claim_review["reviewRating"]["alternateName"],
       claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
       claim_review_url: raw_claim_review['url'],
       raw_claim_review: {claim_review: claim_review, news_article: news_article}

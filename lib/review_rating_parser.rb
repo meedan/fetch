@@ -1,6 +1,6 @@
 module ReviewRatingParser
   def get_rating(item, rating_key)
-    review_rating = item['reviewRating'] || {}
+    review_rating = item && item['reviewRating'] || {}
     Float(String(review_rating[rating_key])) if review_rating[rating_key]
   rescue ArgumentError
     nil
