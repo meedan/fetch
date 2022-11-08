@@ -24,11 +24,16 @@ class EfeVerifica < ClaimReviewParser
     claim_review && claim_review[0]
   end
 
+  def safe_created_at(claim_review, raw_claim_review)
+    timestamp = claim_review["datePublished"] || og_date_from_raw_claim_review(raw_claim_review)
+    timestamp && Time.parse(timestamp)
+  end
+
   def parse_raw_claim_review(raw_claim_review)
     claim_review = get_claim_review_from_raw_claim_review(raw_claim_review)
     {
       id: raw_claim_review['url'],
-      created_at: Time.parse(claim_review["datePublished"] || og_date_from_raw_claim_review(raw_claim_review)),
+      created_at: safe_created_at(claim_review, raw_claim_review),
       author: claim_review["author"]["name"],
       author_link: claim_review["author"]["url"],
       claim_review_headline: value_from_og_tags(raw_claim_review, ["og:title"]),
