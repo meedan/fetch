@@ -3,7 +3,6 @@
 # Parser for https://www.vishvasnews.com
 class VishvasNews < ClaimReviewParser
   include PaginatedReviewClaims
-
   def hostname
     'https://www.vishvasnews.com'
   end
@@ -45,6 +44,12 @@ class VishvasNews < ClaimReviewParser
     claim_review["reviewRating"]["alternateName"].strip
   end
 
+  def get_title_from_raw_claim_review(raw_claim_review)
+    title = og_title_from_raw_claim_review(raw_claim_review).split(" - ")[0..-2].join(" - ")
+    title = raw_claim_review["page"].search("title").text.split(" - ")[0..-2].join(" - ") if title.to_s.empty?
+    title
+  end
+
   def parse_raw_claim_review(raw_claim_review)
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], 0) || {}
     {
@@ -52,7 +57,7 @@ class VishvasNews < ClaimReviewParser
       created_at: claim_review["datePublished"] && Time.parse(claim_review["datePublished"]),
       author: claim_review["author"] && claim_review["author"]["name"],
       author_link: claim_review["author"] && claim_review["author"]["url"],
-      claim_review_headline: og_title_from_raw_claim_review(raw_claim_review).split(" - ")[0..-2].join(" - "),
+      claim_review_headline: get_title_from_raw_claim_review(raw_claim_review),
       claim_review_body: raw_claim_review["page"].search("div.lhs-area div.view-full p").first.children.last.text.split(":")[1..-1].to_a.join(":").strip,
       claim_review_reviewed: claim_review["claimReviewed"],
       claim_review_image_url: get_og_image_url(raw_claim_review),
