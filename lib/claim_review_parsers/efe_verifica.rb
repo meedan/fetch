@@ -25,7 +25,7 @@ class EfeVerifica < ClaimReviewParser
   end
 
   def safe_created_at(claim_review, raw_claim_review)
-    timestamp = claim_review["datePublished"] || og_date_from_raw_claim_review(raw_claim_review)
+    timestamp = claim_review && claim_review["datePublished"] || og_date_from_raw_claim_review(raw_claim_review)
     timestamp && Time.parse(timestamp)
   end
 
