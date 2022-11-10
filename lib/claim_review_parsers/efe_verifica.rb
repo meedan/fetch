@@ -34,12 +34,12 @@ class EfeVerifica < ClaimReviewParser
     {
       id: raw_claim_review['url'],
       created_at: safe_created_at(claim_review, raw_claim_review),
-      author: claim_review["author"]["name"],
-      author_link: claim_review["author"]["url"],
+      author: claim_review && claim_review["author"] && claim_review["author"]["name"],
+      author_link: claim_review && claim_review["author"] && claim_review["author"]["url"],
       claim_review_headline: value_from_og_tags(raw_claim_review, ["og:title"]),
       claim_review_body: raw_claim_review["page"].search("blockquote").last.text,
       claim_review_reviewed: claim_review["claimReviewed"],
-      claim_review_result: claim_review["reviewRating"] && claim_review["reviewRating"]["alternateName"],
+      claim_review_result: claim_review && claim_review["reviewRating"] && claim_review["reviewRating"]["alternateName"],
       claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
       claim_review_url: raw_claim_review['url'],
       raw_claim_review: claim_review

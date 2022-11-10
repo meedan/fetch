@@ -37,7 +37,7 @@ class DataCommons < ClaimReviewParser
     raw_claim_review['item'][0] &&
     raw_claim_review['item'][0][key]
   rescue StandardError => e
-    Error.log(e)
+    Error.log(e, {raw_claim_review: raw_claim_review, key: key})
   end
   
   def author_value_from_raw_claim_review(raw_claim_review, key)

@@ -64,7 +64,7 @@ class Subscription
     begin
       self.send_webhook_notification(webhook_url, webhook_params, claim_review)
     rescue => e
-      Error.log(e, {}, raise_error)
+      Error.log(e, {webhook_url: webhook_url, webhook_params: webhook_params, claim_review: claim_review}, raise_error)
     end
   end
 
