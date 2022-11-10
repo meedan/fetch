@@ -22,7 +22,7 @@ module PaginatedReviewClaims
   def claim_review_image_url_from_raw_claim_review(raw_claim_review)
     og_image_url_from_raw_claim_review(raw_claim_review)
   rescue StandardError => e
-    Error.log(e)
+    Error.log(e, {raw_claim_review: raw_claim_review})
   end
 
   def get_created_at_from_article(article)
@@ -74,7 +74,7 @@ module PaginatedReviewClaims
     response = get_url(fact_page_url)
     Nokogiri.parse(response) if response
   rescue StandardError => e
-    Error.log(e)
+    Error.log(e, {fact_page_url: fact_page_url})
   end
 
   def parsed_fact_page(fact_page_url)
@@ -111,7 +111,7 @@ module PaginatedReviewClaims
   def safe_parsed_fact_page(fact_page_url)
     parsed_fact_page(fact_page_url)
   rescue StandardError => e
-    Error.log(e)
+    Error.log(e, {fact_page_url: fact_page_url})
   end
 
   def get_parsed_fact_pages_from_urls(urls)

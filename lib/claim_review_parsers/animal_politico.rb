@@ -33,13 +33,13 @@ class AnimalPolitico < ClaimReviewParser
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], 1) || {}
     {
       id: raw_claim_review["url"],
-      created_at: Time.parse(og_date_from_raw_claim_review(raw_claim_review)),
-      author: claim_review["author"] && claim_review["author"]["name"],
+      created_at: (Time.parse(og_date_from_raw_claim_review(raw_claim_review)) rescue nil),
+      author: claim_review && claim_review["author"] && claim_review["author"]["name"],
       claim_review_headline: og_title_from_raw_claim_review(raw_claim_review),
       claim_review_body: raw_claim_review["page"].search("div.ap_single_first_excerpt").text,
-      claim_review_reviewed: claim_review["claimReviewed"],
+      claim_review_reviewed: claim_review && claim_review["claimReviewed"],
       claim_review_image_url: get_og_image_url(raw_claim_review),
-      claim_review_result: claim_review["reviewRating"] && claim_review["reviewRating"]["alternateName"],
+      claim_review_result: claim_review && claim_review["reviewRating"] && claim_review["reviewRating"]["alternateName"],
       claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
       claim_review_url: raw_claim_review["url"],
       raw_claim_review: claim_review

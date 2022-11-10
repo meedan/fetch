@@ -34,7 +34,7 @@ class AfricaCheck < ClaimReviewParser
   def claim_review_image_url_from_raw_claim_review(raw_claim_review)
     raw_claim_review["page"].search("img.attachment-articleMain").first.attributes["src"].value
   rescue StandardError => e
-    Error.log(e)
+    Error.log(e, {raw_claim_review: raw_claim_review})
   end
 
   def claim_review_reviewed_from_raw_claim_review(raw_claim_review)
