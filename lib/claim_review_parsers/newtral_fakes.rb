@@ -9,6 +9,8 @@ class NewtralFakes < ClaimReviewParser
   include PaginatedReviewClaims
   def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
     super(cursor_back_to_date, overwrite_existing_claims, send_notifications)
+    @per_article_sleep_time = 3
+    @run_in_parallel = false
     @fact_list_page_parser = 'json'
   end
   def hostname
