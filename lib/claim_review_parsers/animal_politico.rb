@@ -7,7 +7,8 @@ class AnimalPolitico < ClaimReviewParser
   def front_page_urls
     [
       "https://www.animalpolitico.com/sabueso/?seccion=discurso",
-      "https://www.animalpolitico.com/sabueso/?seccion=falsas"
+      "https://www.animalpolitico.com/sabueso/?seccion=falsas",
+      "https://www.animalpolitico.com/sabueso/?seccion=explainers"
     ]
   end
 

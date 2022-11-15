@@ -23,6 +23,17 @@ describe AnimalPolitico do
         }).
       to_return(status: 200, body: File.read("spec/fixtures/animal_politico_index.html"), headers: {})
   end
+  before do
+    stub_request(:get, "https://www.animalpolitico.com/sabueso/?seccion=explainers").
+      with(
+        headers: {
+    	  'Accept'=>'*/*',
+    	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+    	  'Host'=>'www.animalpolitico.com',
+        "User-Agent": /.*/
+        }).
+      to_return(status: 200, body: File.read("spec/fixtures/animal_politico_index.html"), headers: {})
+  end
   describe 'instance' do
     it 'runs get_claim_reviews' do
       described_class.any_instance.stub(:store_to_db).with(anything, anything).and_return(true)
