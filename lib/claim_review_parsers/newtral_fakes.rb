@@ -59,6 +59,7 @@ class NewtralFakes < ClaimReviewParser
       claim_review_headline: value_from_og_tags(raw_claim_review, ["og:title", "og:description"]),
       claim_review_body: claim_review_body_from_raw_claim_review(raw_claim_review),
       claim_review_image_url: get_og_image_url(raw_claim_review),
+      claim_review_reviewed: claim_review["claimReviewed"],
       claim_review_result: claim_review["reviewRating"] && claim_review["reviewRating"]["alternateName"],
       claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
       claim_review_url: raw_claim_review['url'],
