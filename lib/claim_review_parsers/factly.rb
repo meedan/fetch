@@ -59,7 +59,7 @@ class Factly < ClaimReviewParser
   end
 
   def get_body_from_page(page)
-    get_from_blockquote(page, ["fact", "ఫాక్"]).first.children[1..-1].text
+    get_from_blockquote(page, ["fact", "ఫాక్", "ఫ్యాక్ట్"]).first.children[1..-1].text rescue nil
   end
 
   def person_from_schema_object(schema_object)
