@@ -2,8 +2,6 @@
 
 # Parser for https://www.aosfatos.org/noticias/checamos/
 class AosFatos < ClaimReviewParser
-  def parse_raw_claim_review(raw_claim_review)
-    binding.pry
   include PaginatedReviewClaims
   def hostname
     'https://www.aosfatos.org'
