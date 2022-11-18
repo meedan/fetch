@@ -31,6 +31,7 @@ class EfeVerifica < ClaimReviewParser
 
   def parse_raw_claim_review(raw_claim_review)
     claim_review = get_claim_review_from_raw_claim_review(raw_claim_review)
+    return {} if claim_review.nil?
     {
       id: raw_claim_review['url'],
       created_at: safe_created_at(claim_review, raw_claim_review),

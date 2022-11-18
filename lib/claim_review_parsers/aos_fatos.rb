@@ -36,6 +36,7 @@ class AosFatos < ClaimReviewParser
   
   def parse_raw_claim_review(raw_claim_review)
     claim_review = find_claim_review_from_raw_claim_review(raw_claim_review)
+    return {} if claim_review.nil?
     {
       id: raw_claim_review['url'],
       created_at: claim_review["datePublished"] && Time.parse(claim_review["datePublished"]),
