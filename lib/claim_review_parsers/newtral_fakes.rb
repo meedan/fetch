@@ -50,17 +50,18 @@ class NewtralFakes < ClaimReviewParser
 
   def parse_raw_claim_review(raw_claim_review)
     ld_json_object = extract_ld_json_script_block(raw_claim_review["page"], 0)
-    claim_review = ld_json_object["@graph"].select{|x| x["@type"]=="ClaimReview"}.first
+    article = ld_json_object["@graph"].select{|x| x["@type"]=="NewsArticle"}.first || {}
+    claim_review = ld_json_object["@graph"].select{|x| x["@type"]=="ClaimReview"}.first || {}
     {
       id: raw_claim_review['url'],
       created_at: Time.parse(claim_review["datePublished"]),
-      author: claim_review["author"]["name"],
-      author_link: claim_review["author"]["url"],
-      claim_review_headline: value_from_og_tags(raw_claim_review, ["og:title", "og:description"]),
+      author: claim_review && claim_review["author"] && claim_review["author"]["name"],
+      author_link: claim_review && claim_review["author"] && claim_review["author"]["url"],
+      claim_review_headline: value_from_og_tags(raw_claim_review, ["og:title"]) || article["headline"],
       claim_review_body: claim_review_body_from_raw_claim_review(raw_claim_review),
       claim_review_image_url: get_og_image_url(raw_claim_review),
-      claim_review_reviewed: claim_review["claimReviewed"],
-      claim_review_result: claim_review["reviewRating"] && claim_review["reviewRating"]["alternateName"],
+      claim_review_reviewed: claim_review && claim_review["claimReviewed"],
+      claim_review_result: claim_review && claim_review["reviewRating"] && claim_review["reviewRating"]["alternateName"],
       claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
       claim_review_url: raw_claim_review['url'],
       raw_claim_review: {ld_json_object: ld_json_object}
