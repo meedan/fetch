@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Parser for https://www.desifacts.org/
+# Parser for https://newschecker.in
 class NewsChecker < ClaimReviewParser
   include PaginatedReviewClaims
   def hostnames
@@ -10,7 +10,6 @@ class NewsChecker < ClaimReviewParser
       "https://newschecker.in/gu",
       "https://newschecker.in/mr",
       "https://newschecker.in/pa",
-      "https://newschecker.in/ta",
       "https://newschecker.in/bh",
       "https://newschecker.in/ka",
       "https://newschecker.in/kn",
