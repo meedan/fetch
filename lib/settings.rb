@@ -41,9 +41,8 @@ class Settings
       'service_heartbeat_ttl' => 60*60*4,
       'env' => 'test',
       'cookie_file' => 'config/cookies.json',
-      'alegre_host_url' => 'http://alegre:3100/',
-      'pender_host_url' => 'http://pender:3200/',
-      'pender_api_key' => 'dev',
+      'alegre_host_url' => 'http://alegre.local/',
+      'pender_host_url' => 'http://pender.local/',
     }
   end
 
