@@ -4,6 +4,10 @@
 require_relative('afp')
 class AFPFaktencheck < AFP
   include PaginatedReviewClaims
+  def self.interevent_time
+    60*15
+  end
+
   def hostname
     'https://faktencheck.afp.com'
   end
