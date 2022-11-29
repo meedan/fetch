@@ -55,11 +55,15 @@ module PaginatedReviewClaims
     end
   end
 
+  def extract_urls_from_html(response)
+    response.search(url_extraction_search).map { |atag| url_extractor(atag) }.compact.uniq
+  end
+
   def get_fact_page_urls(page = 1)
     response = parsed_fact_list_page(page)
     if response
       if ["html", "html_body_encased_html"].include?(@fact_list_page_parser)
-        response.search(url_extraction_search).map { |atag| url_extractor(atag) }.compact.uniq
+        extract_urls_from_html(response)
       elsif @fact_list_page_parser == 'json'
         url_extractor(response)
       elsif @fact_list_page_parser == 'html_first_then_json'
