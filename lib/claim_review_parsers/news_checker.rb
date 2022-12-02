@@ -13,6 +13,8 @@ class NewsChecker < ClaimReviewParser
       "https://newschecker.in/bh",
       "https://newschecker.in/ka",
       "https://newschecker.in/kn",
+      "https://newschecker.in/bn",
+      "https://newschecker.in/ml",
     ]
   end
 
