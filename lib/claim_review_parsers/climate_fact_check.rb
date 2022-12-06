@@ -36,7 +36,7 @@ class ClimateFactCheck < ClaimReviewParser
         nokogiri_parse(
           get_url(
             hostname + fact_list_path(page)
-          )
+          ) || "<html></html>"
         )
       )
     }.flatten.uniq
@@ -45,6 +45,7 @@ class ClimateFactCheck < ClaimReviewParser
   def get_subheads(raw_claim_review)
     raw_claim_review["page"].search("article div.entry-content p strong")
   end
+
   def get_claim_review_reviewed(raw_claim_review)
     get_subheads(raw_claim_review).select{|x| x.text == "CLAIM"}.first.parent.next_sibling.next_sibling.text
   end
@@ -65,6 +66,7 @@ class ClimateFactCheck < ClaimReviewParser
     end
     return true
   end
+
   def parse_raw_claim_review(raw_claim_review)
     return {} if !is_parseable(raw_claim_review)
     article = get_article_safely(raw_claim_review)
