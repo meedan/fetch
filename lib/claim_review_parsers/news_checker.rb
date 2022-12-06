@@ -36,7 +36,7 @@ class NewsChecker < ClaimReviewParser
         nokogiri_parse(
           get_url(
             hostname + fact_list_path(page)
-          )
+          ) || "<html></html>"
         )
       )
     }.flatten.uniq
