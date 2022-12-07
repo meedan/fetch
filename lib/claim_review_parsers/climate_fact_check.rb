@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
-# Parser for https://newschecker.in
+# Parser for https://climatefactchecks.org
 class ClimateFactCheck < ClaimReviewParser
   include PaginatedReviewClaims
   def hostnames
     [
-      "https://climatefactchecks.org",
-      "https://climatefactchecks.org/sinhala",
-      "https://climatefactchecks.org/hindi",
-      "https://climatefactchecks.org/assamese",
-      "https://climatefactchecks.org/gujarati",
-      "https://climatefactchecks.org/marathi",
-      "https://climatefactchecks.org/malayalam",
-      "https://climatefactchecks.org/tamil",
-      "https://climatefactchecks.org/odia",
-      "https://climatefactchecks.org/bangla",
+      "https://climatefactchecks.org/category/fact-check/",
+      "https://climatefactchecks.org/sinhala/category/fact-check",
+      "https://climatefactchecks.org/hindi/",
+      "https://climatefactchecks.org/assamese/category/fact-check/",
+      "https://climatefactchecks.org/gujarati/category/fact-check/",
+      "https://climatefactchecks.org/marathi/",
+      "https://climatefactchecks.org/malayalam/",
+      "https://climatefactchecks.org/tamil/category/fact-check/",
+      "https://climatefactchecks.org/odia/category/fact-check/",
+      "https://climatefactchecks.org/bangla/",
     ]
   end
 
