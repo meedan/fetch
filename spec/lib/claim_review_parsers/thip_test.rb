@@ -2,13 +2,11 @@
 
 describe Thip do
   before do
-    stub_request(:post, Thip.new.hostname+"/wp-admin/admin-ajax.php").
+    stub_request(:get, Thip.new.hostname+"/wp-json/wp/v2/posts?categories=27,28,162,164,166,168,1886,1994,520&per_page=100&page=1").
       with(
-        body: /.*/,
         headers: {
     	  'Accept'=>'*/*',
     	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-    	  'Content-Length'=>/.*/,
      	  'Host'=>'www.thip.media',
     	  'User-Agent'=>/.*/
         }).
