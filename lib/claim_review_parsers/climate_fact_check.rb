@@ -8,14 +8,14 @@ class ClimateFactCheck < ClaimReviewParser
     [
       "https://climatefactchecks.org/category/fact-check/",
       "https://climatefactchecks.org/sinhala/category/fact-check",
-      "https://climatefactchecks.org/hindi/",
+      "https://climatefactchecks.org/hindi/category/fact-check/",
       "https://climatefactchecks.org/assamese/category/fact-check/",
       "https://climatefactchecks.org/gujarati/category/fact-check/",
-      "https://climatefactchecks.org/marathi/",
-      "https://climatefactchecks.org/malayalam/",
+      "https://climatefactchecks.org/marathi/category/fact-check/",
+      "https://climatefactchecks.org/malayalam/category/fact-check/",
       "https://climatefactchecks.org/tamil/category/fact-check/",
       "https://climatefactchecks.org/odia/category/fact-check/",
-      "https://climatefactchecks.org/bangla/",
+      "https://climatefactchecks.org/bangla/category/fact-check/",
     ]
   end
 
@@ -60,11 +60,11 @@ class ClimateFactCheck < ClaimReviewParser
   end
 
   def get_claim_review_reviewed(raw_claim_review)
-    get_subheads(raw_claim_review).select{|x| claim_and_fact_clauses.collect(&:first).include?(x.text)}.first.parent.next_sibling.next_sibling.text
+    get_subheads(raw_claim_review).select{|x| claim_and_fact_clauses.collect(&:first).include?(x.text)}.first.parent.next_sibling.next_sibling.text rescue nil
   end
 
   def get_claim_review_result(raw_claim_review)
-    result = get_subheads(raw_claim_review).select{|x| claim_and_fact_clauses.collect(&:last).include?(x.text)}.first.parent.next_sibling.next_sibling.text
+    result = get_subheads(raw_claim_review).select{|x| claim_and_fact_clauses.collect(&:last).include?(x.text)}.first.parent.next_sibling.next_sibling.text rescue nil
     result.split(".").first.strip
   end
 
@@ -74,10 +74,7 @@ class ClimateFactCheck < ClaimReviewParser
   end
 
   def is_parseable(raw_claim_review)
-    ["CLAIM", "FACT"].each do |clause|
-      return false if get_subheads(raw_claim_review).select{|x| x.text == clause}.first.nil?
-    end
-    return true
+    !get_claim_review_reviewed(raw_claim_review).nil? && !get_claim_review_result(raw_claim_review).nil?
   end
 
   def parse_raw_claim_review(raw_claim_review)
