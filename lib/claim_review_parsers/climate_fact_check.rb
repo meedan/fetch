@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+
 # Parser for https://climatefactchecks.org
 class ClimateFactCheck < ClaimReviewParser
   include PaginatedReviewClaims
@@ -46,12 +47,24 @@ class ClimateFactCheck < ClaimReviewParser
     raw_claim_review["page"].search("article div.entry-content p strong")
   end
 
+  def claim_and_fact_clauses
+    [
+      ["दावा", "तथ्य"],
+      ["দাবী", "তথ্য"],
+      ["દાવો", "હકીકત"],
+      ["दावा", "वस्तुस्थिती"],
+      ["അവകാശവാദം", "വസ്തുത"],
+      ["ଦାବି", "ସତ୍ୟ"],
+      ["CLAIM", "FACT"]
+    ]
+  end
+
   def get_claim_review_reviewed(raw_claim_review)
-    get_subheads(raw_claim_review).select{|x| x.text == "CLAIM"}.first.parent.next_sibling.next_sibling.text
+    get_subheads(raw_claim_review).select{|x| claim_and_fact_clauses.collect(&:first).include?(x.text)}.first.parent.next_sibling.next_sibling.text
   end
 
   def get_claim_review_result(raw_claim_review)
-    result = get_subheads(raw_claim_review).select{|x| x.text == "FACT"}.first.parent.next_sibling.next_sibling.text
+    result = get_subheads(raw_claim_review).select{|x| claim_and_fact_clauses.collect(&:last).include?(x.text)}.first.parent.next_sibling.next_sibling.text
     result.split(".").first.strip
   end
 
