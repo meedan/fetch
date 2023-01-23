@@ -44,7 +44,6 @@ describe AnimalPolitico do
 
     it 'parses a raw_claim_review' do
       raw = JSON.parse(File.read('spec/fixtures/animal_politico_raw.json'))
-      raw['page'] = Nokogiri.parse(raw['page'])
       parsed_claim = described_class.new.parse_raw_claim_review(raw)
       expect(parsed_claim.class).to(eq(Hash))
       ClaimReview.mandatory_fields.each do |field|
