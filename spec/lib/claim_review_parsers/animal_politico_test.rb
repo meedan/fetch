@@ -39,7 +39,7 @@ describe AnimalPolitico do
       described_class.any_instance.stub(:store_to_db).with(anything, anything).and_return(true)
       described_class.any_instance.stub(:get_existing_urls).with(anything).and_return([])
       described_class.any_instance.stub(:get_parsed_fact_pages_from_urls).with(anything).and_return([])
-      expect(described_class.new.get_claim_reviews.class).to(eq(Array))
+      expect(described_class.new.get_claim_reviews.class).to(eq(NilClass))
     end
 
     it 'parses a raw_claim_review' do
