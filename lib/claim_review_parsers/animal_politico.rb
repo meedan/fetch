@@ -3,47 +3,61 @@
 # Parser for https://www.animalpolitico.com/sabueso/?seccion=discurso
 class AnimalPolitico < ClaimReviewParser
   include PaginatedReviewClaims
+  def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
+    super(cursor_back_to_date, overwrite_existing_claims, send_notifications)
+    @fact_list_page_parser = 'json'
+  end
 
-  def front_page_urls
+  def front_page_urls(page)
     [
-      "https://www.animalpolitico.com/sabueso/?seccion=discurso",
-      "https://www.animalpolitico.com/sabueso/?seccion=falsas",
-      "https://www.animalpolitico.com/sabueso/?seccion=explainers"
+      ["https://admin.animalpolitico.com/index.php/wp-json/wp/v2/elsabueso?calificacion=&per_page=50&page=#{page}", "fact-checking"],
+      ["https://admin.animalpolitico.com/index.php/wp-json/wp/v2/elsabueso?categoria=desinformacion&per_page=50&page=#{page}", "desinformacion"],
+      ["https://admin.animalpolitico.com/index.php/wp-json/wp/v2/elsabueso?categoria=teexplico&per_page=50&page=#{page}", "te-explico"]
     ]
   end
 
+  def get_new_fact_page_urls(page)
+    all_articles = get_all_articles(page)
+    existing_urls = get_existing_urls(all_articles.collect{|x| x["url"]})
+    process_claim_reviews(get_parsed_fact_pages_from_urls(all_articles.reject{|x| existing_urls.include?(x["url"])}))
+  end
+
   def get_front_page(url)
-    Nokogiri.parse(get_url(url).body.split("<!DOCTYPE html>")[1])
+    JSON.parse(get_url(url))
   end
 
-  def get_urls(url)
-    get_front_page(url).search("div.ap_sabueso_post a").collect{|x| x.attributes["href"].value}.uniq
+  def get_articles(url, tag)
+    get_front_page(url).collect{|x| x["url"] = "https://www.animalpolitico.com/verificacion-de-hechos/#{tag}/#{x["slug"]}" ; x}.uniq
   end
 
-  def get_all_urls
-    front_page_urls.collect{|u| get_urls(u)}.flatten.compact.uniq
+  def get_all_articles(page)
+    front_page_urls(page).collect{|u, t| get_articles(u, t)}.flatten.compact.uniq
   end
   
-  def get_claim_reviews
-    all_urls = get_all_urls
-    existing_urls = get_existing_urls(all_urls)
-    process_claim_reviews(get_parsed_fact_pages_from_urls(all_urls-existing_urls))
+  def parsed_fact_page(fact_page_response)
+    [fact_page_response["url"], parse_raw_claim_review(QuietHashie[{ raw_response: fact_page_response, url: fact_page_response["url"] }])]
+  end
+
+  def claim_review_body_from_raw_claim_review(raw_claim_review)
+    Nokogiri.parse("<html>"+raw_claim_review["raw_response"]["acf"]["contenido"]+"</html>").text
+  end
+
+  def get_image_url(raw_claim_review)
+    raw_claim_review["raw_response"]["yoast_head_json"]["og_image"][0]["url"] rescue nil
   end
 
   def parse_raw_claim_review(raw_claim_review)
-    claim_review = extract_ld_json_script_block(raw_claim_review["page"], 1) || {}
     {
       id: raw_claim_review["url"],
-      created_at: (Time.parse(og_date_from_raw_claim_review(raw_claim_review)) rescue nil),
-      author: claim_review && claim_review["author"] && claim_review["author"]["name"],
-      claim_review_headline: og_title_from_raw_claim_review(raw_claim_review),
-      claim_review_body: raw_claim_review["page"].search("div.ap_single_first_excerpt").text,
-      claim_review_reviewed: claim_review && claim_review["claimReviewed"],
-      claim_review_image_url: get_og_image_url(raw_claim_review),
-      claim_review_result: claim_review && claim_review["reviewRating"] && claim_review["reviewRating"]["alternateName"],
-      claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
+      created_at: raw_claim_review["raw_response"] && raw_claim_review["raw_response"]["yoast_head_json"] && (Time.parse(raw_claim_review["raw_response"]["yoast_head_json"]["article_modified_time"]) rescue nil),
+      author: raw_claim_review["raw_response"]["author_name"],
+      claim_review_headline: raw_claim_review["raw_response"]["title"] && raw_claim_review["raw_response"]["title"]["rendered"],
+      claim_review_body: claim_review_body_from_raw_claim_review(raw_claim_review),
+      claim_review_reviewed: raw_claim_review["raw_response"]["acf"] && raw_claim_review["raw_response"]["acf"]["ficha_tecnica_fact_checking"] && raw_claim_review["raw_response"]["acf"]["ficha_tecnica_fact_checking"]["frase"],
+      claim_review_image_url: get_image_url(raw_claim_review),
+      claim_review_result: raw_claim_review["raw_response"]["meta"] && raw_claim_review["raw_response"]["meta"]["ap_sabueso_calification"],
       claim_review_url: raw_claim_review["url"],
-      raw_claim_review: claim_review
+      raw_claim_review: raw_claim_review["raw_response"]
     }
   end
 end
