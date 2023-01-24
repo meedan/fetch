@@ -42,6 +42,10 @@ describe AnimalPolitico do
       expect(described_class.new.get_claim_reviews.class).to(eq(NilClass))
     end
 
+    it 'parses a fact page response' do
+      expect(described_class.new.parsed_fact_page({"url" => "blah", "acf" => {"contenido" => "<p>wow</p>"}}).class).to(eq(Array))
+    end
+
     it 'parses a raw_claim_review' do
       raw = JSON.parse(File.read('spec/fixtures/animal_politico_raw.json'))
       parsed_claim = described_class.new.parse_raw_claim_review(raw)
