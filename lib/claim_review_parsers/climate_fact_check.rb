@@ -65,7 +65,7 @@ class ClimateFactCheck < ClaimReviewParser
 
   def get_claim_review_result(raw_claim_review)
     result = get_subheads(raw_claim_review).select{|x| claim_and_fact_clauses.collect(&:last).include?(x.text)}.first.parent.next_sibling.next_sibling.text rescue nil
-    result.split(".").first.strip
+    result.split(".").first.strip rescue nil
   end
 
   def get_article_safely(raw_claim_review)
