@@ -40,7 +40,7 @@ class Thip < ClaimReviewParser
       author_link: raw_claim_review["raw_response"]["author_meta"] && raw_claim_review["raw_response"]["author_meta"]["author_link"],
       created_at: (Time.parse(raw_claim_review["raw_response"]["date"]) rescue nil),
       claim_review_headline: raw_claim_review["raw_response"]["yoast_head_json"]["title"].split(" - ")[0..-2].join(" - "),
-      claim_review_body: parsed_page.search("div.wp-block-media-text").first.text.strip,
+      claim_review_body: (parsed_page.search("div.wp-block-media-text").first.text.strip rescue parsed_page.text),
       claim_review_image_url: raw_claim_review["raw_response"]["featured_img"],
       claim_review_result: parsed_page.search("p.has-regular-font-size strong").text.gsub(".", ""),
       claim_review_url: raw_claim_review['url'],
