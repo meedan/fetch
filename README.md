@@ -51,7 +51,7 @@ Sometimes, parsing is more complicated - if the pagination mechanism is `JSON` b
 
 In other situations, light overrides of `PaginatedReviewClaims` logic is necessary as seen in `NewtralFakes`, `PesaCheck`, and `TempoCekfakta`. In rare cases, we fully stop supporting scrapers, but want to keep the code in case we have to re-enable - that's done with a `self.deprecated` method return value of `true` as seen in `Tattle`, `AajtakIndiaToday`, and a few others.
 
-## Reimporting/Rebuilding an existing data Source
+## Reimporting/Rebuilding/Debugging an existing data Source
 
 Sometimes, we need to rebuild a data source. One hypothetical reason could be if a publisher has added `ClaimReview` objects to all historical data, and we now want to re-capture high quality claims data. In that situation, once we have deployed our updates to the parser to collect those fixes, we will manually re-run a `RunClaimReviewParser` task in a console session with fetch - to run it within the session, we'd run:
 
@@ -66,3 +66,7 @@ RunClaimReviewParser.perform_async("service_name", (Time.now-60*60*24*365*15).to
 
 The way that all tasks run is that they paginate backwards in time until they see articles they've parsed before, *or*, if a date is specified, they keep paginating until they hit articles from that date. In this example, we set the date 15 years back to so that, in effect, we go re-build *all* data.
 
+If you just want to verify if/how an article is parsed by a service, you can run it this way:
+```
+ServiceParserClassHere.test_parser_on_url(url)
+```

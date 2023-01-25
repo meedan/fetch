@@ -1,32 +1,35 @@
 # frozen_string_literal: true
 
-# Parser for https://politica.estadao.com.br
+# Parser for https://www.estadao.com.br
 class Estadao < ClaimReviewParser
   include PaginatedReviewClaims
+  def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
+    super(cursor_back_to_date, overwrite_existing_claims, send_notifications)
+    @fact_list_page_parser = 'json'
+  end
+
   def hostname
-    'https://politica.estadao.com.br'
+    'https://www.estadao.com.br'
   end
 
   def fact_list_path(page = 1)
-    "/blogs/estadao-verifica/page/#{page}/"
+    "/pf/api/v3/content/fetch/story-feed-query?query=#{URI.encode(fact_list_params(page).to_json)}&d=476&_website=estadao"
   end
 
-  def url_extraction_search
-    'div.paged-content section.custom-news div.box h3.third'
+  def fact_list_params(page)
+    {"body":"{\"query\":{\"bool\":{\"must\":[{\"term\":{\"type\":\"story\"}},{\"term\":{\"revision.published\":1}},{\"nested\":{\"path\":\"taxonomy.sections\",\"query\":{\"bool\":{\"must\":[{\"regexp\":{\"taxonomy.sections._id\":\".*estadao-verifica.*\"}}]}}}}]}}}","offset":"","query":"","size": (page-1) * 4,"sort":"display_date:desc, first_publish_date:desc"}.to_s
   end
 
-  def url_extractor(atag)
-    atag.parent.attributes["href"].value
+  def url_extractor(response)
+    response["content_elements"].collect{|x| hostname+x["canonical_url"].to_s}
   end
   
-  def claim_review_image_url_from_claim_review_and_raw_page(claim_review, raw_page)
+  def claim_review_image_url_from_claim_review_and_raw_page(claim_review, raw_claim_review)
     claim_review &&
     claim_review["image"] &&
     claim_review["image"]["url"] &&
     claim_review["image"]["url"][0] ||
-    raw_page.search("section.col-content img.size-full").first && 
-    raw_page.search("section.col-content img.size-full").first.attributes["src"] &&
-    raw_page.search("section.col-content img.size-full").first.attributes["src"].value
+    value_from_og_tags(raw_claim_review, ["og:image"])
   end
 
   def claim_review_result_from_claim_review(claim_review)
@@ -35,10 +38,6 @@ class Estadao < ClaimReviewParser
     claim_review["reviewRating"]["alternateName"]
   end
   
-  def claim_review_headline_from_raw_claim_review(raw_claim_review)
-    raw_claim_review["page"].search("article.n--noticia__header h1.n--noticia__title").text
-  end
-
   def claim_review_body_from_raw_claim_review(raw_claim_review)
     raw_claim_review["page"].search("h2.n--noticia__subtitle").first.text rescue nil
   end
@@ -47,13 +46,12 @@ class Estadao < ClaimReviewParser
     claim_review = extract_ld_json_script_block(raw_claim_review["page"], 0) || {}
     {
       id: raw_claim_review['url'],
-      created_at: claim_review["datePublished"] && Time.parse(claim_review["datePublished"]),
-      author: claim_review["author"] && claim_review["author"]["name"],
-      author_link: claim_review["author"] && claim_review["author"]["url"],
-      claim_review_headline: claim_review_headline_from_raw_claim_review(raw_claim_review),
-      claim_review_body: claim_review_body_from_raw_claim_review(raw_claim_review),
+      created_at: claim_review["datePublished"] && Time.parse(claim_review["datePublished"]) || (claim_review["itemReviewed"] && claim_review["itemReviewed"]["datePublished"] && Time.parse(claim_review["itemReviewed"]["datePublished"])),
+      author: raw_claim_review["page"].search("div.authors-info span.authors-names").first.text,
+      claim_review_headline: value_from_og_tags(raw_claim_review, ["og:title"]),
+      claim_review_body: claim_review_body_from_raw_claim_review(raw_claim_review) || value_from_og_tags(raw_claim_review, ["og:description"]),
       claim_review_reviewed: claim_review["claimReviewed"],
-      claim_review_image_url: claim_review_image_url_from_claim_review_and_raw_page(claim_review, raw_claim_review["page"]),
+      claim_review_image_url: claim_review_image_url_from_claim_review_and_raw_page(claim_review, raw_claim_review),
       claim_review_result: claim_review_result_from_claim_review(claim_review),
       claim_review_result_score: claim_result_score_from_raw_claim_review(claim_review),
       claim_review_url: raw_claim_review['url'],
