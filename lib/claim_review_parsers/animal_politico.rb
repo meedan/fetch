@@ -8,11 +8,19 @@ class AnimalPolitico < ClaimReviewParser
     @fact_list_page_parser = 'json'
   end
 
+  def hostname
+    "https://admin.animalpolitico.com"
+  end
+
+  def front_page_path
+    "/index.php/wp-json/wp/v2/elsabueso"
+  end
+
   def front_page_urls(page)
     [
-      ["https://admin.animalpolitico.com/index.php/wp-json/wp/v2/elsabueso?calificacion=&per_page=50&page=#{page}", "fact-checking"],
-      ["https://admin.animalpolitico.com/index.php/wp-json/wp/v2/elsabueso?categoria=desinformacion&per_page=50&page=#{page}", "desinformacion"],
-      ["https://admin.animalpolitico.com/index.php/wp-json/wp/v2/elsabueso?categoria=teexplico&per_page=50&page=#{page}", "te-explico"]
+      [hostname+front_page_path+"?calificacion=&per_page=50&page=#{page}", "fact-checking"],
+      [hostname+front_page_path+"?categoria=desinformacion&per_page=50&page=#{page}", "desinformacion"],
+      [hostname+front_page_path+"?categoria=teexplico&per_page=50&page=#{page}", "te-explico"]
     ]
   end
 
@@ -39,7 +47,7 @@ class AnimalPolitico < ClaimReviewParser
   end
 
   def claim_review_body_from_raw_claim_review(raw_claim_review)
-    Nokogiri.parse("<html>"+raw_claim_review["raw_response"]["acf"]["contenido"]+"</html>").text
+    raw_claim_review["raw_response"] && raw_claim_review["raw_response"]["acf"] && Nokogiri.parse("<html>"+raw_claim_review["raw_response"]["acf"]["contenido"].to_s+"</html>").text || ""
   end
 
   def get_image_url(raw_claim_review)
