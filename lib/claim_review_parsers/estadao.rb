@@ -18,7 +18,21 @@ class Estadao < ClaimReviewParser
   end
 
   def fact_list_params(page)
-    {"body":"{\"query\":{\"bool\":{\"must\":[{\"term\":{\"type\":\"story\"}},{\"term\":{\"revision.published\":1}},{\"nested\":{\"path\":\"taxonomy.sections\",\"query\":{\"bool\":{\"must\":[{\"regexp\":{\"taxonomy.sections._id\":\".*estadao-verifica.*\"}}]}}}}]}}}","offset":"","query":"","size": (page-1) * 4,"sort":"display_date:desc, first_publish_date:desc"}.to_s
+    {
+      body: {
+        query: {
+          bool: {
+            must: [
+              { term: { type: 'story' } },
+              { term: { 'revision.published': 1 } },
+              { nested: { 'path': 'taxonomy.sections', query: { bool: { must: [{ regexp: { 'taxonomy.sections._id': '.*estadao-verifica.*' } }] } } } }
+            ]
+          }
+        }
+      }.to_json,
+      size: ((page - 1) * 4),
+      sort: 'display_date:desc, first_publish_date:desc'
+    }
   end
 
   def url_extractor(response)
