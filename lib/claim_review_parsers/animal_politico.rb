@@ -47,7 +47,7 @@ class AnimalPolitico < ClaimReviewParser
   end
 
   def claim_review_body_from_raw_claim_review(raw_claim_review)
-    raw_claim_review["raw_response"] && raw_claim_review["raw_response"]["acf"] && Nokogiri.parse("<html>"+raw_claim_review["raw_response"]["acf"]["extracto"].to_s+"</html>").text || ""
+    raw_claim_review["raw_response"] && raw_claim_review["raw_response"]["acf"] && Nokogiri.parse("<html>" + (raw_claim_review["raw_response"]["acf"]["extracto"] || raw_claim_review["raw_response"]["acf"]["contenido"]).to_s + "</html>").text || ""
   end
 
   def get_image_url(raw_claim_review)
