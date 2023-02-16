@@ -1,9 +1,9 @@
 class Settings
-  
+
   def self.get_claim_review_es_index_name
     Settings.get('es_index_name')
   end
-  
+
   def self.get_claim_review_social_data_es_index_name
     Settings.get('es_index_name_cr_social_data')
   end
@@ -11,7 +11,7 @@ class Settings
   def self.get_stored_subscription_es_index_name
     Settings.get('es_index_name_stored_subscription')
   end
-  
+
   def self.airbrake_specified?
     Settings.blank?('airbrake_api_host')
   end
@@ -22,6 +22,10 @@ class Settings
 
   def self.get(var_name)
     ENV[var_name] || self.defaults[var_name]
+  end
+
+  def self.get_safe_url(var_name)
+    (safe_url = self.get(var_name)).end_with?('/') ? safe_url : safe_url+'/'
   end
 
   def self.blank?(var_name)
@@ -104,7 +108,7 @@ class Settings
   def self.task_interevent_time
     self.in_qa_mode? ? 60 * 60 * 24 : 60 * 60
   end
-  
+
   def self.default_task_count(task)
     {
       snowball_claim_reviews_from_publishers: 1,

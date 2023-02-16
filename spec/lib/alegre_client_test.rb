@@ -17,7 +17,7 @@ describe AlegreClient do
       response = {"title"=>"AFP Covid-19 verification hub"}
       expect(AlegreClient.get_enrichment_for_url("http://example.com/link")).to(eq(response))
     end
-    
+
     it 'degrades gracefully when Alegre errors out' do
       RestClient::ServiceUnavailable.any_instance.stub(:http_code).and_return(500)
       RestClient::Request.stub(:execute).and_raise(RestClient::ServiceUnavailable.new)
