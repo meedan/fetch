@@ -1,12 +1,12 @@
 describe AlegreClient do
   before do
-    stub_request(:post, "http://alegre.local/article/").
+    stub_request(:post, "alegre:3100/article/").
       with(
         body: {"url"=>"http://example.com/link"},
         headers: {
-      	  'Accept'=>'*/*',
-      	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-      	  'Host'=>'alegre.local',
+          'Accept'=>'*/*',
+          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Host'=>"alegre:3100",
           "User-Agent": /.*/
         }).
       to_return(status: 200, body: '{"title":"AFP Covid-19 verification hub"}', headers: {})
