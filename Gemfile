@@ -5,7 +5,7 @@ gem('activesupport', '6.0.3.1')
 gem('addressable', '2.8.0')
 gem('airbrake', '~> 5.0')
 gem('aws-sdk-s3', '~> 1')
-gem('cld')
+gem 'cld', '~> 0.11.0'
 gem('connection_pool', '2.2.2')
 gem('dgaff')
 gem('diff-lcs', '1.3')

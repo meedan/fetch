@@ -5,9 +5,9 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends curl build-
 
 WORKDIR /app
 
-COPY Gemfile* ./
-RUN gem install nokogiri -v 1.12.5
-RUN bundle config set specific_platform true && bundle install
+COPY Gemfile ./
+RUN bundle install
 COPY . .
+RUN rm Gemfile.lock
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--", "make"]
