@@ -44,6 +44,7 @@ services:
       - kibana
       - redis
     build: .
+    platform: linux/x86_64
     ports:
       - "9292:9292"
     env_file:
