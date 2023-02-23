@@ -14,7 +14,7 @@ class Estadao < ClaimReviewParser
   end
 
   def fact_list_path(page = 1)
-    "/pf/api/v3/content/fetch/story-feed-query?query=#{URI.encode(fact_list_params(page).to_json)}&d=476&_website=estadao"
+    "/pf/api/v3/content/fetch/story-feed-query?query=#{URI.encode(fact_list_params(page).to_json)}&d=539&_website=estadao"
   end
 
   def fact_list_params(page)
