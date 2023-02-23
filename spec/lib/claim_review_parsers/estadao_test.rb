@@ -7,7 +7,7 @@ describe Estadao do
     end
 
     it 'has a fact_list_path' do
-      expect(described_class.new.fact_list_path(1)).to(eq('/pf/api/v3/content/fetch/story-feed-query?query=%7B%22body%22:%22%7B%5C%22query%5C%22:%7B%5C%22bool%5C%22:%7B%5C%22must%5C%22:[%7B%5C%22term%5C%22:%7B%5C%22type%5C%22:%5C%22story%5C%22%7D%7D,%7B%5C%22term%5C%22:%7B%5C%22revision.published%5C%22:1%7D%7D,%7B%5C%22nested%5C%22:%7B%5C%22path%5C%22:%5C%22taxonomy.sections%5C%22,%5C%22query%5C%22:%7B%5C%22bool%5C%22:%7B%5C%22must%5C%22:[%7B%5C%22regexp%5C%22:%7B%5C%22taxonomy.sections._id%5C%22:%5C%22.*estadao-verifica.*%5C%22%7D%7D]%7D%7D%7D%7D]%7D%7D%7D%22,%22size%22:0,%22sort%22:%22display_date:desc,%20first_publish_date:desc%22%7D&d=476&_website=estadao'))
+      expect(described_class.new.fact_list_path(1)).to(eq('/pf/api/v3/content/fetch/story-feed-query?query=%7B%22body%22:%22%7B%5C%22query%5C%22:%7B%5C%22bool%5C%22:%7B%5C%22must%5C%22:[%7B%5C%22term%5C%22:%7B%5C%22type%5C%22:%5C%22story%5C%22%7D%7D,%7B%5C%22term%5C%22:%7B%5C%22revision.published%5C%22:1%7D%7D,%7B%5C%22nested%5C%22:%7B%5C%22path%5C%22:%5C%22taxonomy.sections%5C%22,%5C%22query%5C%22:%7B%5C%22bool%5C%22:%7B%5C%22must%5C%22:[%7B%5C%22regexp%5C%22:%7B%5C%22taxonomy.sections._id%5C%22:%5C%22.*estadao-verifica.*%5C%22%7D%7D]%7D%7D%7D%7D]%7D%7D%7D%22,%22size%22:0,%22sort%22:%22display_date:desc,%20first_publish_date:desc%22%7D&d=539&_website=estadao'))
     end
 
     it 'extracts a url' do
