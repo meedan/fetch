@@ -7,14 +7,27 @@ class Estadao < ClaimReviewParser
     super(cursor_back_to_date, overwrite_existing_claims, send_notifications)
     @fact_list_page_parser = 'json'
     @escape_url_in_request = false
+    @version_number = get_current_d_version
   end
 
   def hostname
     'https://www.estadao.com.br'
   end
 
+  def get_current_d_version
+    # opens hostname url, searches for the following link:
+    # <link rel="shortcut icon" href="/pf/resources/favicon.ico?d=556"/>
+    # extracts the '556' value from the href attribute, returns that.
+    # some functions you may want to use along your journey:
+    # - get_url from ClaimReviewParser class
+    # - Nokogiri.parse
+    # - URI.parse
+    # - CGI.parse
+    return "NUMBER"
+  end
+
   def fact_list_path(page = 1)
-    "/pf/api/v3/content/fetch/story-feed-query?query=#{URI.encode(fact_list_params(page).to_json)}&d=539&_website=estadao"
+    "/pf/api/v3/content/fetch/story-feed-query?query=#{URI.encode(fact_list_params(page).to_json)}&d=#{@version_number}&_website=estadao"
   end
 
   def fact_list_params(page)
