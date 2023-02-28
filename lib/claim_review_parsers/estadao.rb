@@ -32,8 +32,8 @@ class Estadao < ClaimReviewParser
     # parsed_doc = Nokogiri.parse("https://www.estadao.com.br")
     # p parsed_doc
 
-    # return number
-    return "557"
+    return number
+    # return "557"
   end
 
   def fact_list_path(page = 1)
