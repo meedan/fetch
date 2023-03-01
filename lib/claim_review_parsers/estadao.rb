@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'open-uri'
-
 # Parser for https://www.estadao.com.br
 class Estadao < ClaimReviewParser
   include PaginatedReviewClaims
@@ -26,18 +24,22 @@ class Estadao < ClaimReviewParser
     # - URI.parse
     # - CGI.parse
     
-    doc = Nokogiri::HTML(URI.open("https://www.estadao.com.br"))
-    number = doc.css("link[rel='shortcut icon']")[0].attributes['href'].value.chars.last(3).join
+    page = nokogiri_parse(get_url(hostname))
+    path = page.css("link[rel='shortcut icon']")[0].attributes['href'].value
+    path_query = (URI.parse(path)).query
+    number = path_query.delete 'd='
 
-    # parsed_doc = Nokogiri.parse("https://www.estadao.com.br")
-    # p parsed_doc
+    # ou com CGI.parse
+    number_test_cgi = CGI.parse(path).values.flatten.pop
 
+    puts number, number_test_cgi
+
+    binding.pry
     return number
   end
 
   def fact_list_path(page = 1)
-    # "/pf/api/v3/content/fetch/story-feed-query?query=#{URI.encode(fact_list_params(page).to_json)}&d=#{@version_number}&_website=estadao"
-    "/pf/api/v3/content/fetch/story-feed-query?query=#{URI.encode(fact_list_params(page).to_json)}&d=557&_website=estadao"
+    "/pf/api/v3/content/fetch/story-feed-query?query=#{URI.encode(fact_list_params(page).to_json)}&d=#{@version_number}&_website=estadao"
   end
 
   def fact_list_params(page)
