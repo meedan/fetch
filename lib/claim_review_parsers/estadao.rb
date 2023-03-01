@@ -33,7 +33,6 @@ class Estadao < ClaimReviewParser
     # p parsed_doc
 
     return number
-    # return "557"
   end
 
   def fact_list_path(page = 1)
