@@ -125,10 +125,9 @@ class ClaimReviewParser
   end
 
   def process_claim_reviews(claim_reviews)
-    puts 'supposed to be storing, remember to clean me later!'
-    # store_to_db(
-    #   claim_reviews, self.class.service
-    # )
+    store_to_db(
+      claim_reviews, self.class.service
+    )
     claim_reviews
   end
 

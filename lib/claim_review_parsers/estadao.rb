@@ -14,27 +14,12 @@ class Estadao < ClaimReviewParser
     'https://www.estadao.com.br'
   end
 
-  def get_current_d_version
-    # opens hostname url, searches for the following link:
-    # <link rel="shortcut icon" href="/pf/resources/favicon.ico?d=556"/>
-    # extracts the '556' value from the href attribute, returns that.
-    # some functions you may want to use along your journey:
-    # - get_url from ClaimReviewParser class
-    # - Nokogiri.parse
-    # - URI.parse
-    # - CGI.parse
-    
+  def get_current_d_version    
     page = nokogiri_parse(get_url(hostname))
-    path = page.css("link[rel='shortcut icon']")[0].attributes['href'].value
+    path = page.css("link[rel='shortcut icon']").first.attribute('href').value
     path_query = (URI.parse(path)).query
     number = path_query.delete 'd='
 
-    # ou com CGI.parse
-    number_test_cgi = CGI.parse(path).values.flatten.pop
-
-    puts number, number_test_cgi
-
-    binding.pry
     return number
   end
 

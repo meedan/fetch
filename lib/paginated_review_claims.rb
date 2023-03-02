@@ -104,7 +104,6 @@ module PaginatedReviewClaims
   end
 
   def get_claim_reviews
-    binding.pry
     page = 1
     processed_claim_reviews = store_claim_reviews_for_page(page)
     until finished_iterating?(processed_claim_reviews)
