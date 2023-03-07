@@ -24,12 +24,8 @@ class Telemundo < ClaimReviewParser
     atag.attributes['href'].value
   end
 
-  def og_timestamps_from_raw_claim_review(raw_claim_review)
-    raw_claim_review["page"].search("meta").select{|x|
-      x.attributes["itemprop"] && x.attributes["itemprop"].value.downcase.include?("date")
-    }.collect{|x|
-      Time.parse(x.attributes["content"].value) rescue nil
-    }.compact
+  def get_best_timestamp(best_schema_object_available)
+    Time.parse(["datePublished", "dateCreated", "dateModified"].collect{|t| best_schema_object_available.dig(t)}.compact.first)
   end
 
   def claim_review_body_from_raw_claim_review(raw_claim_review)
@@ -44,10 +40,9 @@ class Telemundo < ClaimReviewParser
     article_object = extract_all_ld_json_script_blocks(raw_claim_review["page"]).select{|x| JSON.parse(x).keys.include?("headline") rescue nil}.first
     return {} if article_object.nil?
     best_schema_object_available = JSON.parse(article_object)
-    latest_timestamp = [(Time.parse(claim_review["datePublished"]) rescue nil), og_timestamps_from_raw_claim_review(raw_claim_review)].compact.flatten.sort.last
     {
       id: raw_claim_review['url'],
-      created_at: latest_timestamp,
+      created_at: get_best_timestamp(best_schema_object_available),
       author: get_claim_review_author_value(best_schema_object_available, "name"),
       author_link: get_claim_review_author_value(best_schema_object_available, "id"),
       claim_review_headline: best_schema_object_available["headline"],
