@@ -18,8 +18,7 @@ class Estadao < ClaimReviewParser
     page = nokogiri_parse(get_url(hostname))
     path = page.css("link[rel='shortcut icon']").first.attribute('href').value
     path_query = (URI.parse(path)).query
-    number = path_query.delete 'd='
-
+    number = CGI.parse(path_query)["d"][0]
     return number
   end
 
