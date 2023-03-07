@@ -7,14 +7,23 @@ class Estadao < ClaimReviewParser
     super(cursor_back_to_date, overwrite_existing_claims, send_notifications)
     @fact_list_page_parser = 'json'
     @escape_url_in_request = false
+    @version_number = get_current_d_version
   end
 
   def hostname
     'https://www.estadao.com.br'
   end
 
+  def get_current_d_version    
+    page = nokogiri_parse(get_url(hostname))
+    path = page.css("link[rel='shortcut icon']").first.attribute('href').value
+    path_query = (URI.parse(path)).query
+    number = CGI.parse(path_query)["d"][0]
+    return number
+  end
+
   def fact_list_path(page = 1)
-    "/pf/api/v3/content/fetch/story-feed-query?query=#{URI.encode(fact_list_params(page).to_json)}&d=476&_website=estadao"
+    "/pf/api/v3/content/fetch/story-feed-query?query=#{URI.encode(fact_list_params(page).to_json)}&d=#{@version_number}&_website=estadao"
   end
 
   def fact_list_params(page)

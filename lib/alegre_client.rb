@@ -1,6 +1,6 @@
 class AlegreClient
   def self.host
-    Settings.get("alegre_host_url")
+    Settings.get_safe_url("alegre_host_url")
   end
 
   def self.get_enrichment_for_url(url)

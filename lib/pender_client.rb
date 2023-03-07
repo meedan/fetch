@@ -1,6 +1,6 @@
 class PenderClient
   def self.host
-    Settings.get("pender_host_url")
+    Settings.get_safe_url("pender_host_url")
   end
 
   def self.get_enrichment_for_url(url)
