@@ -6,6 +6,6 @@ module ElasticSearchMethods
   end
 
   def client
-    Elasticsearch::Client.new(url: es_hostname)
+    Elasticsearch::Transport::Client.new(url: es_hostname)
   end
 end

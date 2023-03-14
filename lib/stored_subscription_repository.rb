@@ -4,7 +4,7 @@ class StoredSubscriptionRepository
   include Elasticsearch::Persistence::Repository
   include Elasticsearch::Persistence::Repository::DSL
 
-  client Elasticsearch::Client.new(url: Settings.get('es_host'))
+  client Elasticsearch::Transport::Client.new(url: Settings.get('es_host'))
   index_name Settings.get_stored_subscription_es_index_name
   klass StoredSubscription
 
