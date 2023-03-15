@@ -4,7 +4,7 @@ class ClaimReviewRepository
   include Elasticsearch::Persistence::Repository
   include Elasticsearch::Persistence::Repository::DSL
 
-  client Elasticsearch::Client.new(url: Settings.get('es_host'))
+  client Elasticsearch::Transport::Client.new(url: Settings.get('es_host'))
   index_name Settings.get_claim_review_es_index_name
   klass ClaimReview
 
