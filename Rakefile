@@ -35,6 +35,7 @@ task :list_datasources do
   puts ClaimReviewParser.subclasses.map(&:service)
 end
 
+# bundle exec rake collect_datasource some_service 2020-01-01 true
 task :collect_datasource do
   ARGV.each do |a|
     task a.to_sym do
@@ -46,6 +47,7 @@ task :collect_datasource do
   RunClaimReviewParser.perform_async(datasource, cursor_back_to_date, overwrite_existing_claims)
 end
 
+# bundle exec rake collect_datasource 2020-01-01 true
 task :collect_all do
   ARGV.each do |a|
     task a.to_sym do

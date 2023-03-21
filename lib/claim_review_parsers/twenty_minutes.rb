@@ -45,11 +45,12 @@ class TwentyMinutes < ClaimReviewParser
   def parse_raw_claim_review(raw_claim_review)
     article = extract_ld_json_script_block(raw_claim_review["page"], 0)
     claim_review = find_claim_review(raw_claim_review["page"])
+    author, author_link = get_author_and_link_from_article(article)
     {
       id: raw_claim_review["url"],
       created_at: get_created_at_from_article(article),
-      author: article["author"] && article["author"]["name"],
-      author_link: article["author"] && article["author"]["url"] && article["author"]["url"].class == Array ? article["author"]["url"][0] : article["author"]["url"],
+      author: author,
+      author_link: author_link,
       claim_review_headline: article["headline"],
       claim_review_body: article["description"],
       claim_review_reviewed: claim_review && claim_review["claimReviewed"],

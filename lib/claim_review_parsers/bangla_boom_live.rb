@@ -20,21 +20,9 @@ class BanglaBoomLive < ClaimReviewParser
     hostname + atag.attributes['href'].value
   end
 
-  def get_author_and_link_from_article(article)
-    if article && article["author"]
-      if article["author"].class == Hash
-        return [article["author"]["name"], hostname+article["author"]["url"].to_s]
-      elsif article["author"].class == Array
-        return [article["author"][0]["name"], hostname+article["author"][0]["url"].to_s]
-      else
-        return [nil,nil]
-      end
-    end
-  end
-
   def parse_raw_claim_review(raw_claim_review)
     article = extract_ld_json_script_block(raw_claim_review["page"], 0)
-    author, author_link = get_author_and_link_from_article(article)
+    author, author_link = get_author_and_link_from_article(article, self.hostname)
     {
       id: raw_claim_review["url"],
       created_at: Time.parse(article['datePublished']||og_date_from_raw_claim_review(raw_claim_review)),
