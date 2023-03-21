@@ -207,6 +207,24 @@ class ClaimReviewParser
     )
   end
 
+  def extract_author_value(article, key, prefix="")
+    if article["author"].class == Hash
+      return prefix+([article["author"][key]].flatten.first.to_s)
+    elsif article["author"].class == Array
+      return prefix+([article["author"][0][key]].flatten.first.to_s)
+    end
+  end
+
+  def get_author_and_link_from_article(article, hostname="")
+    if article && article["author"]
+      if article["author"].class == Hash || article["author"].class == Array
+        return [extract_author_value(article, "name"), extract_author_value(article, "url", hostname)]
+      else
+        return [nil,nil]
+      end
+    end
+  end
+
   def self.test_parser_on_url(url)
     response = self.new.request(:get, url)
     params = {"page" => Nokogiri.parse(response), "url" => url}
