@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 # Eventually all subclasses here will need standardization about
+require_relative('html_metadata_helpers')
+require_relative('network_requests')
 class ClaimReviewParser
+  include HTMLMetadataHelpers
+  include NetworkRequests
   attr_accessor :fact_list_page_parser, :run_in_parallel, :overwrite_existing_claims
   def self.interevent_time
     Settings.task_interevent_time
@@ -23,10 +27,6 @@ class ClaimReviewParser
     @persistable != false
   end
 
-  def service_key
-    nil
-  end
-
   def initialize(cursor_back_to_date = nil, overwrite_existing_claims = false, send_notifications = true, client=Settings.s3_client)
     @fact_list_page_parser ||= 'html'
     @simple_page_urls ||= true
@@ -38,6 +38,10 @@ class ClaimReviewParser
     @overwrite_existing_claims = overwrite_existing_claims
     @cursor_back_to_date = cursor_back_to_date
     @send_notifications = send_notifications
+  end
+
+  def service_key
+    nil
   end
 
   def get_cookies(client)
@@ -76,45 +80,6 @@ class ClaimReviewParser
     end
   end
 
-  def make_request
-    retry_count = 0
-    begin
-      yield
-    rescue RestClient::BadGateway, RestClient::NotFound, SocketError, Errno::ETIMEDOUT => e
-      if retry_count < 3
-        retry_count += 1
-        sleep(1)
-        retry
-      else
-        Error.log(e)
-        return nil
-      end
-    end
-  end
-
-  def request(method, url, payload=nil)
-    make_request do
-      headers = @user_agent ? {user_agent: @user_agent} : {}
-      proxy = @proxy ? @proxy : nil
-      RestClient::Request.execute(
-        method: method,
-        url: @escape_url_in_request ? URI::Parser.new.escape(url) : url,
-        payload: payload,
-        cookies: @cookies,
-        headers: headers,
-        proxy: proxy
-      )
-    end
-  end
-
-  def post_url(url, body)
-    request(:post, url, body)
-  end
-
-  def get_url(url)
-    request(:get, url)
-  end
-
   def get_existing_urls(urls)
     if @cursor_back_to_date
       # force checking every URL directly instead of bypassing quietly...
@@ -147,84 +112,6 @@ class ClaimReviewParser
     end.compact
   end
   
-  def extract_all_ld_json_script_blocks(page, search_path="script")
-    page.search(search_path).select{|x| x.attributes["type"] && x.attributes["type"].value == "application/ld+json"}
-  end
-
-  def parse_script_block(script_block)
-    if !script_block.nil?
-      begin
-        parsed = JSON.parse(script_block.text)
-        return parsed
-      rescue JSON::ParserError
-        return nil
-      end
-    end
-  end
-
-  def extract_ld_json_script_block(page, index, search_path="script")
-    script_block = page && extract_all_ld_json_script_blocks(page, search_path)[index]
-    parse_script_block(script_block)
-  end
-
-  def keywords_from_raw_claim_review(raw_claim_review)
-    raw_claim_review["page"].search("meta").select{|x|
-      x.attributes["name"] && x.attributes["name"].value == "keywords"
-    }.first.attributes["content"].value
-  end
-
-  def og_timestamps_from_raw_claim_review(raw_claim_review)
-    raw_claim_review["page"].search("meta").select{|x|
-      x.attributes["property"] && x.attributes["property"].value.include?("_time")
-    }.collect{|x|
-      Time.parse(x.attributes["content"].value) rescue nil
-    }.compact
-  end
-
-  def value_from_og_tag(og_tag)
-    og_tag.attributes["content"].value if og_tag
-  end
-
-  def search_for_og_tags(page, og_tags)
-    page.search("meta").select{|x| x.attributes["property"] && og_tags.include?(x.attributes["property"].value)}.compact.first
-  end
-
-  def og_date_from_raw_claim_review(raw_claim_review)
-    value_from_og_tags(raw_claim_review, ["article:published_time", "article:modified_time", "article:updated_time"])
-  end
-
-  def og_title_from_raw_claim_review(raw_claim_review)
-    value_from_og_tags(raw_claim_review, ["og:title"])
-  end
-
-  def get_og_image_url(raw_claim_review)
-    value_from_og_tag(search_for_og_tags(raw_claim_review["page"], ["og:image"])) rescue nil
-  end
-
-  def value_from_og_tags(raw_claim_review, og_tags)
-    value_from_og_tag(
-      search_for_og_tags(raw_claim_review["page"], og_tags)
-    )
-  end
-
-  def extract_author_value(article, key, prefix="")
-    if article["author"].class == Hash
-      return prefix+([article["author"][key]].flatten.first.to_s)
-    elsif article["author"].class == Array
-      return prefix+([article["author"][0][key]].flatten.first.to_s)
-    end
-  end
-
-  def get_author_and_link_from_article(article, hostname="")
-    if article && article["author"]
-      if article["author"].class == Hash || article["author"].class == Array
-        return [extract_author_value(article, "name"), extract_author_value(article, "url", hostname)]
-      else
-        return [nil,nil]
-      end
-    end
-  end
-
   def self.test_parser_on_url(url)
     response = self.new.request(:get, url)
     params = {"page" => Nokogiri.parse(response), "url" => url}
