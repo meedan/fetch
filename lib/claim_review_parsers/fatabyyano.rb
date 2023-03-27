@@ -56,7 +56,7 @@ class Fatabyyano < ClaimReviewParser
       author: person["name"],
       author_link: person["url"],
       claim_review_headline: og_title_from_raw_claim_review(raw_claim_review).split(" - ").first,
-      claim_review_body: raw_claim_review["page"].search("div.wpb_wrapper h3").first.text,
+      claim_review_body: raw_claim_review["page"].search("div.wpb_wrapper h3").collect(&:text).reject(&:empty?).first,
       claim_review_image_url: claim_review_image_url_from_raw_claim_review(raw_claim_review),
       claim_review_reviewed: claim_review && claim_review["claimReviewed"] || blockquote && blockquote.first && blockquote.first.text.strip,
       claim_review_result: claim_review && claim_review["reviewRating"] && claim_review["reviewRating"]["alternateName"],
