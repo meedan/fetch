@@ -5,7 +5,7 @@
 #     'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
 #     'Content-Type'=>'application/json',
 #     'Host'=>'pender.local',
-#     'User-Agent'=>'rest-client/2.1.0 (darwin19.3.0 x86_64) ruby/2.7.0p0',
+#     'User-Agent'=>/.*/,
 #     'X-Pender-Token'=>''
 #     }).
 #   to_return(status: 200, body: "", headers: {})
