@@ -176,7 +176,7 @@ RSpec.describe "ClaimReviewParser subclasses" do
      	  'Accept'=>'*/*',
      	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
      	  'Host'=>'www.estadao.com.br',
-     	  'User-Agent'=>'rest-client/2.1.0 (linux x86_64) ruby/2.7.7p221'
+     	  'User-Agent'=>/.*/
          }).
        to_return(status: 200, body: '<html><link rel="shortcut icon" href="/pf/resources/favicon.ico?d=556"/></html>', headers: {})
   end

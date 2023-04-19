@@ -19,7 +19,7 @@ module HTMLMetadataHelpers
   def keywords_from_raw_claim_review(raw_claim_review)
     raw_claim_review["page"].search("meta").select{|x|
       x.attributes["name"] && x.attributes["name"].value == "keywords"
-    }.first.attributes["content"].value
+    }.first.attributes["content"].value rescue nil
   end
 
   def og_timestamps_from_raw_claim_review(raw_claim_review)
