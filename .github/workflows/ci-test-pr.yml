@@ -3,6 +3,10 @@ name: Build and Run Integration Test
 on:
   pull_request
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   integration-test:
     runs-on: ubuntu-latest
