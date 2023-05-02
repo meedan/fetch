@@ -45,19 +45,13 @@ class PenderClient
       www.facebook.com
       www.youtube.com
       t.co
-      archive.is
       web.archive.org
       www.google.com
       www.tumblr.com
       youtu.be
       t.me
       web.whatsapp.com
-      archive.ph
       drive.google.com
-      archive.fo
-      archive.today
-      archive.vn
-      archive.md
       bit.ly
       www.linkedin.com
       docs.google.com
@@ -71,7 +65,6 @@ class PenderClient
       tinyurl.com
       webcache.googleusercontent.com
       archive.org
-      archive.li
       instagram.com
       m.facebook.com
       plus.google.com
