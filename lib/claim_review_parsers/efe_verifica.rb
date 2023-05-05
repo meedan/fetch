@@ -3,6 +3,10 @@
 # Parser for https://verifica.efe.com
 class EfeVerifica < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+  
   def hostname
     'https://verifica.efe.com'
   end
