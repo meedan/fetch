@@ -6,7 +6,7 @@ class EfeVerifica < ClaimReviewParser
   def self.deprecated
     true
   end
-  
+
   def hostname
     'https://verifica.efe.com'
   end
