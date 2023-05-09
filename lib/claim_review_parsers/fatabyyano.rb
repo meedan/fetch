@@ -3,6 +3,10 @@
 # Parser for https://fatabyyano.net/fake_news/
 class Fatabyyano < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+  
   def hostname
     'https://fatabyyano.net'
   end
