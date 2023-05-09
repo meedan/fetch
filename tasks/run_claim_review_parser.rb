@@ -7,7 +7,7 @@ class RunClaimReviewParser
     ClaimReviewParser.record_service_heartbeat(service)
     
     ClaimReviewParser.run(service, cursor_back_to_date, overwrite_existing_claims, send_notifications)
-    RunClaimReviewParser.perform_in(ClaimReviewParser.parsers[service].interevent_time, service)
+    RunClaimReviewParser.perform_in(ClaimReviewParser.parsers[service].interevent_time, service) if !ClaimReviewParser.parsers[service].deprecated
   end
 
   def self.requeue(service)
