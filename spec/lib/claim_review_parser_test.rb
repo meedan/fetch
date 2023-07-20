@@ -44,16 +44,6 @@ describe ClaimReviewParser do
         }
       )
       .to_return(status: 200, body: '', headers: {})
-    stub_request(:get, 'https://www.estadao.com.br/')
-      .with(
-        headers: {
-          Accept: '*/*',
-          "Accept-Encoding": 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          Host: 'www.estadao.com.br',
-          "User-Agent": /.*/
-        }
-      )
-      .to_return(status: 200, body: '', headers: {})
   end
 
   describe 'instance' do
@@ -133,8 +123,8 @@ describe ClaimReviewParser do
     end
 
     it 'expects to be able to run' do
-      Estadao.any_instance.stub(:get_claim_reviews).and_return('stubbed')
-      expect(described_class.run('estadao')).to(eq('stubbed'))
+      IndiaToday.any_instance.stub(:get_claim_reviews).and_return('stubbed')
+      expect(described_class.run('india_today')).to(eq('stubbed'))
     end
   
     it 'rescues broken json' do
