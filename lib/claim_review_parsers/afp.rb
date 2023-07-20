@@ -3,6 +3,10 @@
 # Parser for https://factcheck.afp.com
 class AFP < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+  
   def hostname
     'https://factcheck.afp.com'
   end
