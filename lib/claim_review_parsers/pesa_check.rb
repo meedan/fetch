@@ -5,7 +5,7 @@ class PesaCheck < ClaimReviewParser
   include PaginatedReviewClaims
 
   def get_articles
-    JSON.parse(get_url("https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@pesacheck"))["items"]
+    JSON.parse(get_url("https://api.rss2json.com/v1/api.json?rss_url=https://pesacheck.org/feed"))["items"]
   end
   
   def get_claim_reviews

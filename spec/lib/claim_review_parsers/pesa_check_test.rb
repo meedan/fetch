@@ -2,7 +2,7 @@
 
 describe PesaCheck do
   before do
-    stub_request(:get, "https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@pesacheck").
+    stub_request(:get, "https://api.rss2json.com/v1/api.json?rss_url=https://pesacheck.org/feed").
       with(
         headers: {
     	  'Accept'=>'*/*',
