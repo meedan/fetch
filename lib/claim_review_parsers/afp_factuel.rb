@@ -4,6 +4,10 @@
 require_relative('afp')
 class AFPFactuel < AFP
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'https://factuel.afp.com'
   end

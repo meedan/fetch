@@ -4,6 +4,10 @@
 require_relative('afp')
 class AFPIndia < AFP
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'https://factcheck.afp.com/afp-india'
   end
