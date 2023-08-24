@@ -4,6 +4,10 @@
 require_relative('afp')
 class AFPFactualAll < AFP
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'https://factual.afp.com/list/all/all/all/38560/44'
   end
