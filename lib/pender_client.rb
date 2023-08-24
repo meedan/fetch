@@ -40,11 +40,9 @@ class PenderClient
 
   def self.allowed_hostnames
     %w{
-      twitter.com
       perma.cc
       www.facebook.com
       www.youtube.com
-      t.co
       web.archive.org
       www.google.com
       www.tumblr.com
