@@ -13,7 +13,7 @@
 #
 describe PenderClient do
   before do
-    stub_request(:get, "#{Settings.get_safe_url("pender_host_url")}api/medias.json?url=https://twitter.com/meedan/status/773947372527288320/").
+    stub_request(:get, "#{Settings.get_safe_url("pender_host_url")}api/medias.json?url=https://www.youtube.com/watch?v=bEAdvXRJ9mU").
       with(
         headers: {
           'Accept'=>'*/*',
@@ -37,13 +37,13 @@ describe PenderClient do
     end
 
     it 'expects a pender response' do
-      expect(PenderClient.get_enrichment_for_url("https://twitter.com/meedan/status/773947372527288320/")).to(eq(JSON.parse(File.read("spec/fixtures/pender_response.json"))))
+      expect(PenderClient.get_enrichment_for_url("https://www.youtube.com/watch?v=bEAdvXRJ9mU")).to(eq(JSON.parse(File.read("spec/fixtures/pender_response.json"))))
     end
 
     it 'degrades gracefully when Alegre errors out' do
       RestClient::ServiceUnavailable.any_instance.stub(:http_code).and_return(500)
       RestClient::Request.stub(:execute).and_raise(RestClient::ServiceUnavailable.new)
-      expect(PenderClient.get_enrichment_for_url("https://twitter.com/meedan/status/773947372527288320/")).to(eq({}))
+      expect(PenderClient.get_enrichment_for_url("https://www.youtube.com/watch?v=bEAdvXRJ9mU")).to(eq({}))
     end
   end
 end
