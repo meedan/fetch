@@ -29,6 +29,7 @@ module ClaimReviewExport
 
   #dirty hack
   def get_keywords(claim_review, include_raw)
-    include_raw && claim_review["service"].classify.constantize.includes_service_keyword ? [claim_review['keywords'], claim_review["service"]].flatten.uniq.join(",") : claim_review['keywords']
+    
+    include_raw && ClaimReviewParser.parsers[claim_review["service"]].includes_service_keyword ? [claim_review['keywords'], claim_review["service"]].flatten.uniq.join(",") : claim_review['keywords']
   end
 end
