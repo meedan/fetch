@@ -15,7 +15,7 @@ module ClaimReviewExport
       "claimReviewed": claim_review['claim_review_reviewed'],
       "text": claim_review['claim_review_body'],
       "image": claim_review['claim_review_image_url'],
-      "keywords": claim_review['keywords'],
+      "keywords": get_keywords(claim_review, include_raw),
       "reviewRating": {
         "@type": 'Rating',
         "ratingValue": claim_review['claim_review_result_score'],
@@ -25,5 +25,10 @@ module ClaimReviewExport
     }
     output[:raw] = claim_review if include_raw
     output
+  end
+
+  #dirty hack
+  def get_keywords(claim_review, include_raw)
+    include_raw && ClaimReviewParser.parsers[claim_review["service"]] && ClaimReviewParser.parsers[claim_review["service"]].includes_service_keyword ? [claim_review['keywords'], claim_review["service"]].flatten.compact.reject(&:empty?).uniq.join(",") : claim_review['keywords']
   end
 end
