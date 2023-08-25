@@ -3,6 +3,10 @@
 # Parser for https://vietfactcheck.org
 class VietFactCheck < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.includes_service_keyword
+    true
+  end
+
   def hostname
     'https://vietfactcheck.org'
   end

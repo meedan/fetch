@@ -7,6 +7,10 @@ class ClaimReviewParser
   include HTMLMetadataHelpers
   include NetworkRequests
   attr_accessor :fact_list_page_parser, :run_in_parallel, :overwrite_existing_claims
+  def self.includes_service_keyword
+    false
+  end
+
   def self.interevent_time
     Settings.task_interevent_time
   end
