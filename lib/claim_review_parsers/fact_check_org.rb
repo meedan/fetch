@@ -3,6 +3,10 @@
 # Parser for https://www.factcheck.org
 class FactCheckOrg < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.includes_service_keyword
+    true
+  end
+
   def hostname
     'https://www.factcheck.org'
   end
