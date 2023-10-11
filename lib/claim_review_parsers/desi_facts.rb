@@ -3,6 +3,7 @@
 # Parser for https://www.desifacts.org/
 class DesiFacts < ClaimReviewParser
   include PaginatedReviewClaims
+
   def self.includes_service_keyword
     true
   end
@@ -21,14 +22,10 @@ class DesiFacts < ClaimReviewParser
     ]
   end
 
-  def is_claim_or_explainer(image_title_node)
-    ["दावा", "स्पष्टीकरण", "দাবি", "ব্যাখ্যাকারী", "claim", "explainer"].collect{|clause| image_title_node.text.downcase.include?(clause)}.include?(true)
-  end
-
   def is_article_url(url)
-    image_node = url.children.select{|x| x.name == "image"}.first
-    image_title_node = image_node && image_node.children.select{|x| x.name == "title"}.first
-    image_node && image_title_node && is_claim_or_explainer(image_title_node)
+    text = url.search("loc").text
+    forbidden_strings = ["tag", "category", "events", "take-action", "sidebar"]
+    text.count("/") >= 4 && forbidden_strings.none? { |s| text.include?(s) }
   end
 
   def get_article_urls
