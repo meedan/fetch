@@ -24,7 +24,7 @@ class DesiFacts < ClaimReviewParser
 
   def is_article_url(url)
     text = url.search("loc").text
-    forbidden_strings = ["tag", "category", "events", "take-action", "sidebar"]
+    forbidden_strings = ["/tag/", "/category/", "/events/", "/take-action/", "/sidebar/"]
     text.count("/") >= 4 && forbidden_strings.none? { |s| text.include?(s) }
   end
 
