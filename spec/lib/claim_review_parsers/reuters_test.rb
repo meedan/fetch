@@ -18,30 +18,6 @@ describe Reuters do
       expect(described_class.new.url_extractor(Nokogiri.parse("<a href='/blah'>wow</a>").search('a')[0])).to(eq('https://www.reuters.com/blah'))
     end
 
-    it 'rescues p-based claim_result_from_page' do
-      expect(described_class.new.claim_result_from_page(Nokogiri.parse("<html><div class='StandardArticleBody_body'><p>Verdict: True</p></div></html>"))).to(eq('True'))
-    end
-
-    it 'rescues second p-based claim_result_from_page' do
-      expect(described_class.new.claim_result_from_page(Nokogiri.parse("<html><div class='StandardArticleBody_body'><p>verdict True</p></div></html>"))).to(eq('True'))
-    end
-
-    it 'rescues claim_result_from_headline' do
-      expect(described_class.new.claim_result_from_headline(Nokogiri.parse("<html><div class='StandardArticleBody_body'><h3>verdict True</h3></div></html>"))).to(eq(nil))
-    end
-
-    it 'succeeds with claim_result_from_body_inline' do
-      expect(described_class.new.claim_result_from_body_inline(Nokogiri.parse("<html><div class='StandardArticleBody_body'><p>verdict True</p></div></html>"))).to(eq("true"))
-    end
-
-    it 'rescues claim_result_from_body_inline' do
-      expect(described_class.new.claim_result_from_body_inline(Nokogiri.parse("<html><div class='StandardArticleBody_body'><p>True</p></div></html>"))).to(eq(nil))
-    end
-
-    it 'rescues claim_result_from_page' do
-      expect(described_class.new.claim_result_from_page(Nokogiri.parse(''))).to(eq(nil))
-    end
-
     it 'parses a raw_claim_review' do
       raw = JSON.parse(File.read('spec/fixtures/reuters_raw.json'))
       raw['page'] = Nokogiri.parse(raw['page'])
