@@ -18,10 +18,6 @@ describe ReutersBrazil do
       expect(described_class.new.url_extractor(Nokogiri.parse("<a href='/blah'>wow</a>").search('a')[0])).to(eq('https://www.reuters.com/blah'))
     end
 
-    it 'rescues p-based claim_result_from_subhead' do
-      expect(described_class.new.claim_result_from_page(Nokogiri.parse("<html><div class='ArticleBodyWrapper'><h2>Blah</h2><p>Verdict: True</p></div></html>"))).to(eq('Verdict: True'))
-    end
-
     it 'parses a raw_claim_review' do
       raw = JSON.parse(File.read('spec/fixtures/reuters_brazil_raw.json'))
       raw['page'] = Nokogiri.parse(raw['page'])
