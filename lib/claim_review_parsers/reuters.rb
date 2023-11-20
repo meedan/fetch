@@ -34,6 +34,10 @@ class Reuters < ClaimReviewParser
     end
   end
 
+  def score_map
+    {}
+  end
+
   def claim_result_from_page(page)
     claim_result_from_subhead(page)
   end
