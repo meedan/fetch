@@ -7,7 +7,7 @@ describe Reuters do
     end
 
     it 'extracts a url' do
-      expect(described_class.new.url_extractor({"result" => {"articles" => [{"a" => "b"}]}}).to(eq([{"a" => "b"}]))
+      expect(described_class.new.url_extractor({"result" => {"articles" => [{"a" => "b"}]}})).to(eq([{"a" => "b"}]))
     end
 
     it 'finds claim_result_from_page' do
