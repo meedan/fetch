@@ -20,7 +20,7 @@ class Reuters < ClaimReviewParser
   def get_new_fact_page_urls(page)
     response = get_fact_page_urls(page)
     existing_urls = get_existing_urls(response.collect{|d| self.hostname+d["canonical_url"]})
-    response.select{|d| !existing_urls.include?(self.hostname+d["canonical_url"])}
+    response.select{|d| !existing_urls.include?(self.hostname+d["canonical_url"] && Time.parse(d["published_time"]) > Time.parse("2023-11-27"))}
   end
 
   def parsed_fact_page(fact_page_response)
