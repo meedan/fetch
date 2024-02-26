@@ -11,7 +11,7 @@ describe ReutersBrazil do
     end
 
     it 'extracts a url' do
-      expect(described_class.new.url_extractor({"result" => {"articles" => [{"a" => "b"}]}}).to(eq([{"a" => "b"}]))
+      expect(described_class.new.url_extractor({"result" => {"articles" => [{"a" => "b"}]}})).to(eq([{"a" => "b"}]))
     end
 
     it 'parses a raw_claim_review' do
