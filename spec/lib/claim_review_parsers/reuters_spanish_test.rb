@@ -11,7 +11,7 @@ describe ReutersSpanish do
     end
 
     it 'extracts a url' do
-      expect(described_class.new.url_extractor(Nokogiri.parse("<a href='/blah'>wow</a>").search('a')[0])).to(eq('https://www.reuters.com/blah'))
+      expect(described_class.new.url_extractor({"result" => {"articles" => [{"a" => "b"}]}}).to(eq([{"a" => "b"}]))
     end
 
     it 'parses a raw_claim_review' do
