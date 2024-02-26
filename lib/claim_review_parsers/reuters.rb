@@ -24,7 +24,6 @@ class Reuters < ClaimReviewParser
   end
 
   def parsed_fact_page(fact_page_response)
-    binding.pry
     parsed_page = parsed_page_from_url(self.hostname+fact_page_response["canonical_url"])
     [self.hostname+fact_page_response["canonical_url"], parse_raw_claim_review(QuietHashie[{ page: parsed_page, raw_response: fact_page_response, url: self.hostname+fact_page_response["canonical_url"] }])]
   end
@@ -41,6 +40,13 @@ class Reuters < ClaimReviewParser
     {}
   end
 
+  def claim_result_from_subhead(page)
+    header = page.search('div[class^="article-body__content"]').first.search('h2[data-testid="Heading"]').last
+    if header
+      header.next_sibling.text.split(".").first
+    end
+  end
+
   def claim_result_from_page(page)
     claim_result_from_subhead(page)
   end
@@ -50,7 +56,7 @@ class Reuters < ClaimReviewParser
   end
 
   def parse_raw_claim_review(raw_claim_review)
-    claim_result = claim_result_from_page(parsed_page)
+    claim_result = claim_result_from_page(raw_claim_review['page'])
     {
       id: raw_claim_review['raw_response']['id'],
       created_at: Time.parse(raw_claim_review['raw_response']['published_time']),
