@@ -7,8 +7,9 @@ class ReutersBrazil < Reuters
   end
 
   def fact_list_path(page = 1)
-    "/news/archive/factcheckportuguesenew?view=page&page=#{page}&pageSize=10"
+    "/pf/api/v3/content/fetch/articles-by-section-alias-or-id-v1?query=%7B%22arc-site%22%3A%22reuters%22%2C%22offset%22%3A#{(page-1)*10}%2C%22requestId%22%3A2%2C%22section_id%22%3A%22%2Ffact-check%2Fportugues%2F%22%2C%22size%22%3A20%2C%22uri%22%3A%22%2Ffact-check%2Fportugues%2F%22%2C%22website%22%3A%22reuters%22%7D&d=176&_website=reuters"
   end
+  
 
   def score_map
     {

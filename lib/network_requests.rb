@@ -20,7 +20,7 @@ module NetworkRequests
     make_request do
       headers = @user_agent ? {user_agent: @user_agent} : {}
       proxy = @proxy ? @proxy : nil
-      RestClient::Request.execute(
+      response = RestClient::Request.execute(
         method: method,
         url: @escape_url_in_request ? URI::Parser.new.escape(url) : url,
         payload: payload,
@@ -28,6 +28,7 @@ module NetworkRequests
         headers: headers,
         proxy: proxy
       )
+      return response
     end
   end
 
