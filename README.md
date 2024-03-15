@@ -49,7 +49,23 @@ Once in place, all that's needed is pushing the new subclass to dev and then pro
 
 Sometimes, parsing is more complicated - if the pagination mechanism is `JSON` based (i.e. some asynchronous event like a "load more" at the bottom of a page), you can specify that and have pages render as JSON objects rather than Nokogiri-parsed HTML by adding a `@fact_list_page_parser = 'json'` into the class initialization. If you need to slow down the parser, add a `@per_article_sleep_time = 3` and a `@run_in_parallel = false` to the initialization to specify how long it should pause between article parses, and whether or not it should run multiple at the same time. Rarely, pagination routines are too complex for `PaginatedReviewClaims`, and need to be explicitly written. Examples of that sort of situation are hard to generalize, but you can see how that's been dealt with in `GoogleFactCheck`, `BoomLive`, `DataCommons`, `Mafindo`, and a few others.
 
-In other situations, light overrides of `PaginatedReviewClaims` logic is necessary as seen in `NewtralFakes`, `PesaCheck`, and `TempoCekfakta`. In rare cases, we fully stop supporting scrapers, but want to keep the code in case we have to re-enable - that's done with a `self.deprecated` method return value of `true` as seen in `Tattle`, `AajtakIndiaToday`, and a few others.
+In other situations, light overrides of `PaginatedReviewClaims` logic is necessary as seen in `NewtralFakes`, `PesaCheck`, and `TempoCekfakta`. 
+
+## Deprecating a Parser
+
+If we fully stop supporting scrapers, we want to keep the code in case we have to re-enable - that's done with a `self.deprecated` method return value of `true` as seen in `Tattle`, `AajtakIndiaToday`, and a few others.
+
+```
+class ParserName < ClaimReviewParser
+  include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
+  (...)
+  
+end
+```
 
 ## Reimporting/Rebuilding/Debugging an existing data Source
 
