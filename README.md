@@ -57,7 +57,6 @@ If we fully stop supporting scrapers, we want to keep the code in case we have t
 
 ```
 class ParserName < ClaimReviewParser
-  include PaginatedReviewClaims
   def self.deprecated
     true
   end

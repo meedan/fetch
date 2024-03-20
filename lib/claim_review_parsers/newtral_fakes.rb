@@ -7,7 +7,6 @@
 # Parser for https://www.newtral.es
 class NewtralFakes < ClaimReviewParser
   include PaginatedReviewClaims
-  include PaginatedReviewClaims
   def self.deprecated
     true
   end

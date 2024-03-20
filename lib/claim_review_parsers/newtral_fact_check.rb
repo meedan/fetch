@@ -4,7 +4,6 @@
 require_relative('newtral_fakes')
 class NewtralFactCheck < NewtralFakes
   include PaginatedReviewClaims
-  include PaginatedReviewClaims
   def self.deprecated
     true
   end
