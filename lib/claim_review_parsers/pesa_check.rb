@@ -3,6 +3,9 @@
 # Parser for https://medium.com/feed/@pesacheck
 class PesaCheck < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
 
   def get_articles
     JSON.parse(get_url("https://api.rss2json.com/v1/api.json?rss_url=https://pesacheck.org/feed"))["items"]
