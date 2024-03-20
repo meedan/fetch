@@ -4,6 +4,10 @@
 require_relative('newtral_fakes')
 class NewtralFactCheck < NewtralFakes
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def relevant_sitemap_subpath
     "www.newtral.es/factcheck"
   end

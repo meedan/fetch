@@ -3,6 +3,10 @@
 # Parser for https://projetocomprova.com.br/
 class Comprova < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'https://projetocomprova.com.br'
   end
