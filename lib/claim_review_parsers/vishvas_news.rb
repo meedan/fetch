@@ -3,6 +3,10 @@
 # Parser for https://www.vishvasnews.com
 class VishvasNews < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'https://www.vishvasnews.com'
   end
