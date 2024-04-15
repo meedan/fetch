@@ -2,6 +2,10 @@
 
 class TheQuint < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'https://www.thequint.com'
   end
