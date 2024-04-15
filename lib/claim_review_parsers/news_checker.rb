@@ -3,6 +3,10 @@
 # Parser for https://newschecker.in
 class NewsChecker < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostnames
     [
       "https://newschecker.in",
