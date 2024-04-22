@@ -2,6 +2,10 @@
 
 class IndiaToday < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
     super(cursor_back_to_date, overwrite_existing_claims, send_notifications)
     @fact_list_page_parser = 'json'
