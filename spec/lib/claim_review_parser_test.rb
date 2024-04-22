@@ -123,8 +123,8 @@ describe ClaimReviewParser do
     end
 
     it 'expects to be able to run' do
-      IndiaToday.any_instance.stub(:get_claim_reviews).and_return('stubbed')
-      expect(described_class.run('india_today')).to(eq('stubbed'))
+      WashingtonPost.any_instance.stub(:get_claim_reviews).and_return('stubbed')
+      expect(described_class.run('washington_post')).to(eq('stubbed'))
     end
   
     it 'rescues broken json' do
