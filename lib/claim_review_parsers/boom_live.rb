@@ -2,6 +2,10 @@
 
 # Parser for http://boomlive.in/ - does not follow standard Pagination scheme from PaginatedReviewClaims!
 class BoomLive < ClaimReviewParser
+  def self.deprecated
+    true
+  end
+
   def hostname
     'http://boomlive.in/'
   end
