@@ -3,6 +3,10 @@
 # Parser for http://hindi.boomlive.in/ - does not follow standard Pagination scheme from PaginatedReviewClaims!
 class HindiBoomLive < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'http://hindi.boomlive.in'
   end
