@@ -181,12 +181,12 @@ RSpec.describe "ClaimReviewParser subclasses" do
        to_return(status: 200, body: '<html><link rel="shortcut icon" href="/pf/resources/favicon.ico?d=556"/></html>', headers: {})
   end
   (ClaimReviewParser.enabled_subclasses-[StubReviewJSON]).each do |subclass|
-    it "ensures an interevent time" do 
+    it "ensures an interevent time" do
       expect(subclass.interevent_time.class).to(eq(Integer))
     end
   end
   (ClaimReviewParser.enabled_subclasses-[StubReviewJSON]).each do |subclass|
-    it "ensures #{subclass} returns ES-storable objects" do 
+    it "ensures #{subclass} returns ES-storable objects" do
       raw = JSON.parse(File.read("spec/fixtures/#{subclass.service}_raw.json"))
       raw['page'] = Nokogiri.parse(raw['page']) if raw['page']
       parsed_claim_review = subclass.new.parse_raw_claim_review(raw)
