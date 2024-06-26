@@ -3,6 +3,10 @@
 # Parser for https://noticias.uol.com.br
 class UOLEleicoesUltima < UOLComprova
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def fact_list_path(next_page=nil)
     "/eleicoes/ultimas/?next=#{next_page}"
   end
