@@ -3,6 +3,10 @@
 # Parser for https://noticias.uol.com.br
 class UOLConfere < UOLComprova
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def self.interevent_time
     60*5
   end

@@ -4,6 +4,10 @@
 class UOLComprova < ClaimReviewParser
   include PaginatedReviewClaims
   attr_accessor :next_page
+  def self.deprecated
+    true
+  end
+
   def self.interevent_time
     60*5
   end
