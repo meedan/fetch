@@ -3,6 +3,10 @@
 # Parser for https://www.piyaoba.org
 class Piyaoba < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'https://www.piyaoba.org'
   end
