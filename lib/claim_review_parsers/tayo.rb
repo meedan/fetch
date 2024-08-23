@@ -12,7 +12,7 @@ class Tayo < ClaimReviewParser
   end
 
   def get_article_urls
-    Nokogiri.parse(get_url(hostname+"/hc/sitemap.xml")).search("url loc").collect(&:text).select{|u| u.include?("/articles/")}
+    Nokogiri.parse(get_url(hostname+"/sitemap-posts.xml")).search("url loc").collect(&:text).select{|u| u.include?("/articles/")}
   end
   
   def get_new_article_urls
@@ -29,15 +29,15 @@ class Tayo < ClaimReviewParser
   end
 
   def article_node_from_raw_claim_review(raw_claim_review)
-    raw_claim_review["page"].search("section.article-info div.article-content div.article-body").first
+    raw_claim_review["page"].search("article.article div.gh-content").first
   end
   
   def timestamp_from_raw_claim_reivew(raw_claim_review)
-    Time.parse(article_node_from_raw_claim_review(raw_claim_review).search("time.posted-on")[0].attributes["datetime"].value)
+    Time.parse(raw_claim_review["page"].search('meta[property="article:published_time"]').first.attributes["content"].value)
   end
 
   def author_from_raw_claim_review(raw_claim_review)
-    article_node_from_raw_claim_review(raw_claim_review).search("span.byline").text
+    raw_claim_review["page"].search("div.article-author-meta span.article-author-name")[0].text.strip.gsub("by ", "")
   end
 
 
