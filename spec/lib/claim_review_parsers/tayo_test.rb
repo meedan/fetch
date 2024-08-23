@@ -2,7 +2,7 @@
 
 describe Tayo do
   before do
-    stub_request(:get, "https://www.tayohelp.com/sitemap.xml").
+    stub_request(:get, "https://www.tayohelp.com/sitemap-posts.xml").
       with(
         headers: {
     	  'Accept'=>'*/*',
