@@ -3,6 +3,10 @@
 # Parser for https://verafiles.org/specials/fact-check-filipino
 class VeraFilesFilipino < VeraFiles
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def fact_list_path(page = 1)
     "/specials/fact-check-filipino?ccm_paging_p=#{page}"
   end

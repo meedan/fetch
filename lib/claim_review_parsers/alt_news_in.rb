@@ -3,6 +3,10 @@
 # Parser for https://www.altnews.in
 class AltNewsIn < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'https://www.altnews.in/'
   end
