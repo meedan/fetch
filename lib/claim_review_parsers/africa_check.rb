@@ -3,6 +3,10 @@
 # Parser for https://africacheck.org
 class AfricaCheck < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'https://africacheck.org'
   end

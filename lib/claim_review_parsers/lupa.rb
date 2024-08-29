@@ -3,6 +3,10 @@
 # Parser for https://piaui.folha.uol.com.br
 class Lupa < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'https://piaui.folha.uol.com.br'
   end
