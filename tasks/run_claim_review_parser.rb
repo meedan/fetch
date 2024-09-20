@@ -20,7 +20,7 @@ class RunClaimReviewParser
       handle_timeout(service)
     ensure
       # Requeue the job if the parser is not deprecated
-      if !ClaimReviewParser.parsers[service].deprecated
+      if !ClaimReviewParser.parsers[service].deprecated && RunClaimReviewParser.not_enqueued_anywhere_else(service)
         RunClaimReviewParser.perform_in(ClaimReviewParser.parsers[service].interevent_time, service)
       end
     end
@@ -34,6 +34,17 @@ class RunClaimReviewParser
     false
   end
 
+  def self.not_enqueued_anywhere_else(service)
+    [Sidekiq::RetrySet, Sidekiq::ScheduledSet, Sidekiq::Queue].each do |queue|
+      queue.new.each do |job|
+        if job.item["args"] && job.item["args"][0] == service.to_s
+          return false
+        end
+      end
+    end
+    return true
+  end
+
   private
 
   def handle_timeout(service)
@@ -41,6 +52,6 @@ class RunClaimReviewParser
     logger.error("Timeout reached for #{service} in RunClaimReviewParser")
     # Additional actions like sending notifications can be added here
     # Optionally requeue the job immediately
-    RunClaimReviewParser.requeue(service)
+    RunClaimReviewParser.requeue(service) if RunClaimReviewParser.not_enqueued_anywhere_else(service)
   end
 end
