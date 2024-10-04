@@ -129,4 +129,17 @@ class ClaimReviewParser
     end
     false
   end
+
+  def self.requeue_all
+    self.enabled_subclasses.map(&:service).each do |datasource|
+      puts "Resetting crawls for #{datasource}..."
+      result = RunClaimReviewParser.requeue(datasource)
+      if result
+        puts "Update for #{datasource} is queued."
+      else
+        puts "Update for #{datasource} failed to queue, already queued."
+      end
+      self.record_service_heartbeat(datasource)
+    end
+  end
 end
