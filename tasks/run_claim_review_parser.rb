@@ -22,12 +22,14 @@ class RunClaimReviewParser
       # Requeue the job if the parser is not deprecated
       if !ClaimReviewParser.parsers[service].deprecated && RunClaimReviewParser.not_enqueued_anywhere_else(service)
         RunClaimReviewParser.perform_in(ClaimReviewParser.parsers[service].interevent_time, service)
+        #Be neighborly and requeue any other jobs that may be behind
+        ClaimReviewParser.requeue_all
       end
     end
   end
 
   def self.requeue(service)
-    if $REDIS_CLIENT.get(ClaimReview.service_heartbeat_key(service)).nil?
+    if $REDIS_CLIENT.get(ClaimReview.service_heartbeat_key(service)).nil? && RunClaimReviewParser.not_enqueued_anywhere_else(service)
       RunClaimReviewParser.perform_async(service)
       return true
     end
