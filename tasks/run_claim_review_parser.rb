@@ -7,7 +7,7 @@ class RunClaimReviewParser
 
   MAX_RUNTIME = 60 * 60 # 1 hour in seconds
 
-  def perform(service, cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications=true)
+  def perform(service, cursor_back_to_date = (Time.now-60*60*24*30).to_s, overwrite_existing_claims=false, send_notifications=true)
     cursor_back_to_date = Time.parse(cursor_back_to_date) unless cursor_back_to_date.nil?
     ClaimReviewParser.record_service_heartbeat(service)
 
