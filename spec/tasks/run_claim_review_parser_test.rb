@@ -7,7 +7,7 @@ require 'rspec'
 RSpec.describe RunClaimReviewParser do
   describe 'instance' do
     it 'walks through perform task' do
-      allow(ClaimReviewParser).to receive(:run).with('foo', nil, false, true).and_return(nil)
+      allow(ClaimReviewParser).to receive(:run).with('foo', anything(), false, true).and_return(nil)
       allow(ClaimReviewParser).to receive(:parsers).and_return({
         "foo" => double(deprecated: false, interevent_time: 60 * 60)
       })
