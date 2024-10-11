@@ -150,7 +150,7 @@ RSpec.describe RunClaimReviewParser do
           allow(scheduled_set).to receive(:each).and_return([])
           allow(queue).to receive(:each).and_return([])
 
-          expect(described_class.not_enqueued_anywhere_else(service)).to(eq(false))
+          expect(described_class.should_requeue(service)).to(eq(false))
         end
       end
 
@@ -174,7 +174,7 @@ RSpec.describe RunClaimReviewParser do
           allow(retry_set).to receive(:each).and_return([])
           allow(queue).to receive(:each).and_return([])
 
-          expect(described_class.not_enqueued_anywhere_else(service)).to(eq(false))
+          expect(described_class.should_requeue(service)).to(eq(false))
         end
       end
 
@@ -198,7 +198,7 @@ RSpec.describe RunClaimReviewParser do
           allow(retry_set).to receive(:each).and_return([])
           allow(scheduled_set).to receive(:each).and_return([])
 
-          expect(described_class.not_enqueued_anywhere_else(service)).to(eq(false))
+          expect(described_class.should_requeue(service)).to(eq(false))
         end
       end
     end

@@ -27,8 +27,12 @@ class RunClaimReviewParser
     end
   end
 
+  def self.should_requeue(service)
+    $REDIS_CLIENT.get(ClaimReview.service_heartbeat_key(service)).nil? || RunClaimReviewParser.not_enqueued_anywhere_else(service)
+  end
+
   def self.requeue(service)
-    if $REDIS_CLIENT.get(ClaimReview.service_heartbeat_key(service)).nil? || RunClaimReviewParser.not_enqueued_anywhere_else(service)
+    if self.should_requeue(service)
       RunClaimReviewParser.perform_async(service)
       return true
     end
