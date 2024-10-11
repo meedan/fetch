@@ -30,13 +30,13 @@ RSpec.describe RunClaimReviewParser do
         end
       end
 
-      context 'when heartbeat key for service is present' do
-        it 'does not requeue the job and returns false' do
+      context 'when heartbeat key for service is present but not on any queue' do
+        it 'requeues the job and returns true' do
           allow($REDIS_CLIENT).to receive(:get)
             .with(ClaimReview.service_heartbeat_key(service))
             .and_return("test")
           expect(RunClaimReviewParser).not_to receive(:perform_async)
-          expect(described_class.requeue(service)).to(eq(false))
+          expect(described_class.requeue(service)).to(eq(true))
         end
       end
     end
@@ -67,8 +67,74 @@ RSpec.describe RunClaimReviewParser do
         end
       end
 
-      context 'when a job with the service is in the RetrySet' do
+      context 'when a job with the service is in the RetrySet but is not in Redis' do
+        it 'returns true' do
+          # Mock a matching job in RetrySet
+          matching_job = double('Job', item: { "args" => [service.to_s] })
+          retry_set = instance_double(Sidekiq::RetrySet)
+
+          allow(Sidekiq::RetrySet).to receive(:new).and_return(retry_set)
+          allow(retry_set).to receive(:each).and_yield(matching_job)
+
+          # Ensure ScheduledSet and Queue do not yield any jobs
+          scheduled_set = instance_double(Sidekiq::ScheduledSet)
+          queue = instance_double(Sidekiq::Queue)
+          allow(Sidekiq::ScheduledSet).to receive(:new).and_return(scheduled_set)
+          allow(Sidekiq::Queue).to receive(:new).and_return(queue)
+          allow(scheduled_set).to receive(:each).and_return([])
+          allow(queue).to receive(:each).and_return([])
+
+          expect(described_class.not_enqueued_anywhere_else(service)).to(eq(true))
+        end
+      end
+
+      context 'when a job with the service is in the ScheduledSet but is not in Redis' do
+        it 'returns true' do
+          # Mock a matching job in ScheduledSet
+          matching_job = double('Job', item: { "args" => [service.to_s] })
+          scheduled_set = instance_double(Sidekiq::ScheduledSet)
+
+          allow(Sidekiq::ScheduledSet).to receive(:new).and_return(scheduled_set)
+          allow(scheduled_set).to receive(:each).and_yield(matching_job)
+
+          # Ensure RetrySet and Queue do not yield any jobs
+          retry_set = instance_double(Sidekiq::RetrySet)
+          queue = instance_double(Sidekiq::Queue)
+          allow(Sidekiq::RetrySet).to receive(:new).and_return(retry_set)
+          allow(Sidekiq::Queue).to receive(:new).and_return(queue)
+          allow(retry_set).to receive(:each).and_return([])
+          allow(queue).to receive(:each).and_return([])
+
+          expect(described_class.not_enqueued_anywhere_else(service)).to(eq(true))
+        end
+      end
+
+      context 'when a job with the service is in the Queue but is not in Redis' do
+        it 'returns true' do
+          # Mock a matching job in Queue
+          matching_job = double('Job', item: { "args" => [service.to_s] })
+          queue = instance_double(Sidekiq::Queue)
+
+          allow(Sidekiq::Queue).to receive(:new).and_return(queue)
+          allow(queue).to receive(:each).and_yield(matching_job)
+
+          # Ensure RetrySet and ScheduledSet do not yield any jobs
+          retry_set = instance_double(Sidekiq::RetrySet)
+          scheduled_set = instance_double(Sidekiq::ScheduledSet)
+          allow(Sidekiq::RetrySet).to receive(:new).and_return(retry_set)
+          allow(Sidekiq::ScheduledSet).to receive(:new).and_return(scheduled_set)
+          allow(retry_set).to receive(:each).and_return([])
+          allow(scheduled_set).to receive(:each).and_return([])
+
+          expect(described_class.not_enqueued_anywhere_else(service)).to(eq(true))
+        end
+      end
+
+      context 'when a job with the service is in the RetrySet and is in Redis' do
         it 'returns false' do
+          allow($REDIS_CLIENT).to receive(:get)
+            .with(ClaimReview.service_heartbeat_key(service))
+            .and_return("test")
           # Mock a matching job in RetrySet
           matching_job = double('Job', item: { "args" => [service.to_s] })
           retry_set = instance_double(Sidekiq::RetrySet)
@@ -88,8 +154,11 @@ RSpec.describe RunClaimReviewParser do
         end
       end
 
-      context 'when a job with the service is in the ScheduledSet' do
+      context 'when a job with the service is in the ScheduledSet and is in Redis' do
         it 'returns false' do
+          allow($REDIS_CLIENT).to receive(:get)
+            .with(ClaimReview.service_heartbeat_key(service))
+            .and_return("test")
           # Mock a matching job in ScheduledSet
           matching_job = double('Job', item: { "args" => [service.to_s] })
           scheduled_set = instance_double(Sidekiq::ScheduledSet)
@@ -109,8 +178,11 @@ RSpec.describe RunClaimReviewParser do
         end
       end
 
-      context 'when a job with the service is in the Queue' do
+      context 'when a job with the service is in the Queue and is in Redis' do
         it 'returns false' do
+          allow($REDIS_CLIENT).to receive(:get)
+            .with(ClaimReview.service_heartbeat_key(service))
+            .and_return("test")
           # Mock a matching job in Queue
           matching_job = double('Job', item: { "args" => [service.to_s] })
           queue = instance_double(Sidekiq::Queue)
