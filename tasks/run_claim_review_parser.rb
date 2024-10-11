@@ -9,8 +9,6 @@ class RunClaimReviewParser
 
   def perform(service, cursor_back_to_date = (Time.now-60*60*24*30).to_s, overwrite_existing_claims=false, send_notifications=true)
     cursor_back_to_date = Time.parse(cursor_back_to_date) unless cursor_back_to_date.nil?
-    ClaimReviewParser.record_service_heartbeat(service)
-
     begin
       Timeout.timeout(MAX_RUNTIME) do
         ClaimReviewParser.run(service, cursor_back_to_date, overwrite_existing_claims, send_notifications)
@@ -20,6 +18,7 @@ class RunClaimReviewParser
       handle_timeout(service)
     ensure
       # Requeue the job if the parser is not deprecated
+      ClaimReviewParser.record_service_heartbeat(service)
       if !ClaimReviewParser.parsers[service].deprecated && RunClaimReviewParser.not_enqueued_anywhere_else(service)
         RunClaimReviewParser.perform_in(ClaimReviewParser.parsers[service].interevent_time, service)
         #Be neighborly and requeue any other jobs that may be behind
@@ -29,7 +28,7 @@ class RunClaimReviewParser
   end
 
   def self.requeue(service)
-    if $REDIS_CLIENT.get(ClaimReview.service_heartbeat_key(service)).nil? && RunClaimReviewParser.not_enqueued_anywhere_else(service)
+    if $REDIS_CLIENT.get(ClaimReview.service_heartbeat_key(service)).nil? || RunClaimReviewParser.not_enqueued_anywhere_else(service)
       RunClaimReviewParser.perform_async(service)
       return true
     end
@@ -39,7 +38,7 @@ class RunClaimReviewParser
   def self.not_enqueued_anywhere_else(service)
     [Sidekiq::RetrySet, Sidekiq::ScheduledSet, Sidekiq::Queue].each do |queue|
       queue.new.each do |job|
-        if job.item["args"] && job.item["args"][0] == service.to_s
+        if job.item["class"] && job.item["class"] == "RunClaimReviewParser" && job.item["args"] && job.item["args"][0] == service.to_s
           return false
         end
       end
