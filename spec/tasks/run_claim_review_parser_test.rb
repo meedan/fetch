@@ -136,7 +136,7 @@ RSpec.describe RunClaimReviewParser do
             .with(ClaimReview.service_heartbeat_key(service))
             .and_return("test")
           # Mock a matching job in RetrySet
-          matching_job = double('Job', item: { "args" => [service.to_s] })
+          matching_job = double('RunClaimReviewParser', item: { "args" => [service.to_s] })
           retry_set = instance_double(Sidekiq::RetrySet)
 
           allow(Sidekiq::RetrySet).to receive(:new).and_return(retry_set)
@@ -160,7 +160,7 @@ RSpec.describe RunClaimReviewParser do
             .with(ClaimReview.service_heartbeat_key(service))
             .and_return("test")
           # Mock a matching job in ScheduledSet
-          matching_job = double('Job', item: { "args" => [service.to_s] })
+          matching_job = double('RunClaimReviewParser', item: { "args" => [service.to_s] })
           scheduled_set = instance_double(Sidekiq::ScheduledSet)
 
           allow(Sidekiq::ScheduledSet).to receive(:new).and_return(scheduled_set)
@@ -184,7 +184,7 @@ RSpec.describe RunClaimReviewParser do
             .with(ClaimReview.service_heartbeat_key(service))
             .and_return("test")
           # Mock a matching job in Queue
-          matching_job = double('Job', item: { "args" => [service.to_s] })
+          matching_job = double('RunClaimReviewParser', item: { "args" => [service.to_s] })
           queue = instance_double(Sidekiq::Queue)
 
           allow(Sidekiq::Queue).to receive(:new).and_return(queue)
