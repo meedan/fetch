@@ -3,6 +3,10 @@
 # Parser for https://www.factcheck.org
 class FactCheckOrg < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def self.includes_service_keyword
     true
   end
