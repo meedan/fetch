@@ -3,6 +3,10 @@
 # Parser for https://tfc-taiwan.org.tw
 class TFCTaiwan < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'https://tfc-taiwan.org.tw'
   end

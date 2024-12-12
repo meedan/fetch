@@ -4,6 +4,10 @@
 # Parser for https://climatefactchecks.org
 class ClimateFactCheck < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostnames
     [
       "https://climatefactchecks.org/category/fact-check/",
