@@ -3,6 +3,10 @@
 # Parser for
 class GESISClaims < ClaimReviewParser
   include GenericRawClaimParser
+  def self.deprecated
+    true
+  end
+
   def post_request_get_fact_ids(page, limit)
     RestClient::Request.execute(
       :method => :post,
