@@ -4,6 +4,9 @@
 # Parser for https://www.altermidya.net/category/factsfirstph/page/2/
 class AlterMidya < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
 
   def hostname
     'https://www.altermidya.net'
