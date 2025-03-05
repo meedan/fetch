@@ -4,6 +4,9 @@
 # Parser for https://mindanaogoldstardaily.com/category/factsfirstph-2/
 class MindanaoGoldStarDaily < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
 
   def hostname
     'https://mindanaogoldstardaily.com'
