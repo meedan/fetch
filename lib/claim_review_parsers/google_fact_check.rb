@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class GoogleFactCheck < ClaimReviewParser
+  def self.deprecated
+    true
+  end
+
   def host
     'https://factchecktools.googleapis.com'
   end
