@@ -3,6 +3,10 @@
 # Parser for https://www.telemundo.com
 class Telemundo < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def initialize(cursor_back_to_date = nil, overwrite_existing_claims=false, send_notifications = true)
     cursor_back_to_date ||= Time.now-60*60*24*7 #looks like their pagination just loops back to other stories, breaking our iteration completion logic. Override to short window when not specified.
     super(cursor_back_to_date, overwrite_existing_claims, send_notifications)
