@@ -152,9 +152,9 @@ describe ClaimReview do
 
   it 'runs a search' do
     timestamp = Time.now.to_s
-    Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'service' => 'comprova', 'id' => 123, 'created_at' => timestamp, 'claim_review_url' => 1 } }] } })
-    query = {search_query: '', service: 'comprova', start_time: Time.now.to_s, end_time: Time.now.to_s, per_page: 20, offset: 0}
-    expect(described_class.search(query)).to(eq([{ :@context => 'http://schema.org', :@type => 'ClaimReview', :datePublished => Time.now.strftime('%Y-%m-%d'), :headline => nil, :identifier => 123, :url => 1, :author => { name: nil, url: nil }, :image => nil, :inLanguage => nil, :keywords => nil, raw: {"service"=>"comprova", "claim_review_url"=>1, "created_at"=>timestamp, "id"=>123}, :claimReviewed => nil, :text => nil, :reviewRating => { :@type => 'Rating', :ratingValue => nil, :bestRating => 1, :alternateName => nil } }]))
+    Elasticsearch::Transport::Client.any_instance.stub(:search).with(anything).and_return({ 'hits' => { 'hits' => [{ '_source' => { 'service' => 'reuters_brazil', 'id' => 123, 'created_at' => timestamp, 'claim_review_url' => 1 } }] } })
+    query = {search_query: '', service: 'reuters_brazil', start_time: Time.now.to_s, end_time: Time.now.to_s, per_page: 20, offset: 0}
+    expect(described_class.search(query)).to(eq([{ :@context => 'http://schema.org', :@type => 'ClaimReview', :datePublished => Time.now.strftime('%Y-%m-%d'), :headline => nil, :identifier => 123, :url => 1, :author => { name: nil, url: nil }, :image => nil, :inLanguage => nil, :keywords => nil, raw: {"service"=>"reuters_brazil", "claim_review_url"=>1, "created_at"=>timestamp, "id"=>123}, :claimReviewed => nil, :text => nil, :reviewRating => { :@type => 'Rating', :ratingValue => nil, :bestRating => 1, :alternateName => nil } }]))
   end
 
   it 'runs an empty search' do
@@ -167,10 +167,10 @@ describe ClaimReview do
     timestamp = Time.now.to_s
     expect(
       described_class.convert_to_claim_review(
-        QuietHashie[{ service: "desi_facts", raw_claim_review: {}, claim_review_headline: 'wow', claim_review_url: 'http://example.com', created_at: timestamp, id: 123 }]
+        QuietHashie[{ service: "reuters_brazil", raw_claim_review: {}, claim_review_headline: 'wow', claim_review_url: 'http://example.com', created_at: timestamp, id: 123 }]
       )
     ).to(eq(
-        { :@context => 'http://schema.org', :@type => 'ClaimReview', :datePublished => Time.now.strftime('%Y-%m-%d'), :headline => 'wow', :identifier => 123, :url => 'http://example.com', :author => { name: nil, url: nil }, :image => nil, :inLanguage => nil, :keywords => "desi_facts", :raw => {"service" => "desi_facts", "claim_review_headline"=>"wow", "claim_review_url"=>"http://example.com", "created_at"=>timestamp, "id"=>123, "raw_claim_review"=>{}}, :claimReviewed => nil, :text => nil, :reviewRating => { :@type => 'Rating', :ratingValue => nil, :bestRating => 1, :alternateName => nil } }
+        { :@context => 'http://schema.org', :@type => 'ClaimReview', :datePublished => Time.now.strftime('%Y-%m-%d'), :headline => 'wow', :identifier => 123, :url => 'http://example.com', :author => { name: nil, url: nil }, :image => nil, :inLanguage => nil, :keywords => "reuters_brazil", :raw => {"service" => "reuters_brazil", "claim_review_headline"=>"wow", "claim_review_url"=>"http://example.com", "created_at"=>timestamp, "id"=>123, "raw_claim_review"=>{}}, :claimReviewed => nil, :text => nil, :reviewRating => { :@type => 'Rating', :ratingValue => nil, :bestRating => 1, :alternateName => nil } }
       )
     )
   end
