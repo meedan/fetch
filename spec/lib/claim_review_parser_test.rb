@@ -123,10 +123,10 @@ describe ClaimReviewParser do
     end
 
     it 'expects to be able to run' do
-      WashingtonPost.any_instance.stub(:get_claim_reviews).and_return('stubbed')
-      expect(described_class.run('washington_post')).to(eq('stubbed'))
+      ReutersBrazil.any_instance.stub(:get_claim_reviews).and_return('stubbed')
+      expect(described_class.run('reuters_brazil')).to(eq('stubbed'))
     end
-  
+
     it 'rescues broken json' do
       expect(AFP.new.extract_ld_json_script_block(Nokogiri.parse("<html><script type='application/ld+json'>blah</script></html>"), 0)).to(eq(nil))
     end
