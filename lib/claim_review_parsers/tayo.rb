@@ -3,6 +3,10 @@
 # Parser for https://www.desifacts.org/
 class Tayo < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def self.includes_service_keyword
     true
   end
