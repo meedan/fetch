@@ -39,7 +39,7 @@ describe 'integration test with ElasticSearch' do#, integration: true do
     end
     AlegreClient.unstub(:get_enrichment_for_url)
     PenderClient.unstub(:get_enrichment_for_url)
-    sleep 0.1
+    sleep 0.25
   end
 
   after do
