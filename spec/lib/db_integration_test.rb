@@ -39,6 +39,7 @@ describe 'integration test with ElasticSearch' do#, integration: true do
     end
     AlegreClient.unstub(:get_enrichment_for_url)
     PenderClient.unstub(:get_enrichment_for_url)
+    sleep 0.25
   end
 
   after do
@@ -72,6 +73,7 @@ describe 'integration test with ElasticSearch' do#, integration: true do
         expect($storage_results[subclass].first.values_at(*($storage_results[subclass].first.keys-[:raw_claim_review])).collect(&:class).uniq-[NilClass, String, Float, Time, Integer]).to(eq([]))
       end
 
+      ##### when tests run too fast, the tests below this line fail
       it "ensures access via ClaimReview#existing_ids" do
         ids = $storage_results[subclass].collect{|x| x[:id]}
         expect(ClaimReview.existing_ids(ids, subclass.service).class).to(eq(Array))

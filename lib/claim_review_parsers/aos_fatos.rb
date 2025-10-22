@@ -3,6 +3,10 @@
 # Parser for https://www.aosfatos.org/noticias/checamos/
 class AosFatos < ClaimReviewParser
   include PaginatedReviewClaims
+  def self.deprecated
+    true
+  end
+
   def hostname
     'https://www.aosfatos.org'
   end
