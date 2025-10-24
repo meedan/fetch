@@ -41,7 +41,7 @@ class Reuters < ClaimReviewParser
   end
 
   def claim_result_from_subhead(page)
-    header = page.search('div[class^="article-body__content"]').first.search('h2[data-testid="Heading"]').last
+    header = page.search('div[class^="article-body-module__content"]').first.search('h2[data-testid="Heading"]').last
     if header
       header.next_sibling.text.split(".").first
     end
@@ -63,7 +63,7 @@ class Reuters < ClaimReviewParser
       author: raw_claim_review.dig('raw_response', 'authors', 0, 'name'),
       author_link: nil,
       claim_review_headline: raw_claim_review.dig('raw_response', 'title'),
-      claim_review_body: raw_claim_review['page'].search('div[class^="article-body__content"]').children.text,
+      claim_review_body: raw_claim_review['page'].search('div[class^="article-body-module__content"]').children.text,
       claim_review_image_url: raw_claim_review.dig('raw_response', 'thumbnail', 'url'),
       claim_review_result: claim_result,
       claim_review_result_score: score_map[claim_result],
