@@ -11,7 +11,7 @@ describe Reuters do
     end
 
     it 'finds claim_result_from_page' do
-      expect(described_class.new.claim_result_from_page(Nokogiri.parse("<html><div class=\"article-body__content__17Yit\"><h2 data-testid=\"Heading\" class=\"text__text__1FZLe text__dark-grey__3Ml43 text__medium__1kbOh text__heading_6__1qUJ5 heading__base__2T28j heading__heading_6__RtD9P article-body__heading__33EIm\">VEREDICTO</h2><p data-testid=\"paragraph-13\" class=\"text__text__1FZLe text__dark-grey__3Ml43 text__regular__2N1Xr text__small__1kGq2 body__full_width__ekUdw body__small_body__2vQyf article-body__paragraph__2-BtD\">Alterado digitalmente. O post usa um trecho do Jornal Hoje adulterado para forjar a notícia de um falso projeto da Friboi com o governo federal para distribuição de kits churrasco.</p></div></html>"))).to(eq('Alterado digitalmente'))
+      expect(described_class.new.claim_result_from_page(Nokogiri.parse("<html><div class=\"article-body-module__content__17Yit\"><h2 data-testid=\"Heading\" class=\"text__text__1FZLe text__dark-grey__3Ml43 text__medium__1kbOh text__heading_6__1qUJ5 heading__base__2T28j heading__heading_6__RtD9P article-body__heading__33EIm\">VEREDICTO</h2><p data-testid=\"paragraph-13\" class=\"text__text__1FZLe text__dark-grey__3Ml43 text__regular__2N1Xr text__small__1kGq2 body__full_width__ekUdw body__small_body__2vQyf article-body__paragraph__2-BtD\">Alterado digitalmente. O post usa um trecho do Jornal Hoje adulterado para forjar a notícia de um falso projeto da Friboi com o governo federal para distribuição de kits churrasco.</p></div></html>"))).to(eq('Alterado digitalmente'))
     end
 
     it 'parses a raw_claim_review' do
