@@ -19,7 +19,7 @@ class RunClaimReviewParser
     ensure
       # Requeue the job if the parser is not deprecated
       ClaimReviewParser.record_service_heartbeat(service)
-      if !ClaimReviewParser.parsers[service].deprecated && RunClaimReviewParser.not_enqueued_anywhere_else(service)
+      if ClaimReviewParser.parsers[service].present? && RunClaimReviewParser.not_enqueued_anywhere_else(service)
         RunClaimReviewParser.perform_in(ClaimReviewParser.parsers[service].interevent_time, service)
         #Be neighborly and requeue any other jobs that may be behind
         ClaimReviewParser.requeue_all
