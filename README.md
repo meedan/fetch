@@ -59,13 +59,14 @@ class ParserName < ClaimReviewParser
   end
 
   (...)
-  
+
 end
 ```
+## Reimporting/Rebuilding/Verifying/Debugging from within a session
 
-## Reimporting/Rebuilding/Debugging an existing data Source
+### Reimporting/Rebuilding an existing data Source
 
-Sometimes, we need to rebuild a data source. One hypothetical reason could be if a publisher has added `ClaimReview` objects to all historical data, and we now want to re-capture high quality claims data. In that situation, once we have deployed our updates to the parser to collect those fixes, we will manually re-run a `RunClaimReviewParser` task in a console session with fetch - to run it within the session, we'd run:
+Sometimes, we need to rebuild a data source. One hypothetical reason could be if a publisher has added `ClaimReview` objects to all historical data, and we now want to re-capture high quality claims data. In that situation, once we have deployed our updates to the parser to collect those fixes, we will manually re-run a `RunClaimReviewParser` task in a console session with fetch:
 
 ```
 RunClaimReviewParser.new.perform("service_name", (Time.now-60*60*24*365*15).to_s, true)
@@ -78,7 +79,56 @@ RunClaimReviewParser.perform_async("service_name", (Time.now-60*60*24*365*15).to
 
 The way that all tasks run is that they paginate backwards in time until they see articles they've parsed before, *or*, if a date is specified, they keep paginating until they hit articles from that date. In this example, we set the date 15 years back to so that, in effect, we go re-build *all* data.
 
-If you just want to verify if/how an article is parsed by a service, you can run it this way:
+### Verifying imported claims' state
+
+After rebuilding the data source, you should check the claims' state. Run:
+
+```
+claim_reviews = API.claim_reviews(service: "service_name", per_page: 1000);false
+```
+
+After that you can go through the claims and look for specific urls, dates, anything that might help confirm their state is as expected.
+
+### Verifying services' state
+If you want to confirm which services are currently running (not deprecated). Run:
+
+```
+API.services
+```
+
+Which returns something like this:
+
+```
+{:services=>[{:service=>"service_name", :count=>1000, :earliest=>"2000-01-01", :latest=>"2025-09-08"}, {:service=>"another_service_name", :count=>1000, :earliest=>"2005-01-01", :latest=>"2025-09-08"}]}
+```
+
+### Checking services' jobs
+We use Sidekiq to run our background jobs.
+
+You can check if the job for a specific service is enqueued:
+```
+RunClaimReviewParser.not_enqueued_anywhere_else("service_name")
+```
+
+But you can also manually check sets and queues to look for jobs:
+```
+[Sidekiq::RetrySet, Sidekiq::ScheduledSet, Sidekiq::Queue].each do |queue|
+  queue.new.each { |job| p job }
+end
+```
+
+### Managing services' subscriptions
+A service might have many subscriptions. We might want to keep the service, but deprecate an specific subscription. Or, we might want to add a new subscription. Here are some usefull commands:
+
+```
+API.get_subscriptions({service: "service_name"})
+API.add_subscriptions({service: "service_name", url: "webhook_url", language: "language"})
+API.remove_subscriptions({service: "service_name", url: "webhook_url"})
+```
+
+### Debugging
+If you just want to verify if/how an article is parsed by a service, run:
+
 ```
 ServiceParserClassHere.test_parser_on_url(url)
 ```
