@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 source('https://rubygems.org')
-gem('activesupport', '6.0.3.1')
+gem('activesupport', '6.1.7.5')
 gem('addressable', '2.8.0')
 gem('airbrake', '~> 5.0')
 gem('aws-sdk-s3', '~> 1')
