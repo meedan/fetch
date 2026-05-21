@@ -1,3 +1,5 @@
+# THIS REPOSITORY IS CURRENTLY DEPRECATED AND ARCHIVED.
+
 ## Fetch
 A Fact / Claim Review aggregation service.
 
